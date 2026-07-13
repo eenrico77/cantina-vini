@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { mapBottleFromDB } from "@/lib/adapters/bottleAdapter";
+import FoodPairingForm from "@/components/FoodPairingForm";
 
 export default async function HomePage() {
   const supabase = createClient();
@@ -69,6 +70,8 @@ export default async function HomePage() {
           </Link>
         </div>
       </section>
+
+      <FoodPairingForm />
 
       <section>
         <h2 className="text-base font-semibold mb-3">Aggiunte recenti</h2>

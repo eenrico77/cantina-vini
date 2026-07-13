@@ -51,35 +51,59 @@ niente Supabase) — si adatta la LOGICA delle tre funzioni al progetto Next.js 
       chiamata (vitigni, descrizione, note terroir, recensione annata, profilo organolettico
       e di gusto) — richiede `supabase/migrations/0002_ai_enrichment.sql` (nuova, da eseguire
       su Supabase prima di questa fase)
-- [ ] **Da correggere prima di adattarlo**: nel prototipo la chiamata a Gemini gira lato
-      client (chiave API esposta nel browser) — nel progetto reale DEVE girare solo lato
-      server (server action), la chiave non deve mai arrivare al client
-- [ ] **Da adattare**: `maturation_start/peak/end` nel prototipo sono anni-dopo-vendemmia
-      (offset), il nostro schema li vuole come anni assoluti su `bottles.peak_start/peak_end`
-      → sommare l'anno della bottiglia all'offset
-- [ ] **Da adattare**: il prototipo usa `type` per il colore, il nostro schema usa `color`
-- [ ] Flusso completo: scatto/upload foto → Gemini legge l'etichetta e propone tutti i campi
-      (base + extra) → form di conferma/correzione → generazione immagine rappresentativa →
-      salvataggio (wine + bottle, riusando `createWine`/`actions.ts`)
-- [ ] Chiave `GEMINI_API_KEY` in `.env.local` (mai committata — `.env*` è già in `.gitignore`)
-- [ ] `lib/ai/enrichWine.ts` (mock attuale) va sostituito dalla vera chiamata Gemini per la
-      maturazione — non serve più tenerlo separato come pensato in origine
+- [x] **Corretto**: chiamata a Gemini spostata lato server (`actions.ts`, `"use server"`),
+      chiave mai esposta al client — verificato leggendo il codice il 13/07/2026
+- [x] **Adattato**: `maturation_start/end` (offset) sommati a `year` della bottiglia per
+      valorizzare `bottles.peak_start/peak_end` in modo assoluto
+- [x] **Adattato**: `type` → `color` ovunque, coerente col vincolo CHECK su `wines`
+- [x] Flusso completo costruito: upload foto in `/cantina/new` → `analyzeLabelAction` (server)
+      → form pre-compilato editabile → salvataggio via `createWine` (wine + bottle) →
+      generazione immagine solo se `wines.image_url` è vuoto
+- [x] `GEMINI_API_KEY` in `.env.local`
+- [x] `lib/ai/enrichWine.ts` sostituito con le tre funzioni Gemini reali (riconoscimento,
+      immagine, food pairing)
+- [x] **Testato con foto vera il 13/07/2026**: upload etichetta Prosecco Ruggeri →
+      riconoscimento corretto (nome, produttore, tipologia, regione, uvaggio, descrizione) →
+      salvataggio riuscito → scheda dettaglio con dati AI e curva di maturazione funzionante
+- [x] **Corretto il 13/07/2026**: aggiunta visualizzazione semplice (non stilizzata) di
+      `wines.image_url` in `/cantina/[id]` — confermato che la generazione immagine funziona
+- [x] **Corretto il 13/07/2026**: `organoleptic` e `taste_profile` non vengono più mostrati
+      come JSON grezzo (es. `{"body":2,"acidity":4,...}`) ma come elenco leggibile in italiano
+      (Corpo, Intensità, Tannini, Acidità, Persistenza, Alcol) — era un problema di comprensione,
+      non solo estetico, quindi corretto subito invece di aspettare la Fase 5
+- [x] **Corretto il 13/07/2026**: intestazione "I tuoi millesimi" (gergo poco chiaro) rinominata
+      in "Le tue annate"; anche "Storage & Service" → "Conservazione e servizio", "TEMP." →
+      "TEMPERATURA", "DECANTING" → "DECANTAZIONE" tradotte nella stessa passata
+- [ ] **Nuovo requisito UX**: se l'utente non compila l'Annata, invece del solo messaggio
+      di validazione del browser ("Compila questo campo"), mostrare un popup che spiega che
+      l'anno serve a calcolare la maturazione e sapere quando aprire la bottiglia. Se l'utente
+      conferma di voler procedere comunque senza, salvare lo stesso (senza peak_start/peak_end,
+      come già gestito oggi quando mancano i dati)
+
+## Note tecniche / performance (segnalate da Enrico il 13/07/2026)
+
+- Sia il caricamento generale del sito in locale, sia l'analisi AI della foto etichetta,
+  risultano lenti. Cause probabili da verificare più avanti (non bloccante ora):
+  - `npm run dev` compila le pagine al volo la prima volta che vengono aperte — è normale
+    che sia più lento di una build di produzione. Da riverificare con `npm run build && npm run start`.
+  - `generateProfessionalWineImage` (generazione immagine AI) oggi viene chiamata PRIMA del
+    redirect alla scheda vino, quindi il salvataggio resta "in attesa" finché l'immagine non
+    è pronta — probabile causa principale della lentezza percepita su "Conferma e Salva Vino".
+    Miglioria da valutare: salvare subito senza aspettare l'immagine, generarla in background
+    e mostrarla appena pronta (richiede un piccolo meccanismo di aggiornamento sulla pagina).
+  - Da tenere d'occhio in Fase 6 (pre-release), non prioritario ora.
 
 ## Fase 3 — Abbinamento cibo-vino (funzionalità, non grafica)
 
-**Anche questa già in gran parte scritta** nel prototipo (`getFoodPairingRecommendation`):
-dato un piatto e l'inventario reale dell'utente, Gemini sceglie 2 vini tra quelli posseduti
-con motivazione. Da adattare: stessa correzione lato server, e nomi campi (`type`→`color`).
-
-- [ ] Vino → cibo: abbinamenti nella scheda dettaglio
-- [ ] Cibo → vino: input libero ("stasera mangio risotto ai funghi"), adattando
-      `getFoodPairingRecommendation` ai vini realmente in cantina dell'utente
+- [x] `getFoodPairingRecommendation` adattata (server-side, `color`) in `lib/ai/enrichWine.ts` —
+      pronta ma non ancora richiamata
+- [x] Vino → cibo: sezione abbinamenti nella scheda dettaglio (può partire da regole semplici tipo/colore, poi evolvere con AI)
+- [x] Cibo → vino: input libero ("stasera mangio risotto ai funghi") che filtra e ordina solo le bottiglie realmente in cantina, con motivazione breve
 
 ## Fase 4 — Diario, statistiche, wishlist (funzionalità di base)
 
 Oggi sono solo placeholder: qui si rendono realmente funzionanti, anche senza grafica rifinita.
 
-- [ ] `/diary`: segna una bottiglia come bevuta con data, occasione, note, valutazione; storico elencato
 - [ ] `/stats`: conteggi reali (bottiglie totali, per tipologia, per stato maturazione, valore stimato)
 - [ ] Wishlist: aggiungi vino desiderato, collegato a produttore/annata
 
@@ -92,10 +116,19 @@ TUTTO il progetto in una volta, non pezzo per pezzo come pensato inizialmente.
       "Cosa correggere" nel file, incluso riscrivere `/cantina/[id]` che oggi usa ancora
       stili inline invece di Tailwind)
 - [ ] Immagini vere/rappresentative al posto dei segnaposto, ora che la Fase 2 ha deciso la fonte
+      (mostrarle finalmente in `/cantina/[id]`, vedi gap segnalato in Fase 2)
 - [ ] `/wines`: rifinitura filtri e card
 - [ ] `/cantina/[id]`: hero con immagine grande, tab "Annate / Storico", azioni rapide
       (segna come bevuta, rimuovi, modifica quantità/posizione)
 - [ ] Icone vere al posto delle emoji nel menu in basso
+- [ ] **Tradurre tutte le etichette rimaste in inglese** trovate testando il 13/07/2026:
+      "Storage & Service", "TEMP.", "DECANTING", "Maturation Start/End (offset)" nel form
+      dettagli extra, e qualunque altra label AI mostrata in inglese
+- [ ] **Priorità alta esplicita di Enrico**: la curva/fase di maturazione è uno dei grandi
+      punti di forza del prodotto — non deve restare un riquadro grezzo con tre numeri.
+      Merita un trattamento grafico premium a parte (animazioni/gradiente/indicatore "oggi"
+      più curato), va trattata come componente di punta, non come dettaglio minore della
+      passata di design generale
 
 ## Fase 6 — Pre-release
 
@@ -113,6 +146,14 @@ TUTTO il progetto in una volta, non pezzo per pezzo come pensato inizialmente.
 | ~~Dati extra AI (vitigni/descrizione/profilo gusto)~~ | Fase 2 | ✅ Deciso: salvarli tutti |
 | Gestione multi-cellar (UI dedicata o solo default) | Fase 5/6 | Prima della release se vuoi più di una "cantina" |
 | Piattaforma di deploy | Fase 6 | A ridosso della release |
+
+## Note e idee raccolte da Enrico (da smistare nelle fasi giuste)
+
+Enrico scrive qui le idee man mano che vengono in mente durante i test; vengono poi
+spostate nella fase giusta sopra. Non si agisce su queste finché non sono state
+riorganizzate in un task concreto in una fase.
+
+- (vuoto per ora — tutte le idee del 13/07/2026 sono già state smistate sopra)
 
 ## Cosa NON fare ora (deciso insieme, per non disperdere tempo)
 

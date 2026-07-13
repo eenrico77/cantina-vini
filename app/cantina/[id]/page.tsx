@@ -78,8 +78,35 @@ export default async function WineDetailPage({
 
   const currentYear = new Date().getFullYear();
 
+  // Etichette leggibili per il profilo gustativo (invece del JSON grezzo)
+  const TASTE_LABELS: Record<string, string> = {
+    body: "Corpo",
+    intensity: "Intensità",
+    tannins: "Tannini",
+    acidity: "Acidità",
+    persistence: "Persistenza",
+    alcohol: "Alcol",
+  };
+  const tasteProfile = wine.taste_profile as Record<string, number> | null;
+  const organoleptic = wine.organoleptic as
+    | { visual?: string; olfactory?: string; gustatory?: string }
+    | null;
+
   return (
     <div style={{ padding: 24, maxWidth: 520, margin: "0 auto" }}>
+      {wine.image_url ? (
+        <img
+          src={wine.image_url}
+          alt={wine.name}
+          style={{
+            display: "block",
+            maxWidth: 200,
+            margin: "0 auto 20px",
+            borderRadius: 16,
+          }}
+        />
+      ) : null}
+
       <div style={{ fontSize: 12, opacity: 0.7, marginBottom: 6 }}>
         {wine.producer?.toUpperCase?.() ?? ""}
       </div>
@@ -93,16 +120,16 @@ export default async function WineDetailPage({
       </div>
 
       <div style={{ marginTop: 22 }}>
-        <h3 style={{ margin: "0 0 10px" }}>Storage &amp; Service</h3>
+        <h3 style={{ margin: "0 0 10px" }}>Conservazione e servizio</h3>
 
         <div style={{ display: "flex", gap: 12 }}>
           <div style={{ flex: 1, border: "1px solid #eee", borderRadius: 14, padding: 14 }}>
-            <div style={{ fontSize: 12, opacity: 0.6 }}>TEMP.</div>
+            <div style={{ fontSize: 12, opacity: 0.6 }}>TEMPERATURA</div>
             <div style={{ fontWeight: 700 }}>{wine.ideal_temp ?? "—"}</div>
           </div>
 
           <div style={{ flex: 1, border: "1px solid #eee", borderRadius: 14, padding: 14 }}>
-            <div style={{ fontSize: 12, opacity: 0.6 }}>DECANTING</div>
+            <div style={{ fontSize: 12, opacity: 0.6 }}>DECANTAZIONE</div>
             <div style={{ fontWeight: 700 }}>{wine.decanting_needed ? "Sì" : "No"}</div>
           </div>
         </div>
@@ -114,20 +141,79 @@ export default async function WineDetailPage({
           </div>
         ) : null}
 
-        {/* EXTRA AI DATA (Testo Grezzo) */}
-        <div style={{ marginTop: 16, padding: 14, border: "1px solid #eee", borderRadius: 14, fontSize: 13, background: "#f9fafb" }}>
-          <div style={{ fontWeight: 600, marginBottom: 8 }}>Dati AI Aggiuntivi:</div>
-          {wine.grapes && <div><strong>Uvaggio:</strong> {wine.grapes}</div>}
-          {wine.description && <div><strong>Descrizione:</strong> {wine.description}</div>}
-          {wine.origin_notes && <div><strong>Terroir:</strong> {wine.origin_notes}</div>}
-          {wine.vintage_review && <div><strong>Recensione Annata:</strong> {wine.vintage_review}</div>}
-          {wine.organoleptic && <div><strong>Organolettico:</strong> {JSON.stringify(wine.organoleptic)}</div>}
-          {wine.taste_profile && <div><strong>Profilo Gustativo:</strong> {JSON.stringify(wine.taste_profile)}</div>}
-        </div>
+        {/* Dati AI aggiuntivi, in testo leggibile (niente più JSON grezzo) */}
+        {(wine.grapes || wine.description || wine.origin_notes || wine.vintage_review || organoleptic || tasteProfile) ? (
+          <div style={{ marginTop: 16, padding: 14, border: "1px solid #eee", borderRadius: 14, fontSize: 13, background: "#f9fafb" }}>
+            <div style={{ fontWeight: 600, marginBottom: 8 }}>Note del vino</div>
+
+            {wine.grapes ? (
+              <div style={{ marginBottom: 8 }}>
+                <strong>Uvaggio:</strong> {wine.grapes}
+              </div>
+            ) : null}
+
+            {wine.description ? (
+              <div style={{ marginBottom: 8 }}>
+                <strong>Descrizione:</strong> {wine.description}
+              </div>
+            ) : null}
+
+            {wine.origin_notes ? (
+              <div style={{ marginBottom: 8 }}>
+                <strong>Terroir:</strong> {wine.origin_notes}
+              </div>
+            ) : null}
+
+            {wine.vintage_review ? (
+              <div style={{ marginBottom: 8 }}>
+                <strong>Recensione annata:</strong> {wine.vintage_review}
+              </div>
+            ) : null}
+
+            {organoleptic ? (
+              <div style={{ marginBottom: 8 }}>
+                <strong>Analisi organolettica:</strong>
+                <ul style={{ margin: "4px 0 0", paddingLeft: 18 }}>
+                  {organoleptic.visual ? <li>Vista: {organoleptic.visual}</li> : null}
+                  {organoleptic.olfactory ? <li>Naso: {organoleptic.olfactory}</li> : null}
+                  {organoleptic.gustatory ? <li>Gusto: {organoleptic.gustatory}</li> : null}
+                </ul>
+              </div>
+            ) : null}
+
+            {tasteProfile ? (
+              <div>
+                <strong>Profilo gustativo:</strong>
+                <ul style={{ margin: "4px 0 0", paddingLeft: 18 }}>
+                  {Object.entries(tasteProfile).map(([key, value]) => (
+                    <li key={key}>
+                      {TASTE_LABELS[key] ?? key}: {value}
+                      {key === "alcohol" ? "%" : "/5"}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+
+        {/* VINO -> CIBO: Abbinamenti statici per colore */}
+        {wine.color && (
+          <div style={{ marginTop: 16, padding: 14, border: "1px solid #eee", borderRadius: 14 }}>
+            <div style={{ fontSize: 12, opacity: 0.6, marginBottom: 6 }}>ABBINAMENTI CONSIGLIATI</div>
+            <div style={{ fontWeight: 500, fontSize: 14 }}>
+              {wine.color === "Rosso" && "Carni rosse, brasati, formaggi stagionati"}
+              {wine.color === "Bianco" && "Pesce, crostacei, formaggi freschi"}
+              {wine.color === "Bollicine" && "Aperitivo, fritti, sushi"}
+              {wine.color === "Rosato" && "Salumi, cucina estiva, pesce grigliato"}
+              {wine.color === "Dolce" && "Dessert, formaggi erborinati"}
+            </div>
+          </div>
+        )}
       </div>
 
       <div style={{ marginTop: 26 }}>
-        <h3 style={{ margin: "0 0 10px" }}>I tuoi millesimi</h3>
+        <h3 style={{ margin: "0 0 10px" }}>Le tue annate</h3>
 
         {!bottles || bottles.length === 0 ? (
           <div style={{ padding: 16, border: "1px solid #eee", borderRadius: 14 }}>
