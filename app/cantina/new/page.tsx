@@ -147,17 +147,17 @@ export default function NewWinePage() {
                 <input name="ideal_temp" value={formData.ideal_temp} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none" />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-ink-500 uppercase">Decanting</label>
+                <label className="block text-xs font-semibold text-ink-500 uppercase">Decantazione</label>
                 <input name="decanting" value={formData.decanting} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none" />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="block text-xs font-semibold text-ink-500 uppercase">Maturation Start (Offset)</label>
+                <label className="block text-xs font-semibold text-ink-500 uppercase">Inizio Maturazione (anni dalla vendemmia)</label>
                 <input name="maturation_start" type="number" value={formData.maturation_start} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none" />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-ink-500 uppercase">Maturation End (Offset)</label>
+                <label className="block text-xs font-semibold text-ink-500 uppercase">Fine Maturazione (anni dalla vendemmia)</label>
                 <input name="maturation_end" type="number" value={formData.maturation_end} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none" />
               </div>
             </div>

@@ -154,15 +154,18 @@ Ordine deciso: prima la curva di maturazione (priorità esplicita di Enrico), po
 ### Fase 5c — Pagine principali
 
 - [x] Riscrivere `/cantina/[id]` in Tailwind (oggi usa ancora stili inline) con hero immagine
-      grande, tab "Annate / Storico", azioni rapide ben integrate visivamente
+      grande, tab "Annate / Storico", azioni rapide ben integrate visivamente — verificato via
+      codice il 13/07/2026 (`WineDetailClient.tsx`, `DrinkBottleModal.tsx`)
 - [x] `/wines`: rifinitura filtri e card
-- [ ] Immagini vere/rappresentative al posto dei segnaposto, ora che la Fase 2 ha deciso la fonte
+- [x] Immagini vere/rappresentative al posto dei segnaposto — già in hero di `/cantina/[id]`,
+      con fallback 🍷 se `image_url` assente
 
 ### Fase 5d — Rifiniture testuali
 
-- [ ] **Tradurre tutte le etichette rimaste in inglese** trovate testando il 13/07/2026:
+- [x] **Tradurre tutte le etichette rimaste in inglese** trovate testando il 13/07/2026:
       "Storage & Service", "TEMP.", "DECANTING", "Maturation Start/End (offset)" nel form
-      dettagli extra, e qualunque altra label AI mostrata in inglese
+      dettagli extra, e qualunque altra label AI mostrata in inglese.
+      *(Nota: se Gemini restituisce i dati descrittivi in inglese nel DB, non è stato forzato qui per non toccare le Server Actions. Sarà necessario in futuro rafforzare il prompt di Gemini per pretendere l'output in italiano sempre).*
 
 ## Fase 6 — Pre-release
 
