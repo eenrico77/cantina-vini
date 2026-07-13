@@ -37,9 +37,9 @@ export default function WineListClient({ bottles }) {
   }, [bottles, filters]);
 
   // Extract unique values for filter dropdowns
-  const uniqueTypes = [...new Set(bottles.map(b => b.wine?.color).filter(Boolean))];
-  const uniqueYears = [...new Set(bottles.map(b => b.year).filter(Boolean))].sort((a, b) => b - a);
-  const uniqueRegions = [...new Set(bottles.map(b => b.wine?.region).filter(Boolean))].sort();
+  const uniqueTypes = Array.from(new Set(bottles.map((b: any) => b.wine?.color).filter(Boolean))) as string[];
+  const uniqueYears = Array.from(new Set(bottles.map((b: any) => b.year).filter(Boolean))).sort((a: any, b: any) => b - a) as string[];
+  const uniqueRegions = Array.from(new Set(bottles.map((b: any) => b.wine?.region).filter(Boolean))).sort() as string[];
 
   return (
     <div className="space-y-6">

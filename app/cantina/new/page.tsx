@@ -7,6 +7,9 @@ const COLORS = ["Rosso", "Bianco", "Rosato", "Bollicine", "Dolce"];
 
 export default function NewWinePage() {
   const [loadingAI, setLoadingAI] = useState(false);
+  const [showYearPopup, setShowYearPopup] = useState(false);
+  const [formDataToSubmit, setFormDataToSubmit] = useState<FormData | null>(null);
+
   const [formData, setFormData] = useState({
     name: "", producer: "", color: "", region: "", country: "", year: "", quantity: "1",
     grapes: "", description: "", origin_notes: "", vintage_review: "",
@@ -55,6 +58,22 @@ export default function NewWinePage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const fd = new FormData(e.currentTarget);
+    if (!fd.get("year")) {
+      e.preventDefault();
+      setFormDataToSubmit(fd);
+      setShowYearPopup(true);
+    }
+  };
+
+  const submitWithoutYear = () => {
+    if (formDataToSubmit) {
+      createWine(formDataToSubmit);
+    }
+    setShowYearPopup(false);
+  };
+
   return (
     <div className="p-4 md:p-8 max-w-2xl mx-auto space-y-6">
       <h1 className="text-3xl font-extrabold text-ink-700 tracking-tight">Aggiungi Vino</h1>
@@ -71,7 +90,7 @@ export default function NewWinePage() {
         {loadingAI && <p className="text-sm text-blue-600 mt-2">Analisi in corso, attendi qualche secondo...</p>}
       </div>
 
-      <form action={createWine} className="space-y-4 bg-white p-6 rounded-xl shadow-sm border border-sand-200">
+      <form action={createWine} onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded-xl shadow-sm border border-sand-200">
         
         {/* Campi nascosti per i dati JSON */}
         <input type="hidden" name="organoleptic" value={formData.organoleptic} />
@@ -99,7 +118,7 @@ export default function NewWinePage() {
           <div className="grid grid-cols-2 gap-2">
             <div>
               <label className="block text-xs font-semibold text-ink-500 uppercase">Annata *</label>
-              <input name="year" type="number" value={formData.year} onChange={handleChange} required className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" />
+              <input name="year" type="number" value={formData.year} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" />
             </div>
             <div>
               <label className="block text-xs font-semibold text-ink-500 uppercase">Quantità *</label>
@@ -168,6 +187,25 @@ export default function NewWinePage() {
           Conferma e Salva Vino
         </button>
       </form>
+
+      {showYearPopup && (
+        <div className="fixed inset-0 bg-ink-700/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-sand-100">
+            <h3 className="text-xl font-bold mb-4 text-ink-700 text-center">Annata mancante</h3>
+            <p className="text-sm text-ink-500 mb-6 text-center">
+              Senza l'annata non possiamo calcolare la finestra di maturazione e capire quando aprire la bottiglia.
+            </p>
+            <div className="flex flex-col gap-3">
+              <button type="button" onClick={() => setShowYearPopup(false)} className="px-5 py-2.5 bg-brand-500 hover:bg-brand-600 text-white rounded-xl font-bold transition-colors shadow-md">
+                Torna indietro e compila
+              </button>
+              <button type="button" onClick={submitWithoutYear} className="px-5 py-2.5 text-ink-500 font-bold hover:bg-sand-100 rounded-xl transition-colors">
+                Salva comunque senza annata
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

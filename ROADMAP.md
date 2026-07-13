@@ -169,9 +169,20 @@ Ordine deciso: prima la curva di maturazione (priorità esplicita di Enrico), po
 
 ## Fase 6 — Pre-release
 
+**Decisioni prese il 13/07/2026**: deploy su Vercel; nessuna gestione multi-cantina per il
+primo rilascio (resta solo la "Cantina predefinita" automatica, si valuta in futuro se serve
+davvero); gli item residui di fasi precedenti (popup annata mancante, ricontrollo performance)
+si chiudono dentro questa fase, non a parte.
+
+- [ ] **Recuperato da Fase 2**: popup se manca l'Annata in `/cantina/new` — spiega perché serve
+      (calcolo maturazione), permette di procedere comunque senza (si salva senza peak_start/peak_end)
+- [ ] **Recuperato da Note tecniche**: verificare la lentezza percepita con build di produzione
+- [x] Popup annata mancante e performance fix su salvataggio vino.
+- [ ] RLS su `wines`, `bottles`, `cellars` (migrazione `0004_rls_core_tables.sql` pronta, da eseguire e testare con Enrico).
 - [ ] Deploy su Vercel (o piattaforma scelta), variabili d'ambiente Supabase configurate lato hosting
 - [ ] Controllo dei vincoli DB usati davvero dall'app contro tutti i form
-- [ ] Passata di QA manuale su tutti i flussi
+- [ ] Passata di QA manuale su tutti i flussi: login, aggiungi vino (con e senza foto AI),
+      segna come bevuta, abbinamento cibo-vino, wishlist, statistiche
 
 ## Decisioni aperte (da chiudere prima di iniziare le fasi corrispondenti)
 
@@ -181,8 +192,8 @@ Ordine deciso: prima la curva di maturazione (priorità esplicita di Enrico), po
 | ~~Database di arricchimento~~ | Fase 2/3 | ✅ Deciso: nessuno per l'MVP |
 | ~~Fonte immagine rappresentativa~~ | Fase 2 | ✅ Deciso: generata dall'AI (superata la scelta "stock per tipologia") |
 | ~~Dati extra AI (vitigni/descrizione/profilo gusto)~~ | Fase 2 | ✅ Deciso: salvarli tutti |
-| Gestione multi-cellar (UI dedicata o solo default) | Fase 5/6 | Prima della release se vuoi più di una "cantina" |
-| Piattaforma di deploy | Fase 6 | A ridosso della release |
+| ~~Gestione multi-cellar~~ | Fase 5/6 | ✅ Deciso: solo cantina predefinita per il primo rilascio |
+| ~~Piattaforma di deploy~~ | Fase 6 | ✅ Deciso: Vercel |
 
 ## Note e idee raccolte da Enrico (da smistare nelle fasi giuste)
 

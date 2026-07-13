@@ -33,16 +33,17 @@ export async function getPairingAction(food: string) {
     throw new Error("Errore durante la generazione dell'abbinamento (AI non ha risposto)");
   }
 
-  // Enrich the AI response with wine data to render on client
+  const getWine = (w: any) => Array.isArray(w) ? w[0] : w;
   const enrichOption = (opt: any) => {
     const bottle = bottles.find(b => b.id.toString() === opt.bottleId?.toString());
+    const w = getWine(bottle?.wine);
     return {
       bottleId: opt.bottleId,
       explanation: opt.explanation,
-      wineName: bottle?.wine?.name,
-      producer: bottle?.wine?.producer,
+      wineName: w?.name,
+      producer: w?.producer,
       year: bottle?.year,
-      wineId: bottle?.wine?.id
+      wineId: w?.id
     };
   };
 

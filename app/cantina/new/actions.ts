@@ -44,8 +44,8 @@ export async function createWine(formData: FormData): Promise<void> {
   const organoleptic = organolepticRaw ? JSON.parse(organolepticRaw) : null;
   const taste_profile = tasteProfileRaw ? JSON.parse(tasteProfileRaw) : null;
 
-  if (!name || !producer || !color || !Number.isFinite(year)) {
-    throw new Error("Dati mancanti: Nome, Produttore, Tipologia e Anno sono obbligatori.");
+  if (!name || !producer || !color) {
+    throw new Error("Dati mancanti: Nome, Produttore e Tipologia sono obbligatori.");
   }
 
   const { data: auth } = await supabase.auth.getUser();
@@ -128,14 +128,17 @@ export async function createWine(formData: FormData): Promise<void> {
   }
 
   if (!imageUrl) {
-    try {
-      const newImage = await generateProfessionalWineImage(name, producer, color);
-      if (newImage) {
-        await supabase.from("wines").update({ image_url: newImage }).eq("id", wineId);
+    const generateAndSave = async () => {
+      try {
+        const newImage = await generateProfessionalWineImage(name, producer, color);
+        if (newImage) {
+          await supabase.from("wines").update({ image_url: newImage }).eq("id", wineId);
+        }
+      } catch (e) {
+        console.warn("Immagine non generata in background", e);
       }
-    } catch (e) {
-      console.warn("Immagine non generata", e);
-    }
+    };
+    generateAndSave(); // Chiamata asincrona non attesa per velocizzare il redirect
   }
 
   redirect(`/cantina/${wineId}`);
