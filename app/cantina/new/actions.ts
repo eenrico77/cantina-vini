@@ -1,6 +1,7 @@
 "use server";
 
 import { analyzeWineLabel, generateProfessionalWineImage } from "@/lib/ai/enrichWine";
+import { waitUntil } from "@vercel/functions";
 import { createClient } from "@/lib/supabase/server";
 import { getOrCreateDefaultCellar } from "@/lib/supabase/getOrCreateDefaultCellar";
 import { redirect } from "next/navigation";
@@ -26,7 +27,8 @@ export async function createWine(formData: FormData): Promise<void> {
   const color = formData.get("color") as string;
   const region = (formData.get("region") as string) || null;
   const country = (formData.get("country") as string) || null;
-  const year = Number(formData.get("year"));
+  const yearRaw = formData.get("year") as string;
+  const year: number | null = yearRaw ? Number(yearRaw) : null;
   const quantity = Number(formData.get("quantity") || 1);
   
   // AI fields
@@ -102,7 +104,7 @@ export async function createWine(formData: FormData): Promise<void> {
   let peakEnd = null;
   let agingStatus = null;
 
-  if (Number.isFinite(maturation_start) && Number.isFinite(maturation_end)) {
+  if (year && Number.isFinite(maturation_start) && Number.isFinite(maturation_end)) {
     peakStart = year + maturation_start;
     peakEnd = year + maturation_end;
     agingStatus = getAgingStatus(new Date().getFullYear(), peakStart, peakEnd);
@@ -138,7 +140,7 @@ export async function createWine(formData: FormData): Promise<void> {
         console.warn("Immagine non generata in background", e);
       }
     };
-    generateAndSave(); // Chiamata asincrona non attesa per velocizzare il redirect
+    waitUntil(generateAndSave()); // Chiamata asincrona registrata per Vercel
   }
 
   redirect(`/cantina/${wineId}`);

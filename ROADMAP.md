@@ -1,6 +1,12 @@
 # Cantina Vini — Roadmap verso la prima release
 
 Ultimo aggiornamento: 13 luglio 2026.
+
+**Prossima sessione, si riparte da qui**: in attesa del risultato del messaggio ad Antigravity
+su (1) year nullable in bottles e (2) fix waitUntil per l'immagine AI su Vercel. Dopo quello:
+testare insieme in locale la migrazione RLS (0004_rls_core_tables.sql) PRIMA di lanciarla su
+Supabase, poi procedere col deploy vero su Vercel (variabili d'ambiente, controllo vincoli DB,
+QA manuale finale).
 Questo file vive nel repo apposta: aprilo in Antigravity a inizio sessione così l'agente ha subito il contesto.
 
 ## Filosofia di sequenza (deciso il 13/07/2026)
@@ -171,18 +177,33 @@ Ordine deciso: prima la curva di maturazione (priorità esplicita di Enrico), po
 
 **Decisioni prese il 13/07/2026**: deploy su Vercel; nessuna gestione multi-cantina per il
 primo rilascio (resta solo la "Cantina predefinita" automatica, si valuta in futuro se serve
-davvero); gli item residui di fasi precedenti (popup annata mancante, ricontrollo performance)
-si chiudono dentro questa fase, non a parte.
+davvero); gli item residui di fasi precedenti - [x] Popup annata mancante e performance fix su salvataggio vino (incluso `year` nullable in DB e `waitUntil` per Vercel). dentro questa fase, non a parte.
 
-- [ ] **Recuperato da Fase 2**: popup se manca l'Annata in `/cantina/new` — spiega perché serve
-      (calcolo maturazione), permette di procedere comunque senza (si salva senza peak_start/peak_end)
-- [ ] **Recuperato da Note tecniche**: verificare la lentezza percepita con build di produzione
-- [x] Popup annata mancante e performance fix su salvataggio vino.
-- [ ] RLS su `wines`, `bottles`, `cellars` (migrazione `0004_rls_core_tables.sql` pronta, da eseguire e testare con Enrico).
-- [ ] Deploy su Vercel (o piattaforma scelta), variabili d'ambiente Supabase configurate lato hosting
+- [x] **Recuperato da Fase 2**: popup se manca l'Annata in `/cantina/new` — spiega perché serve
+      (calcolo maturazione), permette di procedere comunque senza. Verificato via codice il
+      13/07/2026 (`app/cantina/new/page.tsx`).
+- [x] **Corretto il 13/07/2026 (bug trovato rileggendo il codice)**: quando si salva senza
+      annata, `year` diventava `0` invece di `null` (perché `Number("")` è `0` in JS), e se
+      erano presenti gli offset di maturazione dell'AI si calcolava comunque `peak_start/end`
+      con base anno 0 (date assurde tipo "anno 3"). Corretto in `app/cantina/new/actions.ts`:
+      `year` è ora `null` se non compilato, e il calcolo di `peak_start/end` richiede un
+      `year` valido oltre agli offset. **Da verificare da Antigravity**: la colonna
+      `bottles.year` deve permettere `NULL` — se ha un vincolo NOT NULL, serve una piccola
+      migrazione per rimuoverlo prima che questo flusso funzioni davvero end-to-end.
+- [ ] **Recuperato da Note tecniche — ATTENZIONE, non ancora sicuro per il deploy**: la
+      generazione immagine AI è stata resa "fire and forget" (chiamata non attesa dopo il
+      redirect) per velocizzare il salvataggio. Funziona in locale (processo Node persistente)
+      ma su Vercel (serverless) rischia di essere interrotta a metà appena la risposta HTTP
+      parte, perdendo silenziosamente l'immagine in produzione. Da sistemare con
+      `waitUntil` (pacchetto `@vercel/functions`, o l'helper equivalente di Next.js per questa
+      piattaforma) prima di considerare il deploy pronto — non lasciare così com'è.
+- [ ] RLS su `wines`, `bottles`, `cellars` (migrazione `0004_rls_core_tables.sql` pronta —
+      verificata via codice il 13/07/2026, corretta — da eseguire e testare in locale con
+      Enrico prima di lanciarla su Supabase in produzione)
+- [ ] Deploy su Vercel, variabili d'ambiente Supabase e `GEMINI_API_KEY` configurate lato hosting
 - [ ] Controllo dei vincoli DB usati davvero dall'app contro tutti i form
-- [ ] Passata di QA manuale su tutti i flussi: login, aggiungi vino (con e senza foto AI),
-      segna come bevuta, abbinamento cibo-vino, wishlist, statistiche
+- [ ] Passata di QA manuale su tutti i flussi: login, aggiungi vino (con e senza foto AI, con
+      e senza annata), segna come bevuta, abbinamento cibo-vino, wishlist, statistiche
 
 ## Decisioni aperte (da chiudere prima di iniziare le fasi corrispondenti)
 
