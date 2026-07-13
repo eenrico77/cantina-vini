@@ -29,19 +29,19 @@ export default function WineCard({ bottle }) {
       <div className="flex items-center space-x-4 p-4 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:scale-[1.01] border border-sand-200/70">
 
         {/* Immagine */}
-        <div className="relative w-16 h-24 flex-shrink-0">
+        <div className="relative w-20 h-28 flex-shrink-0">
           <Image
             src={imgSrc}
             alt={wine.name}
             fill
-            sizes="64px"
-            className="rounded-lg object-cover shadow-soft-sm"
+            sizes="80px"
+            className="rounded-xl object-cover shadow-sm border border-sand-100"
           />
         </div>
 
         {/* Dettagli */}
         <div className="flex-1 min-w-0">
-          <h2 className="text-lg font-semibold text-ink-700 truncate group-hover:text-blue-500 transition-colors">
+          <h2 className="text-lg font-semibold text-ink-700 truncate group-hover:text-brand-600 transition-colors">
             {wine.name}
           </h2>
           <p className="text-sm text-ink-500 truncate mt-0.5">

@@ -4,21 +4,6 @@ import { useState, useMemo } from 'react';
 import WineCard from './Winecard';
 
 export default function WineListClient({ bottles }) {
-  const getAgingColor = (status) => {
-    switch (status) {
-      case "young":
-        return "bg-status-young/10 text-status-young";
-      case "almost":
-        return "bg-status-almost/10 text-status-almost";
-      case "ready":
-        return "bg-status-ready/10 text-status-ready";
-      case "decline":
-        return "bg-status-decline/10 text-status-decline";
-      default:
-        return "bg-sand-100 text-ink-500";
-    }
-  };
-
   const [filters, setFilters] = useState({
     type: '',
     aging: '',

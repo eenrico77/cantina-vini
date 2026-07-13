@@ -34,27 +34,27 @@ export default function DrinkBottleModal({ bottle, wine }: { bottle: any, wine: 
     <>
       <button 
         onClick={() => setOpen(true)}
-        className="mt-3 bg-red-50 text-red-700 hover:bg-red-100 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors border border-red-200"
+        className="w-full flex items-center justify-center gap-2 bg-white text-brand-600 border-2 border-brand-200 hover:bg-brand-50 hover:border-brand-300 px-4 py-3 rounded-xl text-sm font-bold transition-all shadow-sm"
       >
-        🍷 Segna come bevuta
+        <span>🍷</span> Segna come bevuta
       </button>
 
       {open && (
-        <div className="fixed inset-0 bg-brand-500/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-sm w-full">
-            <h3 className="text-lg font-bold mb-2">Com'era {wine.name}?</h3>
-            <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="fixed inset-0 bg-ink-700/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-sand-100">
+            <h3 className="text-xl font-bold mb-4 text-ink-700 text-center">Com'era questo vino?</h3>
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label className="block text-sm font-medium mb-1">Voto (1-5)</label>
-                <input type="number" name="rating" min="1" max="5" className="border rounded-lg p-2 w-full outline-none focus:ring-2 focus:ring-red-500" />
+                <label className="block text-xs font-bold text-ink-500 uppercase tracking-wider mb-2">Voto (1-5)</label>
+                <input type="number" name="rating" min="1" max="5" className="border border-sand-200 rounded-xl p-3 w-full outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-sand-50" />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Note (opzionali)</label>
-                <textarea name="notes" className="border rounded-lg p-2 w-full outline-none focus:ring-2 focus:ring-red-500 h-24" placeholder="Profumi, con chi l'hai bevuto..." />
+                <label className="block text-xs font-bold text-ink-500 uppercase tracking-wider mb-2">Note (opzionali)</label>
+                <textarea name="notes" className="border border-sand-200 rounded-xl p-3 w-full outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 h-24 bg-sand-50 resize-none" placeholder="Profumi, con chi l'hai bevuto..." />
               </div>
-              <div className="flex gap-2 justify-end mt-4">
-                <button type="button" onClick={() => setOpen(false)} className="px-4 py-2 text-ink-500 font-medium">Annulla</button>
-                <button type="submit" disabled={loading} className="px-4 py-2 bg-red-600 text-white rounded-lg font-medium disabled:opacity-50">
+              <div className="flex gap-3 justify-end mt-6 pt-4 border-t border-sand-100">
+                <button type="button" onClick={() => setOpen(false)} className="px-5 py-2.5 text-ink-500 font-bold hover:bg-sand-100 rounded-xl transition-colors">Annulla</button>
+                <button type="submit" disabled={loading} className="px-6 py-2.5 bg-brand-500 hover:bg-brand-600 text-white rounded-xl font-bold disabled:opacity-50 transition-colors shadow-md">
                   {loading ? "Salvo..." : "Conferma"}
                 </button>
               </div>

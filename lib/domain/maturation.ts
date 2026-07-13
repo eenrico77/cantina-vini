@@ -31,14 +31,14 @@ export function getAgingLabel(status: AgingStatus, peakStart: number, peakEnd: n
 export function getAgingBadgeColor(status: AgingStatus | null | undefined): string {
   switch (status) {
     case "too_young":
-      return "bg-blue-100 text-blue-800";
+      return "bg-status-young/10 text-status-young";
     case "almost_ready":
-      return "bg-amber-100 text-amber-800";
+      return "bg-status-almost/10 text-status-almost";
     case "ready":
-      return "bg-green-100 text-green-800";
+      return "bg-status-ready/10 text-status-ready";
     case "past_peak":
-      return "bg-red-100 text-red-800";
+      return "bg-status-decline/10 text-status-decline";
     default:
-      return "bg-gray-100 text-gray-600";
+      return "bg-sand-100 text-ink-500";
   }
 }

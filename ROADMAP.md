@@ -142,12 +142,20 @@ Ordine deciso: prima la curva di maturazione (priorità esplicita di Enrico), po
 - [x] Applicare `DESIGN.md` a bottoni, badge, colori di base in tutto il progetto (vedi
       sezione "Cosa correggere" nel file)
 - [x] Icone vere al posto delle emoji nel menu in basso
+- [x] **Corretto il 13/07/2026 (bug funzionale, trovato rileggendo il codice)**: i badge di
+      maturazione in `/wines` (renderizzati da `WineCard.jsx` via `getAgingBadgeColor` in
+      `lib/domain/maturation.ts`) usavano ancora blu/ambra/verde/rosso hardcoded, NON i token
+      status-*, nonostante il report dicesse il contrario — l'helper con i colori giusti
+      scritto in `WineListClient.tsx` non veniva mai chiamato da nessuna parte (codice morto,
+      e comunque con le chiavi di stato sbagliate: "young" invece di "too_young" ecc.).
+      Corretto `getAgingBadgeColor` per usare i token status-*/10, rimosso l'helper morto,
+      e "hover:text-blue-500" in `WineCard.jsx` → "hover:text-brand-600".
 
 ### Fase 5c — Pagine principali
 
-- [ ] Riscrivere `/cantina/[id]` in Tailwind (oggi usa ancora stili inline) con hero immagine
+- [x] Riscrivere `/cantina/[id]` in Tailwind (oggi usa ancora stili inline) con hero immagine
       grande, tab "Annate / Storico", azioni rapide ben integrate visivamente
-- [ ] `/wines`: rifinitura filtri e card
+- [x] `/wines`: rifinitura filtri e card
 - [ ] Immagini vere/rappresentative al posto dei segnaposto, ora che la Fase 2 ha deciso la fonte
 
 ### Fase 5d — Rifiniture testuali

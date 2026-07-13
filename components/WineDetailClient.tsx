@@ -1,0 +1,249 @@
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
+import MaturationCurve from "@/components/MaturationCurve";
+import { getAgingLabel } from "@/lib/domain/maturation";
+import type { AgingStatus } from "@/types";
+import DrinkBottleModal from "@/components/DrinkBottleModal";
+
+export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
+  const [activeTab, setActiveTab] = useState("annate");
+  const currentYear = new Date().getFullYear();
+  
+  const TASTE_LABELS: Record<string, string> = {
+    body: "Corpo",
+    intensity: "Intensità",
+    tannins: "Tannini",
+    acidity: "Acidità",
+    persistence: "Persistenza",
+    alcohol: "Alcol",
+  };
+  const tasteProfile = wine.taste_profile as Record<string, number> | null;
+  const organoleptic = wine.organoleptic as any | null;
+
+  return (
+    <div className="pb-24 -mt-6"> {/* -mt-6 to offset standard layout padding for full bleed hero */}
+      {/* Hero Section */}
+      <div className="bg-white border-b border-sand-200 px-6 py-10 flex flex-col items-center text-center shadow-sm">
+        {wine.image_url ? (
+          <div className="relative w-32 h-48 mb-6">
+            <Image 
+              src={wine.image_url} 
+              alt={wine.name} 
+              fill 
+              className="object-cover rounded-2xl shadow-lg border border-sand-100"
+            />
+          </div>
+        ) : (
+          <div className="w-32 h-48 bg-sand-50 rounded-2xl mb-6 flex items-center justify-center text-5xl shadow-sm border border-sand-200">
+            🍷
+          </div>
+        )}
+        <p className="text-xs font-bold text-brand-600 uppercase tracking-widest mb-2">{wine.producer}</p>
+        <h1 className="text-3xl font-black text-ink-700 leading-tight mb-3">{wine.name}</h1>
+        <p className="text-sm font-medium text-ink-500">
+          {[wine.region, wine.country, wine.color].filter(Boolean).join(" · ")}
+        </p>
+      </div>
+
+      <div className="px-4 md:px-8 max-w-2xl mx-auto mt-8 space-y-6">
+        
+        {/* TABS */}
+        <div>
+          <div className="flex border-b border-sand-200 mb-6">
+            <button 
+              className={`flex-1 py-3 text-sm font-bold border-b-2 transition-colors ${activeTab === "annate" ? "border-brand-500 text-brand-600" : "border-transparent text-ink-500 hover:text-ink-700"}`}
+              onClick={() => setActiveTab("annate")}
+            >
+              Le tue Annate
+            </button>
+            <button 
+              className={`flex-1 py-3 text-sm font-bold border-b-2 transition-colors ${activeTab === "storico" ? "border-brand-500 text-brand-600" : "border-transparent text-ink-500 hover:text-ink-700"}`}
+              onClick={() => setActiveTab("storico")}
+            >
+              Storico Bevute
+            </button>
+            <button 
+              className={`flex-1 py-3 text-sm font-bold border-b-2 transition-colors ${activeTab === "info" ? "border-brand-500 text-brand-600" : "border-transparent text-ink-500 hover:text-ink-700"}`}
+              onClick={() => setActiveTab("info")}
+            >
+              Info Vino
+            </button>
+          </div>
+
+          {activeTab === "annate" && (
+            <div className="space-y-6">
+              {!bottles || bottles.length === 0 ? (
+                <div className="bg-sand-50 border border-sand-200 rounded-2xl p-6 text-center text-ink-500 text-sm">
+                  Nessuna bottiglia di questo vino in cantina.
+                </div>
+              ) : (
+                bottles.map((bottle: any) => {
+                  const hasCurve = typeof bottle.peak_start === "number" && typeof bottle.peak_end === "number";
+                  const peak = hasCurve ? Math.floor((bottle.peak_start + bottle.peak_end) / 2) : null;
+
+                  return (
+                    <div key={bottle.id} className="bg-white border border-sand-200 rounded-3xl p-5 shadow-soft relative overflow-hidden">
+                      <div className="grid grid-cols-2 gap-3 mb-4">
+                        <div className="bg-sand-50 rounded-2xl p-3 text-center border border-sand-100">
+                          <div className="text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-1">Annata</div>
+                          <div className="text-2xl font-black text-ink-700">{bottle.year}</div>
+                        </div>
+                        <div className="bg-sand-50 rounded-2xl p-3 text-center border border-sand-100">
+                          <div className="text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-1">Bottiglie</div>
+                          <div className="text-2xl font-black text-ink-700">{bottle.quantity}</div>
+                        </div>
+                      </div>
+
+                      {hasCurve ? (
+                        <div className="mb-4">
+                          <MaturationCurve
+                            start={bottle.peak_start}
+                            peak={peak as number}
+                            end={bottle.peak_end}
+                            current={currentYear}
+                          />
+                          {bottle.aging_status && (
+                            <div className="mt-4 text-center text-xs font-semibold text-ink-500 uppercase tracking-wider">
+                              Stato: {getAgingLabel(bottle.aging_status, bottle.peak_start, bottle.peak_end)}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="bg-sand-50 border border-sand-100 rounded-2xl p-4 text-center text-sm text-ink-500 mb-4">
+                          Dati di maturazione non disponibili
+                        </div>
+                      )}
+
+                      {bottle.notes && (
+                        <div className="bg-sand-50 rounded-2xl p-4 mb-4 text-sm text-ink-700 italic border border-sand-100">
+                          "{bottle.notes}"
+                        </div>
+                      )}
+
+                      {typeof bottle.rating === "number" && (
+                        <div className="text-sm font-bold text-brand-500 mb-4 flex justify-center text-lg">
+                          {"★".repeat(bottle.rating)}
+                        </div>
+                      )}
+
+                      {/* Azione Rapida */}
+                      <div className="mt-4">
+                        <DrinkBottleModal bottle={bottle} wine={wine} />
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          )}
+
+          {activeTab === "storico" && (
+            <div className="space-y-4">
+              {!diaryEntries || diaryEntries.length === 0 ? (
+                <div className="bg-sand-50 border border-sand-200 rounded-2xl p-6 text-center text-ink-500 text-sm">
+                  Non hai ancora bevuto nessuna bottiglia di questo vino.
+                </div>
+              ) : (
+                diaryEntries.map((entry: any) => (
+                  <div key={entry.id} className="bg-white border border-sand-200 rounded-2xl p-4 shadow-sm">
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="font-bold text-ink-700 text-lg">Annata {entry.year}</div>
+                      <div className="text-right">
+                        <span className="text-[10px] font-bold bg-sand-100 text-ink-500 px-2 py-1 rounded-md uppercase tracking-wider">
+                          {new Date(entry.drunk_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+                    {entry.rating && (
+                      <div className="text-brand-500 text-lg mb-2">{"★".repeat(entry.rating)}</div>
+                    )}
+                    {entry.notes && (
+                      <p className="text-sm text-ink-700 bg-sand-50 p-3 rounded-xl italic border border-sand-100">
+                        "{entry.notes}"
+                      </p>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+
+          {activeTab === "info" && (
+            <div className="space-y-6">
+              {/* Dati Info Base */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-white border border-sand-200 rounded-2xl p-4 shadow-sm text-center">
+                  <div className="text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-1">Temperatura</div>
+                  <div className="text-lg font-bold text-ink-700">{wine.ideal_temp || "—"}</div>
+                </div>
+                <div className="bg-white border border-sand-200 rounded-2xl p-4 shadow-sm text-center">
+                  <div className="text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-1">Decantazione</div>
+                  <div className="text-lg font-bold text-ink-700">{wine.decanting_needed ? "Sì" : "No"}</div>
+                </div>
+              </div>
+
+              {wine.storage_notes && (
+                <div className="bg-sand-50 border border-sand-200 rounded-2xl p-5 shadow-sm">
+                  <div className="text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-2">Note di conservazione</div>
+                  <p className="text-sm text-ink-700">{wine.storage_notes}</p>
+                </div>
+              )}
+
+              {/* Dati AI */}
+              {(wine.grapes || wine.description || wine.origin_notes || wine.vintage_review || organoleptic || tasteProfile) && (
+                <div className="bg-white border border-sand-200 rounded-2xl p-6 shadow-sm">
+                  <h3 className="font-bold text-ink-700 mb-4 border-b border-sand-100 pb-2">Note del sommelier (AI)</h3>
+                  <div className="space-y-4 text-sm text-ink-700">
+                    {wine.grapes && <div><span className="font-semibold text-ink-500 mr-2 uppercase text-[10px] tracking-wider">Uvaggio</span><br/>{wine.grapes}</div>}
+                    {wine.description && <div><span className="font-semibold text-ink-500 mr-2 uppercase text-[10px] tracking-wider">Descrizione</span><br/>{wine.description}</div>}
+                    {wine.origin_notes && <div><span className="font-semibold text-ink-500 mr-2 uppercase text-[10px] tracking-wider">Terroir</span><br/>{wine.origin_notes}</div>}
+                    {wine.vintage_review && <div><span className="font-semibold text-ink-500 mr-2 uppercase text-[10px] tracking-wider">Annata</span><br/>{wine.vintage_review}</div>}
+                    
+                    {organoleptic && (
+                      <div>
+                        <span className="font-semibold text-ink-500 block mb-1 uppercase text-[10px] tracking-wider">Analisi organolettica</span>
+                        <ul className="list-disc pl-5 space-y-1 text-ink-700/90">
+                          {organoleptic.visual && <li>Vista: {organoleptic.visual}</li>}
+                          {organoleptic.olfactory && <li>Naso: {organoleptic.olfactory}</li>}
+                          {organoleptic.gustatory && <li>Gusto: {organoleptic.gustatory}</li>}
+                        </ul>
+                      </div>
+                    )}
+
+                    {tasteProfile && (
+                      <div>
+                        <span className="font-semibold text-ink-500 block mb-1 uppercase text-[10px] tracking-wider">Profilo gustativo</span>
+                        <ul className="list-disc pl-5 space-y-1 text-ink-700/90">
+                          {Object.entries(tasteProfile).map(([key, val]) => (
+                            <li key={key}>{TASTE_LABELS[key] || key}: {val}{key === "alcohol" ? "%" : "/5"}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Abbinamenti Statici */}
+              {wine.color && (
+                <div className="bg-sand-50 border border-sand-200 rounded-2xl p-5 shadow-sm text-center">
+                  <div className="text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-2">Abbinamenti Consigliati</div>
+                  <p className="text-sm font-medium text-ink-700">
+                    {wine.color === "Rosso" && "Carni rosse, brasati, formaggi stagionati"}
+                    {wine.color === "Bianco" && "Pesce, crostacei, formaggi freschi"}
+                    {wine.color === "Bollicine" && "Aperitivo, fritti, sushi"}
+                    {wine.color === "Rosato" && "Salumi, cucina estiva, pesce grigliato"}
+                    {wine.color === "Dolce" && "Dessert, formaggi erborinati"}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
+        </div>
+      </div>
+    </div>
+  );
+}
