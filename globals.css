@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* RESET MODERNO */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background: #F6F4EF; /* sfondo premium */
+  color: #1C1C1E; /* testo elegante */
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* CARD */
+.card {
+  background: #FFFFFF;
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+/* TITOLI */
+.h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.h2 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* TESTO SECONDARIO */
+.text-secondary {
+  color: #6E6E73;
+}
+
+/* BOTTONI */
+.btn-primary {
+  background: #C38C5C;
+  color: white;
+  padding: 14px 20px;
+  border-radius: 16px;
+  text-align: center;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.btn-secondary {
+  background: #FFFFFF;
+  border: 2px solid #C38C5C;
+  color: #C38C5C;
+  padding: 14px 20px;
+  border-radius: 16px;
+  text-align: center;
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* MINI BADGE */
+.badge {
+  background: #E6D5C3;
+  padding: 6px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* SPACING UTILI */
+.section {
+  margin-bottom: 26px;
+}
+.fade-slide-in {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInUp 0.35s ease forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
