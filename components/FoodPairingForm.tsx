@@ -40,10 +40,10 @@ export default function FoodPairingForm() {
             placeholder="es. Risotto ai funghi, Sushi..." 
             value={food} 
             onChange={(e) => setFood(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 flex-1 text-sm outline-none focus:border-black"
+            className="border border-sand-200 rounded-lg px-3 py-2 flex-1 text-sm outline-none focus:border-black"
             required
           />
-          <button type="submit" disabled={loading} className="bg-black text-white px-4 py-2 rounded-lg text-sm font-semibold disabled:opacity-50">
+          <button type="submit" disabled={loading} className="bg-brand-500 text-white px-4 py-2 rounded-lg text-sm font-semibold disabled:opacity-50">
             {loading ? "Cerco..." : "Abbina"}
           </button>
         </form>
@@ -52,18 +52,18 @@ export default function FoodPairingForm() {
 
         {result && (
           <div className="mt-4 space-y-4">
-            <div className="p-3 bg-gray-50 border border-gray-200 rounded-xl">
-              <div className="text-xs font-bold text-gray-500 uppercase mb-1">Abbinamento Classico</div>
+            <div className="p-3 bg-sand-50 border border-sand-200 rounded-xl">
+              <div className="text-xs font-bold text-ink-500 uppercase mb-1">Abbinamento Classico</div>
               {result.classic?.wineId ? (
                 <>
                   <Link href={`/cantina/${result.classic.wineId}`} className="font-semibold text-blue-600 hover:underline block">
                     {result.classic.wineName} ({result.classic.year})
                   </Link>
-                  <p className="text-xs text-gray-500 mb-2">{result.classic.producer}</p>
-                  <p className="text-sm italic text-gray-700">{result.classic.explanation}</p>
+                  <p className="text-xs text-ink-500 mb-2">{result.classic.producer}</p>
+                  <p className="text-sm italic text-ink-500">{result.classic.explanation}</p>
                 </>
               ) : (
-                <p className="text-sm text-gray-500">Nessun abbinamento classico trovato.</p>
+                <p className="text-sm text-ink-500">Nessun abbinamento classico trovato.</p>
               )}
             </div>
 
@@ -78,7 +78,7 @@ export default function FoodPairingForm() {
                   <p className="text-sm italic text-amber-900">{result.daring.explanation}</p>
                 </>
               ) : (
-                <p className="text-sm text-gray-500">Nessun abbinamento audace trovato.</p>
+                <p className="text-sm text-ink-500">Nessun abbinamento audace trovato.</p>
               )}
             </div>
           </div>

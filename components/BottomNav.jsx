@@ -4,12 +4,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { Home, Wine, BarChart3, BookOpen, Star } from "lucide-react";
+
 const items = [
-  { href: "/", label: "Oggi", icon: "🏠" },
-  { href: "/wines", label: "I miei vini", icon: "🍷" },
-  { href: "/stats", label: "Statistiche", icon: "📊" },
-  { href: "/diary", label: "Diario", icon: "📓" },
-  { href: "/wishlist", label: "Wishlist", icon: "⭐" },
+  { href: "/", label: "Oggi", icon: <Home size={22} strokeWidth={2} /> },
+  { href: "/wines", label: "I miei vini", icon: <Wine size={22} strokeWidth={2} /> },
+  { href: "/stats", label: "Statistiche", icon: <BarChart3 size={22} strokeWidth={2} /> },
+  { href: "/diary", label: "Diario", icon: <BookOpen size={22} strokeWidth={2} /> },
+  { href: "/wishlist", label: "Wishlist", icon: <Star size={22} strokeWidth={2} /> },
 ];
 
 export default function BottomNav() {
@@ -17,7 +19,7 @@ export default function BottomNav() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-10"> {/* Aggiunto z-10 per sicurezza */}
-      <div className="max-w-[500px] mx-auto bg-white/95 backdrop-blur border-t border-gray-200 px-3 py-2 flex justify-between">
+      <div className="max-w-[500px] mx-auto bg-white/95 backdrop-blur border-t border-sand-200 px-3 py-2 flex justify-between">
         {items.map((item) => {
           // Controlla se il pathname attuale inizia con l'href dell'elemento (gestisce le sottorotte come /wines/1)
           const active = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
@@ -28,7 +30,7 @@ export default function BottomNav() {
               href={item.href}
               className="flex-1 flex flex-col items-center gap-0.5 text-xs"
             >
-              <span className={`text-xl ${active ? "text-brand-600" : "opacity-50 text-gray-500"}`}>
+              <span className={`mb-1 ${active ? "text-brand-600" : "text-ink-500"}`}>
                 {item.icon}
               </span>
               <span

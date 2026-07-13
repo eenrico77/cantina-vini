@@ -26,7 +26,7 @@ export default function WineCard({ bottle }) {
 
   return (
     <Link href={`/cantina/${wine.id}`} className="block group">
-      <div className="flex items-center space-x-4 p-4 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:scale-[1.01] border border-gray-100/70">
+      <div className="flex items-center space-x-4 p-4 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:scale-[1.01] border border-sand-200/70">
 
         {/* Immagine */}
         <div className="relative w-16 h-24 flex-shrink-0">
@@ -41,13 +41,13 @@ export default function WineCard({ bottle }) {
 
         {/* Dettagli */}
         <div className="flex-1 min-w-0">
-          <h2 className="text-lg font-semibold text-gray-900 truncate group-hover:text-blue-500 transition-colors">
+          <h2 className="text-lg font-semibold text-ink-700 truncate group-hover:text-blue-500 transition-colors">
             {wine.name}
           </h2>
-          <p className="text-sm text-gray-500 truncate mt-0.5">
+          <p className="text-sm text-ink-500 truncate mt-0.5">
             {wine.producer} — {bottle.year}
           </p>
-          <p className="text-xs text-gray-400 mt-0.5">
+          <p className="text-xs text-ink-500/70 mt-0.5">
             {bottle.quantity} {bottle.quantity === 1 ? 'bottiglia' : 'bottiglie'}
           </p>
 
@@ -66,7 +66,7 @@ export default function WineCard({ bottle }) {
         </div>
 
         {/* Icona di accesso */}
-        <div className="flex items-center text-gray-400">
+        <div className="flex items-center text-ink-500/70">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
             <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
           </svg>

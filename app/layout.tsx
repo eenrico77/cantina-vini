@@ -26,7 +26,7 @@ export default function RootLayout({ children }: RootLayoutProps) { // <-- TIPO 
           <main> Centrata (max-w-[500px]) e con padding in basso (pb-24)
           per fare spazio alla BottomNav fissa.
         */}
-        <main className="min-h-screen bg-gray-50 max-w-[500px] mx-auto pb-24"> 
+        <main className="min-h-screen bg-sand-50 max-w-[500px] mx-auto pb-24"> 
           {children}
         </main>
         

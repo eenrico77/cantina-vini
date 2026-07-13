@@ -16,9 +16,9 @@ export default async function WishlistPage() {
 
   return (
     <div className="p-4 md:p-8 max-w-2xl mx-auto space-y-8 mb-20">
-      <h1 className="text-3xl font-extrabold text-gray-900">Wishlist</h1>
+      <h1 className="text-3xl font-extrabold text-ink-700">Wishlist</h1>
 
-      <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+      <div className="bg-white p-5 rounded-xl shadow-sm border border-sand-200">
         <h2 className="font-bold mb-4">Aggiungi vino desiderato</h2>
         <form action={addWishlistItem} className="space-y-3">
           <div className="grid grid-cols-2 gap-3">
@@ -31,7 +31,7 @@ export default async function WishlistPage() {
             <input name="region" placeholder="Regione/Paese" className="border p-2 rounded-lg text-sm outline-none focus:border-black" />
           </div>
           <textarea name="notes" placeholder="Note (chi me l'ha consigliato, prezzo indicativo...)" className="border p-2 rounded-lg text-sm outline-none focus:border-black w-full" />
-          <button type="submit" className="w-full bg-black text-white font-medium py-2 rounded-lg text-sm hover:bg-gray-800 transition-colors">
+          <button type="submit" className="w-full bg-brand-500 text-white font-medium py-2 rounded-lg text-sm hover:bg-brand-600 transition-colors">
             Aggiungi alla lista
           </button>
         </form>

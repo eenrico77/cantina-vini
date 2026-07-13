@@ -43,7 +43,7 @@ export default async function HomePage() {
     <div className="space-y-8 p-6">
       <header className="space-y-2">
         <h1 className="text-2xl font-bold">🍷 La tua cantina</h1>
-        <p className="text-sm text-gray-500">Stato attuale della tua cantina</p>
+        <p className="text-sm text-ink-500">Stato attuale della tua cantina</p>
       </header>
 
       <section className="grid grid-cols-2 gap-4">
@@ -80,8 +80,8 @@ export default async function HomePage() {
           {bottles.map((b) => (
             <article key={b.id} className="bg-white rounded-2xl shadow-md p-4">
               <h3 className="text-lg font-semibold">{b.wine?.name}</h3>
-              <p className="text-gray-500 text-sm">{b.wine?.producer} — {b.year}</p>
-              <div className="flex justify-between mt-3 text-gray-500 text-sm">
+              <p className="text-ink-500 text-sm">{b.wine?.producer} — {b.year}</p>
+              <div className="flex justify-between mt-3 text-ink-500 text-sm">
                 <span>{b.wine?.region}</span>
                 <span className="capitalize">{b.wine?.color}</span>
               </div>
@@ -90,7 +90,7 @@ export default async function HomePage() {
         </div>
 
         {bottles.length === 0 && (
-          <p className="text-gray-500 text-center mt-10">Nessun vino trovato 🍇</p>
+          <p className="text-ink-500 text-center mt-10">Nessun vino trovato 🍇</p>
         )}
       </section>
     </div>

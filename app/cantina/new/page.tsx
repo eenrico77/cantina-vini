@@ -57,10 +57,10 @@ export default function NewWinePage() {
 
   return (
     <div className="p-4 md:p-8 max-w-2xl mx-auto space-y-6">
-      <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Aggiungi Vino</h1>
+      <h1 className="text-3xl font-extrabold text-ink-700 tracking-tight">Aggiungi Vino</h1>
 
-      <div className="bg-gray-50 p-4 rounded-xl border border-dashed border-gray-300">
-        <label className="block text-sm font-medium text-gray-700 mb-2">📸 Scansiona etichetta con AI</label>
+      <div className="bg-sand-50 p-4 rounded-xl border border-dashed border-sand-200">
+        <label className="block text-sm font-medium text-ink-500 mb-2">📸 Scansiona etichetta con AI</label>
         <input 
           type="file" 
           accept="image/*" 
@@ -71,7 +71,7 @@ export default function NewWinePage() {
         {loadingAI && <p className="text-sm text-blue-600 mt-2">Analisi in corso, attendi qualche secondo...</p>}
       </div>
 
-      <form action={createWine} className="space-y-4 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+      <form action={createWine} className="space-y-4 bg-white p-6 rounded-xl shadow-sm border border-sand-200">
         
         {/* Campi nascosti per i dati JSON */}
         <input type="hidden" name="organoleptic" value={formData.organoleptic} />
@@ -79,54 +79,54 @@ export default function NewWinePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase">Nome Vino *</label>
-            <input name="name" value={formData.name} onChange={handleChange} required className="mt-1 w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-black outline-none" />
+            <label className="block text-xs font-semibold text-ink-500 uppercase">Nome Vino *</label>
+            <input name="name" value={formData.name} onChange={handleChange} required className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase">Produttore *</label>
-            <input name="producer" value={formData.producer} onChange={handleChange} required className="mt-1 w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-black outline-none" />
+            <label className="block text-xs font-semibold text-ink-500 uppercase">Produttore *</label>
+            <input name="producer" value={formData.producer} onChange={handleChange} required className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase">Tipologia *</label>
-            <select name="color" value={formData.color} onChange={handleChange} required className="mt-1 w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-black outline-none">
+            <label className="block text-xs font-semibold text-ink-500 uppercase">Tipologia *</label>
+            <select name="color" value={formData.color} onChange={handleChange} required className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none">
               <option value="" disabled>Seleziona tipologia</option>
               {COLORS.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="block text-xs font-semibold text-gray-500 uppercase">Annata *</label>
-              <input name="year" type="number" value={formData.year} onChange={handleChange} required className="mt-1 w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-black outline-none" />
+              <label className="block text-xs font-semibold text-ink-500 uppercase">Annata *</label>
+              <input name="year" type="number" value={formData.year} onChange={handleChange} required className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-500 uppercase">Quantità *</label>
-              <input name="quantity" type="number" min={1} value={formData.quantity} onChange={handleChange} required className="mt-1 w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-black outline-none" />
+              <label className="block text-xs font-semibold text-ink-500 uppercase">Quantità *</label>
+              <input name="quantity" type="number" min={1} value={formData.quantity} onChange={handleChange} required className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" />
             </div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase">Regione</label>
-            <input name="region" value={formData.region} onChange={handleChange} className="mt-1 w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-black outline-none" />
+            <label className="block text-xs font-semibold text-ink-500 uppercase">Regione</label>
+            <input name="region" value={formData.region} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase">Paese</label>
-            <input name="country" value={formData.country} onChange={handleChange} className="mt-1 w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-black outline-none" />
+            <label className="block text-xs font-semibold text-ink-500 uppercase">Paese</label>
+            <input name="country" value={formData.country} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" />
           </div>
         </div>
 
         <div className="grid grid-cols-1 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase">Uvaggio</label>
-            <input name="grapes" value={formData.grapes} onChange={handleChange} className="mt-1 w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-black outline-none" />
+            <label className="block text-xs font-semibold text-ink-500 uppercase">Uvaggio</label>
+            <input name="grapes" value={formData.grapes} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase">Descrizione AI</label>
-            <textarea name="description" value={formData.description} onChange={handleChange} className="mt-1 w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-black outline-none h-20" />
+            <label className="block text-xs font-semibold text-ink-500 uppercase">Descrizione AI</label>
+            <textarea name="description" value={formData.description} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none h-20" />
           </div>
         </div>
 
@@ -134,37 +134,37 @@ export default function NewWinePage() {
           <summary className="cursor-pointer font-medium text-blue-600">Mostra dettagli extra (AI)</summary>
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gray-500 uppercase">Note Terroir</label>
-              <textarea name="origin_notes" value={formData.origin_notes} onChange={handleChange} className="mt-1 w-full border border-gray-300 p-2.5 rounded-lg outline-none" />
+              <label className="block text-xs font-semibold text-ink-500 uppercase">Note Terroir</label>
+              <textarea name="origin_notes" value={formData.origin_notes} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none" />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-500 uppercase">Recensione Annata</label>
-              <textarea name="vintage_review" value={formData.vintage_review} onChange={handleChange} className="mt-1 w-full border border-gray-300 p-2.5 rounded-lg outline-none" />
+              <label className="block text-xs font-semibold text-ink-500 uppercase">Recensione Annata</label>
+              <textarea name="vintage_review" value={formData.vintage_review} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none" />
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="block text-xs font-semibold text-gray-500 uppercase">Temp. Ideale</label>
-                <input name="ideal_temp" value={formData.ideal_temp} onChange={handleChange} className="mt-1 w-full border border-gray-300 p-2.5 rounded-lg outline-none" />
+                <label className="block text-xs font-semibold text-ink-500 uppercase">Temp. Ideale</label>
+                <input name="ideal_temp" value={formData.ideal_temp} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none" />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-500 uppercase">Decanting</label>
-                <input name="decanting" value={formData.decanting} onChange={handleChange} className="mt-1 w-full border border-gray-300 p-2.5 rounded-lg outline-none" />
+                <label className="block text-xs font-semibold text-ink-500 uppercase">Decanting</label>
+                <input name="decanting" value={formData.decanting} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none" />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="block text-xs font-semibold text-gray-500 uppercase">Maturation Start (Offset)</label>
-                <input name="maturation_start" type="number" value={formData.maturation_start} onChange={handleChange} className="mt-1 w-full border border-gray-300 p-2.5 rounded-lg outline-none" />
+                <label className="block text-xs font-semibold text-ink-500 uppercase">Maturation Start (Offset)</label>
+                <input name="maturation_start" type="number" value={formData.maturation_start} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none" />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-500 uppercase">Maturation End (Offset)</label>
-                <input name="maturation_end" type="number" value={formData.maturation_end} onChange={handleChange} className="mt-1 w-full border border-gray-300 p-2.5 rounded-lg outline-none" />
+                <label className="block text-xs font-semibold text-ink-500 uppercase">Maturation End (Offset)</label>
+                <input name="maturation_end" type="number" value={formData.maturation_end} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none" />
               </div>
             </div>
           </div>
         </details>
 
-        <button type="submit" className="w-full bg-black text-white px-6 py-3 rounded-xl font-bold hover:bg-gray-900 transition-colors">
+        <button type="submit" className="w-full bg-brand-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-brand-600 transition-colors">
           Conferma e Salva Vino
         </button>
       </form>

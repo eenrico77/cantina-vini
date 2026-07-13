@@ -66,14 +66,14 @@ export default async function WinesPage() {
     <div className="p-4 md:p-8 max-w-4xl mx-auto space-y-6">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">La tua cantina</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-3xl font-extrabold text-ink-700 tracking-tight">La tua cantina</h1>
+          <p className="text-sm text-ink-500 mt-1">
             {bottles.length} {bottles.length === 1 ? "bottiglia" : "bottiglie"} totali
           </p>
         </div>
         <Link
           href="/cantina/new"
-          className="bg-black text-white text-sm px-5 py-2.5 rounded-full font-medium shadow-md hover:bg-gray-800 transition-colors"
+          className="bg-brand-500 text-white text-sm px-5 py-2.5 rounded-full font-medium shadow-md hover:bg-brand-600 transition-colors"
         >
           + Aggiungi Vino
         </Link>

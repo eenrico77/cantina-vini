@@ -23,7 +23,7 @@ export function WineTypeBadge({ type }) {
       colorClasses = 'bg-gray-800 text-white';
       break;
     default:
-      colorClasses = 'bg-gray-100 text-gray-600';
+      colorClasses = 'bg-sand-100 text-ink-500';
   }
 
   return (

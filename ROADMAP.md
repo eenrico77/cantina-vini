@@ -131,20 +131,17 @@ Ordine deciso: prima la curva di maturazione (priorità esplicita di Enrico), po
 
 ### Fase 5a — Curva di maturazione premium (PRIMO blocco, priorità di Enrico)
 
-### Fase 5a — Curva di maturazione premium (PRIMO blocco, priorità di Enrico)
-
-- [x] **Priorità alta esplicita di Enrico**: la curva/fase di maturazione è uno dei grandi
-      punti di forza del prodotto — non deve restare un riquadro grezzo con tre numeri.
-      Merita un trattamento grafico premium a parte (animazioni/gradiente/indicatore "oggi"
-      più curato), va trattata come componente di punta, non come dettaglio minore della
-      passata di design generale. Si rifà `components/MaturationCurve` da sola, isolata dal
-      resto, prima di toccare qualunque altra pagina.
+- [x] **Completato e verificato via codice il 13/07/2026**: `components/MaturationCurve.tsx`
+      riscritto — barra animata (espansione all'ingresso), gradiente con gli hex esatti di
+      status-young/almost/ready/decline da tailwind.config.js, marker "OGGI: [anno]" animato
+      che scivola in posizione, marker verticali per Giovane/Apice/Declino. Giudizio estetico
+      finale da dare a occhio da Enrico su `/cantina/[id]`.
 
 ### Fase 5b — Componenti base e design system
 
-- [ ] Applicare `DESIGN.md` a bottoni, badge, colori di base in tutto il progetto (vedi
+- [x] Applicare `DESIGN.md` a bottoni, badge, colori di base in tutto il progetto (vedi
       sezione "Cosa correggere" nel file)
-- [ ] Icone vere al posto delle emoji nel menu in basso
+- [x] Icone vere al posto delle emoji nel menu in basso
 
 ### Fase 5c — Pagine principali
 

@@ -16,25 +16,25 @@ export default async function DiaryPage() {
 
   return (
     <div className="p-4 md:p-8 max-w-2xl mx-auto space-y-6 mb-20">
-      <h1 className="text-3xl font-extrabold text-gray-900">Diario Bevute</h1>
+      <h1 className="text-3xl font-extrabold text-ink-700">Diario Bevute</h1>
       
       {!entries || entries.length === 0 ? (
-        <p className="text-gray-500 text-center py-10">Non hai ancora segnato nessuna bottiglia come bevuta. 🍷</p>
+        <p className="text-ink-500 text-center py-10">Non hai ancora segnato nessuna bottiglia come bevuta. 🍷</p>
       ) : (
         <div className="space-y-4">
           {entries.map(entry => (
-            <div key={entry.id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+            <div key={entry.id} className="bg-white p-4 rounded-xl shadow-sm border border-sand-200">
               <div className="flex justify-between items-start mb-2">
                 <div>
                   <h3 className="font-bold text-lg">{entry.wine_name}</h3>
-                  <p className="text-sm text-gray-500">{entry.producer} — {entry.year}</p>
+                  <p className="text-sm text-ink-500">{entry.producer} — {entry.year}</p>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-600">{new Date(entry.drunk_at).toLocaleDateString()}</span>
+                  <span className="text-xs bg-sand-100 px-2 py-1 rounded text-ink-500">{new Date(entry.drunk_at).toLocaleDateString()}</span>
                   {entry.rating ? <div className="mt-1 font-medium text-amber-500">{"★".repeat(entry.rating)}</div> : null}
                 </div>
               </div>
-              {entry.notes && <p className="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg italic mt-2">"{entry.notes}"</p>}
+              {entry.notes && <p className="text-sm text-ink-500 bg-sand-50 p-3 rounded-lg italic mt-2">"{entry.notes}"</p>}
             </div>
           ))}
         </div>

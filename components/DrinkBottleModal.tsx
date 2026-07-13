@@ -40,7 +40,7 @@ export default function DrinkBottleModal({ bottle, wine }: { bottle: any, wine: 
       </button>
 
       {open && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-brand-500/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl p-6 max-w-sm w-full">
             <h3 className="text-lg font-bold mb-2">Com'era {wine.name}?</h3>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -53,7 +53,7 @@ export default function DrinkBottleModal({ bottle, wine }: { bottle: any, wine: 
                 <textarea name="notes" className="border rounded-lg p-2 w-full outline-none focus:ring-2 focus:ring-red-500 h-24" placeholder="Profumi, con chi l'hai bevuto..." />
               </div>
               <div className="flex gap-2 justify-end mt-4">
-                <button type="button" onClick={() => setOpen(false)} className="px-4 py-2 text-gray-600 font-medium">Annulla</button>
+                <button type="button" onClick={() => setOpen(false)} className="px-4 py-2 text-ink-500 font-medium">Annulla</button>
                 <button type="submit" disabled={loading} className="px-4 py-2 bg-red-600 text-white rounded-lg font-medium disabled:opacity-50">
                   {loading ? "Salvo..." : "Conferma"}
                 </button>

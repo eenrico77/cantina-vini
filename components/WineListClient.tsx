@@ -4,6 +4,21 @@ import { useState, useMemo } from 'react';
 import WineCard from './Winecard';
 
 export default function WineListClient({ bottles }) {
+  const getAgingColor = (status) => {
+    switch (status) {
+      case "young":
+        return "bg-status-young/10 text-status-young";
+      case "almost":
+        return "bg-status-almost/10 text-status-almost";
+      case "ready":
+        return "bg-status-ready/10 text-status-ready";
+      case "decline":
+        return "bg-status-decline/10 text-status-decline";
+      default:
+        return "bg-sand-100 text-ink-500";
+    }
+  };
+
   const [filters, setFilters] = useState({
     type: '',
     aging: '',
@@ -43,11 +58,11 @@ export default function WineListClient({ bottles }) {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100/70 space-y-4">
-        <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider">Filtra Cantina</h3>
+      <div className="bg-white p-4 rounded-xl shadow-sm border border-sand-200/70 space-y-4">
+        <h3 className="text-sm font-semibold text-ink-500 uppercase tracking-wider">Filtra Cantina</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <select
-            className="p-2 text-sm border rounded-lg bg-gray-50 focus:ring-2 focus:ring-black outline-none"
+            className="p-2 text-sm border rounded-lg bg-sand-50 focus:ring-2 focus:ring-brand-500 outline-none"
             value={filters.type}
             onChange={(e) => setFilters({ ...filters, type: e.target.value })}
           >
@@ -56,7 +71,7 @@ export default function WineListClient({ bottles }) {
           </select>
 
           <select
-            className="p-2 text-sm border rounded-lg bg-gray-50 focus:ring-2 focus:ring-black outline-none"
+            className="p-2 text-sm border rounded-lg bg-sand-50 focus:ring-2 focus:ring-brand-500 outline-none"
             value={filters.aging}
             onChange={(e) => setFilters({ ...filters, aging: e.target.value })}
           >
@@ -68,7 +83,7 @@ export default function WineListClient({ bottles }) {
           </select>
 
           <select
-            className="p-2 text-sm border rounded-lg bg-gray-50 focus:ring-2 focus:ring-black outline-none"
+            className="p-2 text-sm border rounded-lg bg-sand-50 focus:ring-2 focus:ring-brand-500 outline-none"
             value={filters.year}
             onChange={(e) => setFilters({ ...filters, year: e.target.value })}
           >
@@ -77,7 +92,7 @@ export default function WineListClient({ bottles }) {
           </select>
 
           <select
-            className="p-2 text-sm border rounded-lg bg-gray-50 focus:ring-2 focus:ring-black outline-none"
+            className="p-2 text-sm border rounded-lg bg-sand-50 focus:ring-2 focus:ring-brand-500 outline-none"
             value={filters.region}
             onChange={(e) => setFilters({ ...filters, region: e.target.value })}
           >
@@ -91,18 +106,18 @@ export default function WineListClient({ bottles }) {
             id="inStock"
             checked={filters.inStockOnly}
             onChange={(e) => setFilters({ ...filters, inStockOnly: e.target.checked })}
-            className="rounded text-black focus:ring-black"
+            className="rounded text-black focus:ring-brand-500"
           />
-          <label htmlFor="inStock" className="text-sm text-gray-700">Solo disponibili in cantina (Q.tà &gt; 0)</label>
+          <label htmlFor="inStock" className="text-sm text-ink-500">Solo disponibili in cantina (Q.tà &gt; 0)</label>
         </div>
       </div>
 
-      <div className="flex justify-between items-center text-sm text-gray-500 px-1">
+      <div className="flex justify-between items-center text-sm text-ink-500 px-1">
         <span>Trovati {filteredBottles.length} risultati</span>
       </div>
 
       {filteredBottles.length === 0 ? (
-        <p className="text-center text-gray-500 mt-10">Nessun vino trovato con questi filtri 🍷</p>
+        <p className="text-center text-ink-500 mt-10">Nessun vino trovato con questi filtri 🍷</p>
       ) : (
         <div className="space-y-4">
           {filteredBottles.map((bottle) => (
