@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { mapBottleFromDB } from "@/lib/adapters/bottleAdapter";
 import WineCard from "@/components/Winecard";
+import WineListClient from "@/components/WineListClient";
 import Link from "next/link";
 
 export default async function WinesPage() {
@@ -62,31 +63,23 @@ export default async function WinesPage() {
   const bottles = (data ?? []).map(mapBottleFromDB);
 
   return (
-    <div style={{ padding: 24, maxWidth: 600 }} className="mx-auto space-y-4">
-      <div className="flex items-center justify-between">
+    <div className="p-4 md:p-8 max-w-4xl mx-auto space-y-6">
+      <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold">La tua cantina</h1>
-          <p className="text-sm text-gray-500">
-            {bottles.length} {bottles.length === 1 ? "bottiglia" : "bottiglie"}
+          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">La tua cantina</h1>
+          <p className="text-sm text-gray-500 mt-1">
+            {bottles.length} {bottles.length === 1 ? "bottiglia" : "bottiglie"} totali
           </p>
         </div>
         <Link
           href="/cantina/new"
-          className="bg-black text-white text-sm px-4 py-2 rounded-full"
+          className="bg-black text-white text-sm px-5 py-2.5 rounded-full font-medium shadow-md hover:bg-gray-800 transition-colors"
         >
-          + Aggiungi
+          + Aggiungi Vino
         </Link>
       </div>
 
-      {bottles.length === 0 ? (
-        <p className="text-center text-gray-500 mt-10">Cantina vuota 🍷</p>
-      ) : (
-        <div className="space-y-3">
-          {bottles.map((bottle) => (
-            <WineCard key={bottle.id} bottle={bottle} />
-          ))}
-        </div>
-      )}
+      <WineListClient bottles={bottles} />
     </div>
   );
 }

@@ -17,8 +17,8 @@ Questo file vive nel repo apposta: aprilo in Antigravity a inizio sessione così
 - [x] Form "nuovo vino" scrive su wines + bottles
 - [x] Cellar di default automatica
 - [x] Maturazione per annata (bottles.peak_start/peak_end/aging_status)
-- [ ] Verifica reale in locale (punto 4 sopra) — **da fare con Antigravity**
-- [ ] Primo commit git reale
+- [x] Verifica reale in locale (punto 4 sopra) — testato il 13/07/2026: aggiunta vino, lista, dettaglio con curva di maturazione tutto funzionante
+- [x] Primo commit git reale
 
 ## Fase 2 — Lista e scheda vino (rifinitura visiva)
 
