@@ -1,63 +1,77 @@
-export type BottleAgingStatus = "too_young" | "almost_ready" | "ready" | "past_peak";
+import { GoogleGenAI, Type, Schema } from "@google/genai";
 
-export type EnrichedWine = {
-  // Maturazione: PER ANNATA (una bottiglia/vintage specifica), non generica sul vino.
-  aging: {
-    peak_start: number;
-    peak_end: number;
-    status: BottleAgingStatus;
-    confidence: "low" | "medium" | "high";
-  };
-  // Info generali del vino (valgono per tutte le annate): servizio e conservazione.
-  wine: {
-    ideal_temp: string;
-    decanting_needed: boolean;
-    storage_position: string;
-    storage_temperature: string;
-    storage_humidity: string;
-    storage_notes: string;
-  };
+const WINE_SCHEMA_PROPERTIES: Record<string, Schema> = {
+  name: { type: Type.STRING },
+  producer: { type: Type.STRING },
+  color: { type: Type.STRING, description: "Uno tra: Rosso, Bianco, Bollicine, Rosato, Dolce" },
+  region: { type: Type.STRING },
+  country: { type: Type.STRING },
+  grapes: { type: Type.STRING },
+  maturation_start: { type: Type.INTEGER, description: "Quanti anni dopo la vendemmia inizia la beva ideale" },
+  maturation_peak: { type: Type.INTEGER, description: "Quanti anni dopo la vendemmia è il picco" },
+  maturation_end: { type: Type.INTEGER, description: "Quanti anni dopo la vendemmia inizia il declino" },
+  ideal_temp: { type: Type.STRING },
+  decanting: { type: Type.STRING },
+  glassware: { type: Type.STRING },
+  description: { type: Type.STRING },
+  origin_notes: { type: Type.STRING, description: "Informazioni approfondite sul terroir, la zona di produzione e la storia del vigneto." },
+  vintage_review: { type: Type.STRING, description: "Un breve riassunto critico sulla qualità dell'annata in generale per questo vino." },
+  organoleptic: {
+    type: Type.OBJECT,
+    properties: { visual: { type: Type.STRING }, olfactory: { type: Type.STRING }, gustatory: { type: Type.STRING } },
+    required: ["visual", "olfactory", "gustatory"]
+  },
+  taste_profile: {
+    type: Type.OBJECT,
+    properties: {
+      body: { type: Type.INTEGER }, intensity: { type: Type.INTEGER }, tannins: { type: Type.INTEGER },
+      acidity: { type: Type.INTEGER }, persistence: { type: Type.INTEGER }, alcohol: { type: Type.NUMBER }
+    },
+    required: ["body", "intensity", "tannins", "acidity", "persistence", "alcohol"]
+  }
 };
 
-function computeStatus(year: number, peakStart: number, peakEnd: number): BottleAgingStatus {
-  const currentYear = new Date().getFullYear();
-  if (currentYear < peakStart - 1) return "too_young";
-  if (currentYear === peakStart - 1) return "almost_ready";
-  if (currentYear >= peakStart && currentYear <= peakEnd) return "ready";
-  return "past_peak";
+export async function analyzeWineLabel(base64Image: string) {
+  if (!process.env.GEMINI_API_KEY) throw new Error("API Key missing");
+  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+  const response = await ai.models.generateContent({
+    model: "gemini-3-flash-preview",
+    contents: { parts: [
+      { inlineData: { mimeType: "image/jpeg", data: base64Image.split(",")[1] } },
+      { text: "Identifica questo vino dall'etichetta. Estrai i dati per creare una scheda tecnica professionale completa, includendo recensione dell'annata e dettagli sul terroir. Ignora l'annata specifica della foto se non è chiara, concentrati sul vino." }
+    ]},
+    config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: WINE_SCHEMA_PROPERTIES, required: ["name", "producer", "color"] } }
+  });
+  return response.text ? JSON.parse(response.text) : null;
 }
 
-/**
- * MOCK temporaneo, finché non colleghiamo un vero motore AI.
- * Riceve l'annata specifica (year) della bottiglia, non solo il vino,
- * perché la finestra di maturazione dipende dal millesimo.
- */
-export async function enrichWineWithAI(
-  name: string,
-  producer: string,
-  year: number
-): Promise<EnrichedWine | null> {
-  try {
-    const peak_start = year + 2;
-    const peak_end = year + 8;
+export async function generateProfessionalWineImage(name: string, producer: string, color: string) {
+  if (!process.env.GEMINI_API_KEY) return null;
+  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+  const prompt = `A single, clean, professional catalog-style studio photograph of a bottle of ${color} wine. The bottle is "${name}" by "${producer}". Centered, neutral soft gray background, elegant lighting, no people, no hands, high-end product photography.`;
+  const response = await ai.models.generateContent({
+    model: 'gemini-2.5-flash-image',
+    contents: { parts: [{ text: prompt }] },
+    config: { imageConfig: { aspectRatio: "3:4" } }
+  });
+  const parts = response.candidates?.[0]?.content?.parts;
+  if (parts) for (const part of parts) if (part.inlineData) return `data:image/png;base64,${part.inlineData.data}`;
+  return null;
+}
 
-    return {
-      aging: {
-        peak_start,
-        peak_end,
-        status: computeStatus(year, peak_start, peak_end),
-        confidence: "medium",
-      },
-      wine: {
-        ideal_temp: "12–14°C",
-        decanting_needed: false,
-        storage_position: "orizzontale",
-        storage_temperature: "12–14°C",
-        storage_humidity: "65–75%",
-        storage_notes: "Conservare al buio, lontano da vibrazioni",
-      },
-    };
-  } catch {
-    return null;
-  }
+export async function getFoodPairingRecommendation(food: string, inventory: any[]) {
+  if (!process.env.GEMINI_API_KEY) return null;
+  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+  const wineList = inventory.map(b => ({ id: b.id, wineName: b.wine?.name, producer: b.wine?.producer, year: b.year, color: b.wine?.color }));
+  const response = await ai.models.generateContent({
+    model: "gemini-3-flash-preview",
+    contents: `Agisci come un sommelier personale. L'utente vuole mangiare: "${food}".
+    In cantina ha SOLO questi vini: ${JSON.stringify(wineList)}.
+    Scegli le 2 migliori opzioni dalla lista fornita (non suggerire vini esterni). Spiega perché.`,
+    config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: {
+      classic: { type: Type.OBJECT, properties: { bottleId: { type: Type.STRING }, explanation: { type: Type.STRING } }, required: ["bottleId", "explanation"] },
+      daring: { type: Type.OBJECT, properties: { bottleId: { type: Type.STRING }, explanation: { type: Type.STRING } }, required: ["bottleId", "explanation"] }
+    }, required: ["classic", "daring"] } }
+  });
+  return response.text ? JSON.parse(response.text) : null;
 }

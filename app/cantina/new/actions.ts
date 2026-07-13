@@ -1,14 +1,26 @@
 "use server";
 
-import { enrichWineWithAI } from "@/lib/ai/enrichWine";
+import { analyzeWineLabel, generateProfessionalWineImage } from "@/lib/ai/enrichWine";
 import { createClient } from "@/lib/supabase/server";
 import { getOrCreateDefaultCellar } from "@/lib/supabase/getOrCreateDefaultCellar";
 import { redirect } from "next/navigation";
+import { getAgingStatus } from "@/lib/domain/maturation";
+
+export async function analyzeLabelAction(formData: FormData) {
+  const file = formData.get("image") as File;
+  if (!file) throw new Error("Nessuna immagine fornita");
+  
+  const buffer = await file.arrayBuffer();
+  const base64 = Buffer.from(buffer).toString("base64");
+  const dataUri = `data:${file.type};base64,${base64}`;
+  
+  const result = await analyzeWineLabel(dataUri);
+  return result;
+}
 
 export async function createWine(formData: FormData): Promise<void> {
   const supabase = createClient();
 
-  // 1. LEGGIAMO I DATI DAL FORM
   const name = formData.get("name") as string;
   const producer = formData.get("producer") as string;
   const color = formData.get("color") as string;
@@ -16,34 +28,44 @@ export async function createWine(formData: FormData): Promise<void> {
   const country = (formData.get("country") as string) || null;
   const year = Number(formData.get("year"));
   const quantity = Number(formData.get("quantity") || 1);
+  
+  // AI fields
+  const grapes = (formData.get("grapes") as string) || null;
+  const description = (formData.get("description") as string) || null;
+  const origin_notes = (formData.get("origin_notes") as string) || null;
+  const vintage_review = (formData.get("vintage_review") as string) || null;
+  const ideal_temp = (formData.get("ideal_temp") as string) || null;
+  const decanting = (formData.get("decanting") as string) || null;
+  const maturation_start = Number(formData.get("maturation_start"));
+  const maturation_end = Number(formData.get("maturation_end"));
+  
+  const organolepticRaw = formData.get("organoleptic") as string;
+  const tasteProfileRaw = formData.get("taste_profile") as string;
+  const organoleptic = organolepticRaw ? JSON.parse(organolepticRaw) : null;
+  const taste_profile = tasteProfileRaw ? JSON.parse(tasteProfileRaw) : null;
 
   if (!name || !producer || !color || !Number.isFinite(year)) {
-    throw new Error("Dati mancanti: assicurati che Nome, Produttore, Tipologia e Anno siano inseriti.");
+    throw new Error("Dati mancanti: Nome, Produttore, Tipologia e Anno sono obbligatori.");
   }
 
   const { data: auth } = await supabase.auth.getUser();
   if (!auth?.user) throw new Error("Not authenticated");
   const userId = auth.user.id;
 
-  // 2. TROVA (O CREA) IL VINO CONCETTUALE
-  //    Un vino può avere più annate/bottiglie: se esiste già per questo utente
-  //    (stesso nome+produttore), riusiamo quello invece di duplicarlo.
-  const { data: existingWine, error: findWineError } = await supabase
+  const { data: existingWine } = await supabase
     .from("wines")
-    .select("id")
+    .select("id, image_url")
     .eq("user_id", userId)
     .eq("name", name)
     .eq("producer", producer)
     .maybeSingle();
 
-  if (findWineError) {
-    console.error("SUPABASE FIND WINE ERROR:", findWineError);
-    throw new Error(findWineError.message);
-  }
+  let wineId: number;
+  let imageUrl: string | null = existingWine?.image_url || null;
 
-  let wineId: number = existingWine?.id;
-
-  if (!wineId) {
+  if (existingWine?.id) {
+    wineId = existingWine.id;
+  } else {
     const { data: wine, error: insertWineError } = await supabase
       .from("wines")
       .insert({
@@ -53,21 +75,38 @@ export async function createWine(formData: FormData): Promise<void> {
         color,
         region,
         country,
-        ai_generated: false,
+        grapes,
+        description,
+        origin_notes,
+        vintage_review,
+        ideal_temp,
+        decanting_needed: decanting === "Sì" || decanting === "true" || decanting === "Yes",
+        organoleptic,
+        taste_profile,
+        ai_generated: true,
       })
-      .select("id")
+      .select("id, image_url")
       .single();
 
     if (insertWineError || !wine) {
-      console.error("SUPABASE INSERT WINE ERROR:", insertWineError);
       throw new Error(insertWineError?.message ?? "Creazione vino fallita");
     }
 
     wineId = wine.id;
+    imageUrl = wine.image_url;
   }
 
-  // 3. LA BOTTIGLIA POSSEDUTA VA SEMPRE IN "bottles", MAI SOLO SU "wines"
   const cellarId = await getOrCreateDefaultCellar(supabase, userId);
+
+  let peakStart = null;
+  let peakEnd = null;
+  let agingStatus = null;
+
+  if (Number.isFinite(maturation_start) && Number.isFinite(maturation_end)) {
+    peakStart = year + maturation_start;
+    peakEnd = year + maturation_end;
+    agingStatus = getAgingStatus(new Date().getFullYear(), peakStart, peakEnd);
+  }
 
   const { data: bottle, error: insertBottleError } = await supabase
     .from("bottles")
@@ -77,48 +116,27 @@ export async function createWine(formData: FormData): Promise<void> {
       cellar_id: cellarId,
       year,
       quantity,
+      peak_start: peakStart,
+      peak_end: peakEnd,
+      aging_status: agingStatus
     })
     .select("id")
     .single();
 
   if (insertBottleError || !bottle) {
-    console.error("SUPABASE INSERT BOTTLE ERROR:", insertBottleError);
     throw new Error(insertBottleError?.message ?? "Creazione bottiglia fallita");
   }
 
-  // 4. ARRICCHIMENTO AI (ASYNC) — la maturazione è per annata, va sulla bottiglia;
-  //    le info di servizio/conservazione valgono per il vino in generale.
-  try {
-    const enriched = await enrichWineWithAI(name, producer, year);
-
-    if (enriched) {
-      await supabase
-        .from("bottles")
-        .update({
-          peak_start: enriched.aging.peak_start,
-          peak_end: enriched.aging.peak_end,
-          aging_status: enriched.aging.status,
-        })
-        .eq("id", bottle.id);
-
-      await supabase
-        .from("wines")
-        .update({
-          ideal_temp: enriched.wine.ideal_temp,
-          decanting_needed: enriched.wine.decanting_needed,
-          storage_position: enriched.wine.storage_position,
-          storage_temperature: enriched.wine.storage_temperature,
-          storage_humidity: enriched.wine.storage_humidity,
-          storage_notes: enriched.wine.storage_notes,
-          maturation_confidence: enriched.aging.confidence,
-          ai_generated: true,
-        })
-        .eq("id", wineId);
+  if (!imageUrl) {
+    try {
+      const newImage = await generateProfessionalWineImage(name, producer, color);
+      if (newImage) {
+        await supabase.from("wines").update({ image_url: newImage }).eq("id", wineId);
+      }
+    } catch (e) {
+      console.warn("Immagine non generata", e);
     }
-  } catch (aiError) {
-    console.warn("AI Enrichment failed, but wine/bottle were saved:", aiError);
   }
 
-  // 5. REDIRECT ALLA SCHEDA DEL VINO APPENA CREATO/AGGIORNATO
   redirect(`/cantina/${wineId}`);
 }

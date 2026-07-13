@@ -35,7 +35,13 @@ export default async function WineDetailPage({
       storage_position,
       storage_temperature,
       storage_humidity,
-      storage_notes
+      storage_notes,
+      grapes,
+      description,
+      origin_notes,
+      vintage_review,
+      organoleptic,
+      taste_profile
     `
     )
     .eq("user_id", user.id)
@@ -107,6 +113,17 @@ export default async function WineDetailPage({
             <div>{wine.storage_notes}</div>
           </div>
         ) : null}
+
+        {/* EXTRA AI DATA (Testo Grezzo) */}
+        <div style={{ marginTop: 16, padding: 14, border: "1px solid #eee", borderRadius: 14, fontSize: 13, background: "#f9fafb" }}>
+          <div style={{ fontWeight: 600, marginBottom: 8 }}>Dati AI Aggiuntivi:</div>
+          {wine.grapes && <div><strong>Uvaggio:</strong> {wine.grapes}</div>}
+          {wine.description && <div><strong>Descrizione:</strong> {wine.description}</div>}
+          {wine.origin_notes && <div><strong>Terroir:</strong> {wine.origin_notes}</div>}
+          {wine.vintage_review && <div><strong>Recensione Annata:</strong> {wine.vintage_review}</div>}
+          {wine.organoleptic && <div><strong>Organolettico:</strong> {JSON.stringify(wine.organoleptic)}</div>}
+          {wine.taste_profile && <div><strong>Profilo Gustativo:</strong> {JSON.stringify(wine.taste_profile)}</div>}
+        </div>
       </div>
 
       <div style={{ marginTop: 26 }}>
