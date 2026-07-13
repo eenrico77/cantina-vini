@@ -27,6 +27,13 @@ export async function addWishlistItem(formData: FormData) {
 
 export async function deleteWishlistItem(id: string) {
   const supabase = createClient();
-  await supabase.from("wishlist_items").delete().eq("id", id);
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth?.user) throw new Error("Non autenticato");
+
+  await supabase
+    .from("wishlist_items")
+    .delete()
+    .eq("id", id)
+    .eq("user_id", auth.user.id);
   revalidatePath('/wishlist');
 }

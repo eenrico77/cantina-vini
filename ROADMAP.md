@@ -114,29 +114,50 @@ Oggi sono solo placeholder: qui si rendono realmente funzionanti, anche senza gr
 - [x] `/diary`: segna una bottiglia come bevuta con data, occasione, note, valutazione; storico elencato
 - [x] `/stats`: conteggi reali (bottiglie totali, per tipologia, per stato maturazione, valore stimato, bevute)
 - [x] Wishlist: aggiungi vino desiderato, collegato a produttore/annata
+- [x] **Corretto il 13/07/2026 (bug di sicurezza, non estetico, trovato rileggendo il codice)**:
+      `drinkBottleAction` (in `app/cantina/[id]/actions.ts`) e `deleteWishlistItem` (in
+      `app/wishlist/actions.ts`) non filtravano per `user_id` — un utente autenticato poteva in
+      teoria modificare/cancellare bottiglie o voci wishlist di un altro utente, perché la
+      tabella `bottles` non ha RLS. Aggiunto `.eq("user_id", auth.user.id)` su entrambe.
+      **Da tenere presente in Fase 6**: valutare se attivare RLS anche su `wines`/`bottles`/`cellars`
+      come seconda barriera, oltre al filtro manuale già presente ovunque nell'app.
 
-## Fase 5 — Design & Usabilità (passata unica su tutto)
+## Fase 5 — Design & Usabilità (spezzata in sotto-blocchi, deciso il 13/07/2026)
 
 Solo ora si applica `DESIGN.md` (palette ambra/terracotta, tipografia, componenti) a
-TUTTO il progetto in una volta, non pezzo per pezzo come pensato inizialmente.
+TUTTO il progetto — ma non in un'unica istruzione enorme: si procede a blocchi, con verifica
+di Enrico tra un blocco e l'altro, per non far perdere/bloccare l'agente su un progetto ampio.
+Ordine deciso: prima la curva di maturazione (priorità esplicita di Enrico), poi il resto.
 
-- [ ] Applicare `DESIGN.md` a ogni file (bottoni, badge, card, colori — vedi sezione
-      "Cosa correggere" nel file, incluso riscrivere `/cantina/[id]` che oggi usa ancora
-      stili inline invece di Tailwind)
-- [ ] Immagini vere/rappresentative al posto dei segnaposto, ora che la Fase 2 ha deciso la fonte
-      (mostrarle finalmente in `/cantina/[id]`, vedi gap segnalato in Fase 2)
-- [ ] `/wines`: rifinitura filtri e card
-- [ ] `/cantina/[id]`: hero con immagine grande, tab "Annate / Storico", azioni rapide
-      (segna come bevuta, rimuovi, modifica quantità/posizione)
-- [ ] Icone vere al posto delle emoji nel menu in basso
-- [ ] **Tradurre tutte le etichette rimaste in inglese** trovate testando il 13/07/2026:
-      "Storage & Service", "TEMP.", "DECANTING", "Maturation Start/End (offset)" nel form
-      dettagli extra, e qualunque altra label AI mostrata in inglese
-- [ ] **Priorità alta esplicita di Enrico**: la curva/fase di maturazione è uno dei grandi
+### Fase 5a — Curva di maturazione premium (PRIMO blocco, priorità di Enrico)
+
+### Fase 5a — Curva di maturazione premium (PRIMO blocco, priorità di Enrico)
+
+- [x] **Priorità alta esplicita di Enrico**: la curva/fase di maturazione è uno dei grandi
       punti di forza del prodotto — non deve restare un riquadro grezzo con tre numeri.
       Merita un trattamento grafico premium a parte (animazioni/gradiente/indicatore "oggi"
       più curato), va trattata come componente di punta, non come dettaglio minore della
-      passata di design generale
+      passata di design generale. Si rifà `components/MaturationCurve` da sola, isolata dal
+      resto, prima di toccare qualunque altra pagina.
+
+### Fase 5b — Componenti base e design system
+
+- [ ] Applicare `DESIGN.md` a bottoni, badge, colori di base in tutto il progetto (vedi
+      sezione "Cosa correggere" nel file)
+- [ ] Icone vere al posto delle emoji nel menu in basso
+
+### Fase 5c — Pagine principali
+
+- [ ] Riscrivere `/cantina/[id]` in Tailwind (oggi usa ancora stili inline) con hero immagine
+      grande, tab "Annate / Storico", azioni rapide ben integrate visivamente
+- [ ] `/wines`: rifinitura filtri e card
+- [ ] Immagini vere/rappresentative al posto dei segnaposto, ora che la Fase 2 ha deciso la fonte
+
+### Fase 5d — Rifiniture testuali
+
+- [ ] **Tradurre tutte le etichette rimaste in inglese** trovate testando il 13/07/2026:
+      "Storage & Service", "TEMP.", "DECANTING", "Maturation Start/End (offset)" nel form
+      dettagli extra, e qualunque altra label AI mostrata in inglese
 
 ## Fase 6 — Pre-release
 

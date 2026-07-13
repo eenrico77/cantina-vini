@@ -18,11 +18,12 @@ export async function drinkBottleAction(formData: FormData) {
   const { data: auth } = await supabase.auth.getUser();
   if (!auth?.user) throw new Error("Non autenticato");
 
-  // Decrement quantity
+  // Decrement quantity (sempre filtrato per user_id: bottles non ha RLS)
   const { data: currentBottle, error: fetchErr } = await supabase
     .from("bottles")
     .select("quantity")
     .eq("id", bottleId)
+    .eq("user_id", auth.user.id)
     .single();
 
   if (fetchErr || !currentBottle) throw new Error("Bottiglia non trovata");
@@ -32,7 +33,8 @@ export async function drinkBottleAction(formData: FormData) {
   await supabase
     .from("bottles")
     .update({ quantity: newQuantity })
-    .eq("id", bottleId);
+    .eq("id", bottleId)
+    .eq("user_id", auth.user.id);
 
   // Insert into diary
   await supabase
