@@ -99,13 +99,21 @@ niente Supabase) — si adatta la LOGICA delle tre funzioni al progetto Next.js 
       pronta ma non ancora richiamata
 - [x] Vino → cibo: sezione abbinamenti nella scheda dettaglio (può partire da regole semplici tipo/colore, poi evolvere con AI)
 - [x] Cibo → vino: input libero ("stasera mangio risotto ai funghi") che filtra e ordina solo le bottiglie realmente in cantina, con motivazione breve
+- [x] **Completata e verificata via codice il 13/07/2026**: box "Abbinamenti Consigliati" statico per
+      colore in `/cantina/[id]`; modulo "Cosa mangi stasera?" in home (`components/FoodPairingForm.tsx`)
+      che chiama `app/actions.ts` → `getPairingAction` (server-only, filtra bottiglie con quantity>0,
+      gestisce cantina vuota e errori/quota AI esaurita senza crashare)
 
 ## Fase 4 — Diario, statistiche, wishlist (funzionalità di base)
 
 Oggi sono solo placeholder: qui si rendono realmente funzionanti, anche senza grafica rifinita.
-
-- [ ] `/stats`: conteggi reali (bottiglie totali, per tipologia, per stato maturazione, valore stimato)
-- [ ] Wishlist: aggiungi vino desiderato, collegato a produttore/annata
+- [x] **Nuova migrazione** `supabase/migrations/0003_diary_wishlist.sql`: tabelle `diary_entries`
+      (bevute, con wine_id/bottle_id opzionali per sopravvivere a cancellazioni, rating, notes)
+      e `wishlist_items` (vini desiderati, non posseduti), entrambe con RLS per user_id —
+      da eseguire su Supabase prima di questa fase
+- [x] `/diary`: segna una bottiglia come bevuta con data, occasione, note, valutazione; storico elencato
+- [x] `/stats`: conteggi reali (bottiglie totali, per tipologia, per stato maturazione, valore stimato, bevute)
+- [x] Wishlist: aggiungi vino desiderato, collegato a produttore/annata
 
 ## Fase 5 — Design & Usabilità (passata unica su tutto)
 

@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import MaturationCurve from "@/components/MaturationCurve";
 import { getAgingLabel } from "@/lib/domain/maturation";
 import type { AgingStatus } from "@/types";
+import DrinkBottleModal from "@/components/DrinkBottleModal";
 
 export default async function WineDetailPage({
   params,
@@ -293,6 +294,8 @@ export default async function WineDetailPage({
                   {typeof bottle.rating === "number" ? (
                     <div style={{ marginTop: 8, fontSize: 13 }}>Valutazione: {bottle.rating}/5</div>
                   ) : null}
+
+                  <DrinkBottleModal bottle={bottle} wine={wine} />
                 </div>
               );
             })}

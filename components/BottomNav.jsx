@@ -9,6 +9,7 @@ const items = [
   { href: "/wines", label: "I miei vini", icon: "🍷" },
   { href: "/stats", label: "Statistiche", icon: "📊" },
   { href: "/diary", label: "Diario", icon: "📓" },
+  { href: "/wishlist", label: "Wishlist", icon: "⭐" },
 ];
 
 export default function BottomNav() {
