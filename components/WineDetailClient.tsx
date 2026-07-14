@@ -285,6 +285,7 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
                 <div className="bg-white border border-sand-200 rounded-2xl p-4 shadow-sm text-center">
                   <div className="text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-1">Decantazione</div>
                   <div className="text-lg font-bold text-ink-700">{wine.decanting_needed ? "Sì" : "No"}</div>
+                  {wine.decanting_notes && <div className="text-xs text-ink-500 mt-1">{wine.decanting_notes}</div>}
                 </div>
               </div>
 

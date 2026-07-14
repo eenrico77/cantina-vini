@@ -43,7 +43,8 @@ export async function createWine(formData: FormData): Promise<void> {
   const origin_notes = (formData.get("origin_notes") as string) || null;
   const vintage_review = (formData.get("vintage_review") as string) || null;
   const ideal_temp = (formData.get("ideal_temp") as string) || null;
-  const decanting = (formData.get("decanting") as string) || null;
+  const decanting_needed = formData.get("decanting_needed") === "true";
+  const decanting_notes = (formData.get("decanting_notes") as string) || null;
   const maturation_start = Number(formData.get("maturation_start"));
   const maturation_end = Number(formData.get("maturation_end"));
   const glassware = (formData.get("glassware") as string) || null;
@@ -94,7 +95,8 @@ export async function createWine(formData: FormData): Promise<void> {
         origin_notes,
         vintage_review,
         ideal_temp,
-        decanting_needed: Boolean(decanting && decanting.trim().length > 0),
+        decanting_needed,
+        decanting_notes,
         glassware,
         organoleptic,
         taste_profile,
