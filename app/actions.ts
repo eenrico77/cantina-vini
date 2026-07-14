@@ -59,3 +59,26 @@ export async function getPairingAction(food: string) {
     daring: enrichOption(recommendation.daring)
   };
 }
+
+export async function changePasswordAction(formData: FormData) {
+  const password = formData.get("password") as string;
+  const confirmPassword = formData.get("confirmPassword") as string;
+
+  if (!password || password.length < 6) {
+    return { error: "La password deve essere di almeno 6 caratteri." };
+  }
+  if (password !== confirmPassword) {
+    return { error: "Le password non coincidono." };
+  }
+
+  const supabase = createClient();
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth?.user) return { error: "Non autenticato" };
+
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) {
+    return { error: error.message };
+  }
+
+  return { success: true };
+}

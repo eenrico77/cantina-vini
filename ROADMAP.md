@@ -82,11 +82,8 @@ niente Supabase) — si adatta la LOGICA delle tre funzioni al progetto Next.js 
 - [x] **Corretto il 13/07/2026**: intestazione "I tuoi millesimi" (gergo poco chiaro) rinominata
       in "Le tue annate"; anche "Storage & Service" → "Conservazione e servizio", "TEMP." →
       "TEMPERATURA", "DECANTING" → "DECANTAZIONE" tradotte nella stessa passata
-- [ ] **Nuovo requisito UX**: se l'utente non compila l'Annata, invece del solo messaggio
-      di validazione del browser ("Compila questo campo"), mostrare un popup che spiega che
-      l'anno serve a calcolare la maturazione e sapere quando aprire la bottiglia. Se l'utente
-      conferma di voler procedere comunque senza, salvare lo stesso (senza peak_start/peak_end,
-      come già gestito oggi quando mancano i dati)
+- [x] **Nuovo requisito UX — completato in Fase 6**: popup se manca l'Annata, vedi sezione
+      Fase 6 più sotto per i dettagli (già implementato e verificato).
 
 ## Note tecniche / performance (segnalate da Enrico il 13/07/2026)
 
@@ -213,11 +210,14 @@ Ordine deciso: prima la curva di maturazione (priorità esplicita di Enrico), po
       dettagli extra, e qualunque altra label AI mostrata in inglese.
       *(Nota: se Gemini restituisce i dati descrittivi in inglese nel DB, non è stato forzato qui per non toccare le Server Actions. Sarà necessario in futuro rafforzare il prompt di Gemini per pretendere l'output in italiano sempre).*
 
-## Fase 6 — Pre-release
+## Fase 6 — Pre-release (In Corso)
 
-**Decisioni prese il 13/07/2026**: deploy su Vercel; nessuna gestione multi-cantina per il
-primo rilascio (resta solo la "Cantina predefinita" automatica, si valuta in futuro se serve
-davvero); gli item residui di fasi precedenti si chiudono dentro questa fase, non a parte.
+- [x] Rimuovere alert JavaScript grezzi e sostituirli con toast o messaggi in pagina integrati,
+      specialmente per gli errori non bloccanti — verificato via QA 14/07/2026.
+- [x] Aggiungere pagina Account (/account) per impostare la password dopo login via magic link.
+- [ ] Configurazione progetto Vercel (env vars)
+- [ ] Push DB di produzione (eseguire tutte le migrazioni)
+- [ ] Verificare che non ci siano "console.log" dimenticati o warning di Next.js in build.
 
 **Nota del 14/07/2026**: Enrico conferma che dopo il deploy resta ancora molto da rivedere
 lato grafica/interfaccia (nonostante la passata di Fase 5) — il deploy su Vercel NON è un
@@ -240,11 +240,16 @@ automatico. Non rimandare il deploy in attesa di una grafica perfetta.
       `@vercel/functions` installato, `generateAndSave()` ora passato a `waitUntil()` in
       `app/cantina/new/actions.ts` invece di essere lanciato senza await — la Serverless
       Function su Vercel non verrà terminata prima che l'immagine AI sia salvata.
-- [ ] RLS su `wines`, `bottles`, `cellars` (migrazione `0004_rls_core_tables.sql` pronta —
-      verificata via codice il 13/07/2026, corretta — da eseguire e testare in locale con
-      Enrico prima di lanciarla su Supabase in produzione). **Secondo step di oggi.**
-- [ ] Deploy su Vercel, variabili d'ambiente Supabase e `GEMINI_API_KEY` configurate lato hosting
-- [ ] Controllo dei vincoli DB usati davvero dall'app contro tutti i form
+- [ ] **ANCORA DA FARE — priorità**: RLS su `wines`, `bottles`, `cellars` (migrazione
+      `0004_rls_core_tables.sql` pronta e verificata via codice il 13/07/2026, corretta, ma
+      MAI ESEGUITA su Supabase — persa di vista durante il deploy). L'app funziona comunque
+      perché ogni query filtra già manualmente per `user_id`, ma questa è la seconda barriera
+      di sicurezza a livello di database che avevamo pianificato. Da fare a breve.
+- [x] **Deploy su Vercel completato il 14/07/2026**: app online su
+      `https://cantina-vini-five.vercel.app`, variabili d'ambiente configurate, Supabase
+      Site URL/Redirect URLs aggiornati con l'indirizzo di produzione.
+- [ ] Controllo dei vincoli DB usati davvero dall'app contro tutti i form (non ancora fatto
+      sistematicamente — da fare)
 - [x] Passata di QA manuale su tutti i flussi: login, aggiungi vino (con e senza foto AI, con
       e senza annata), segna come bevuta, abbinamento cibo-vino, wishlist, statistiche
 
@@ -305,18 +310,9 @@ riorganizzate in un task concreto in una fase.
       Maturazione", mostrava i valori grezzi del DB (`too_young`, `ready`, `almost_ready`)
       invece delle etichette italiane già usate altrove (`Giovane`, `Pronto ora`, ecc.).
       Aggiunta mappa `AGING_LABELS` in `app/stats/page.tsx`.
-- [ ] **"Valore Stimato" sempre a 0€**: non è un bug di calcolo — il form "Aggiungi Vino"
-      non ha mai avuto un campo per il prezzo, quindi `purchase_price`/`current_value` restano
-      sempre `null`. **Decisione presa il 14/07/2026**: niente valore di mercato automatico
-      (richiederebbe un database prezzi esterno, già escluso per l'MVP, e Gemini non deve
-      "inventare" un prezzo di mercato plausibile ma non verificato). Due campi distinti:
-      - `purchase_price`: costo reale, compilato una volta all'aggiunta del vino (nuovo campo
-        nel form, vedi sotto)
-      - `current_value`: valore attuale stimato DA ENRICO, non automatico — modificabile in
-        qualsiasi momento nella scheda vino (tab Annate, per ogni bottiglia/annata, vicino a
-        quantità/note). Finché non viene toccato, `/stats` e la home usano `purchase_price`
-        come base (logica già presente: `current_value || purchase_price`).
-      Da aggiungere insieme al blocco Fase 5a-bis (vedi sopra).
+- [x] **"Valore Stimato" — completato in Fase 5a-bis**: campo "Prezzo di acquisto" nel form
+      e "Valore Attuale" modificabile nella scheda vino, entrambi implementati e verificati
+      (vedi sezione Fase 5a-bis più sopra per i dettagli).
 
 ### QA manuale di Enrico dopo le migrazioni 0004/0005/0006 (14/07/2026)
 
