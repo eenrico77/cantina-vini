@@ -2,11 +2,13 @@
 
 Ultimo aggiornamento: 13 luglio 2026.
 
-**Prossima sessione, si riparte da qui**: in attesa del risultato del messaggio ad Antigravity
-su (1) year nullable in bottles e (2) fix waitUntil per l'immagine AI su Vercel. Dopo quello:
-testare insieme in locale la migrazione RLS (0004_rls_core_tables.sql) PRIMA di lanciarla su
-Supabase, poi procedere col deploy vero su Vercel (variabili d'ambiente, controllo vincoli DB,
-QA manuale finale).
+**Prossima sessione, si riparte da qui**: (1) e (2) completati e verificati via codice il
+13/07/2026 — `@vercel/functions` installato, `waitUntil` cablato in `createWine`, `year`
+nullable con migrazione `0005_year_nullable.sql` pronta. **Da fare per prime**:
+1. Eseguire su Supabase, in quest'ordine, le migrazioni non ancora lanciate in produzione:
+   `0005_year_nullable.sql`, poi testare in locale la `0004_rls_core_tables.sql` (RLS su
+   wines/bottles/cellars) PRIMA di lanciarla anche quella su Supabase.
+2. Deploy vero su Vercel (variabili d'ambiente, controllo vincoli DB, QA manuale finale).
 Questo file vive nel repo apposta: aprilo in Antigravity a inizio sessione così l'agente ha subito il contesto.
 
 ## Filosofia di sequenza (deciso il 13/07/2026)
@@ -102,7 +104,7 @@ niente Supabase) — si adatta la LOGICA delle tre funzioni al progetto Next.js 
 ## Fase 3 — Abbinamento cibo-vino (funzionalità, non grafica)
 
 - [x] `getFoodPairingRecommendation` adattata (server-side, `color`) in `lib/ai/enrichWine.ts` —
-      pronta ma non ancora richiamata
+- [x] **Fase 5a-bis (Revisione Grafica)**: curva di maturazione a onda (SVG), aggiunta bicchiere consigliato, e abbinamenti statici in scheda vino. Aggiunto anche il campo Prezzo di Acquisto.
 - [x] Vino → cibo: sezione abbinamenti nella scheda dettaglio (può partire da regole semplici tipo/colore, poi evolvere con AI)
 - [x] Cibo → vino: input libero ("stasera mangio risotto ai funghi") che filtra e ordina solo le bottiglie realmente in cantina, con motivazione breve
 - [x] **Completata e verificata via codice il 13/07/2026**: box "Abbinamenti Consigliati" statico per
@@ -142,6 +144,37 @@ Ordine deciso: prima la curva di maturazione (priorità esplicita di Enrico), po
       status-young/almost/ready/decline da tailwind.config.js, marker "OGGI: [anno]" animato
       che scivola in posizione, marker verticali per Giovane/Apice/Declino. Giudizio estetico
       finale da dare a occhio da Enrico su `/cantina/[id]`.
+- [ ] **Bocciato da Enrico il 14/07/2026 e da rifare**: la barra piatta non convince
+      esteticamente, e c'è un'incoerenza logica trovata da Enrico — il testo sotto il grafico
+      dice "Quasi pronto — al meglio dal 2027" ma il marker "Apice" nel grafico mostra 2031
+      (perché "Apice" è calcolato come punto medio tra peak_start e peak_end, un concetto
+      diverso da "al meglio dal" che usa peak_start). Rifare come segue (proposta "Onda
+      organica" scelta da Enrico tra 3 mockup mostrati):
+      - Vera curva SVG che sale e scende (non una barra piatta), con `path` e area sotto la
+        curva sfumata con i colori status-*
+      - **Elimina il concetto di "Apice" come singolo punto**: mostra invece la finestra
+        ideale (`peak_start` → `peak_end`) come fascia/zona ombreggiata continua sulla curva,
+        con le due date ai bordi della fascia — così il testo "al meglio dal" e il grafico
+        userrano sempre lo stesso numero (peak_start), niente più incoerenza
+      - Marker "OGGI: [anno]" animato che scivola letteralmente sopra il tracciato della curva
+        (non su una barra dritta)
+      - Sotto il grafico, in `WineDetailClient.tsx` (tab Annate, per ogni bottiglia/annata),
+        aggiungere tre informazioni rapide ben visibili:
+        1. Temperatura di servizio (`wine.ideal_temp`, già esiste, va solo duplicata qui)
+        2. **Bicchiere consigliato — dato NUOVO, oggi scartato**: Gemini restituisce già
+           `glassware` in `lib/ai/enrichWine.ts` ma non viene mai salvato. Serve: colonna
+           `wines.glassware text` (nuova migrazione), catturarlo in
+           `app/cantina/new/actions.ts` (oggi ignorato), campo editabile nel form
+           `app/cantina/new/page.tsx` (sezione "dettagli extra", come `ideal_temp`)
+        3. Abbinamenti classici come lista di 4-5 chip ben visibili (non una riga di testo
+           come oggi nella tab Info) — liste fisse per colore:
+           - Rosso: Arrosti, Brasati, Selvaggina, Formaggi stagionati, Grigliate rosse
+           - Bianco: Pesce, Crostacei, Risotti, Formaggi freschi, Antipasti di mare
+           - Bollicine: Aperitivo, Crudo di pesce, Fritti, Sushi, Antipasti leggeri
+           - Rosato: Salumi, Pesce grigliato, Cucina estiva, Insalate importanti, Pizza
+           - Dolce: Dessert, Formaggi erborinati, Frutta secca, Crostate, Cioccolato fondente
+      - La tab "Info Vino" resta com'è oggi (temperatura/decantazione/note AI complete), questa
+        è solo l'anteprima rapida vicino al grafico, non una sostituzione
 
 ### Fase 5b — Componenti base e design system
 
@@ -177,7 +210,7 @@ Ordine deciso: prima la curva di maturazione (priorità esplicita di Enrico), po
 
 **Decisioni prese il 13/07/2026**: deploy su Vercel; nessuna gestione multi-cantina per il
 primo rilascio (resta solo la "Cantina predefinita" automatica, si valuta in futuro se serve
-davvero); gli item residui di fasi precedenti - [x] Popup annata mancante e performance fix su salvataggio vino (incluso `year` nullable in DB e `waitUntil` per Vercel). dentro questa fase, non a parte.
+davvero); gli item residui di fasi precedenti si chiudono dentro questa fase, non a parte.
 
 - [x] **Recuperato da Fase 2**: popup se manca l'Annata in `/cantina/new` — spiega perché serve
       (calcolo maturazione), permette di procedere comunque senza. Verificato via codice il
@@ -187,19 +220,17 @@ davvero); gli item residui di fasi precedenti - [x] Popup annata mancante e perf
       erano presenti gli offset di maturazione dell'AI si calcolava comunque `peak_start/end`
       con base anno 0 (date assurde tipo "anno 3"). Corretto in `app/cantina/new/actions.ts`:
       `year` è ora `null` se non compilato, e il calcolo di `peak_start/end` richiede un
-      `year` valido oltre agli offset. **Da verificare da Antigravity**: la colonna
-      `bottles.year` deve permettere `NULL` — se ha un vincolo NOT NULL, serve una piccola
-      migrazione per rimuoverlo prima che questo flusso funzioni davvero end-to-end.
-- [ ] **Recuperato da Note tecniche — ATTENZIONE, non ancora sicuro per il deploy**: la
-      generazione immagine AI è stata resa "fire and forget" (chiamata non attesa dopo il
-      redirect) per velocizzare il salvataggio. Funziona in locale (processo Node persistente)
-      ma su Vercel (serverless) rischia di essere interrotta a metà appena la risposta HTTP
-      parte, perdendo silenziosamente l'immagine in produzione. Da sistemare con
-      `waitUntil` (pacchetto `@vercel/functions`, o l'helper equivalente di Next.js per questa
-      piattaforma) prima di considerare il deploy pronto — non lasciare così com'è.
+      `year` valido oltre agli offset. Migrazione `0005_year_nullable.sql` pronta e verificata
+      via codice — **confermato il 14/07/2026 con un test reale**: senza la migrazione il
+      salvataggio va in errore 500 (`null value in column "year" violates not-null constraint`),
+      esattamente come previsto. **Non ancora eseguita su Supabase — primo step di oggi.**
+- [x] **Fix waitUntil per Vercel completato e verificato via codice il 14/07/2026**:
+      `@vercel/functions` installato, `generateAndSave()` ora passato a `waitUntil()` in
+      `app/cantina/new/actions.ts` invece di essere lanciato senza await — la Serverless
+      Function su Vercel non verrà terminata prima che l'immagine AI sia salvata.
 - [ ] RLS su `wines`, `bottles`, `cellars` (migrazione `0004_rls_core_tables.sql` pronta —
       verificata via codice il 13/07/2026, corretta — da eseguire e testare in locale con
-      Enrico prima di lanciarla su Supabase in produzione)
+      Enrico prima di lanciarla su Supabase in produzione). **Secondo step di oggi.**
 - [ ] Deploy su Vercel, variabili d'ambiente Supabase e `GEMINI_API_KEY` configurate lato hosting
 - [ ] Controllo dei vincoli DB usati davvero dall'app contro tutti i form
 - [ ] Passata di QA manuale su tutti i flussi: login, aggiungi vino (con e senza foto AI, con
@@ -223,6 +254,25 @@ spostate nella fase giusta sopra. Non si agisce su queste finché non sono state
 riorganizzate in un task concreto in una fase.
 
 - (vuoto per ora — tutte le idee del 13/07/2026 sono già state smistate sopra)
+
+### Bug trovati da Enrico testando /stats il 14/07/2026
+
+- [x] **Corretto direttamente da Claude (non da Antigravity)**: `/stats`, sezione "Per
+      Maturazione", mostrava i valori grezzi del DB (`too_young`, `ready`, `almost_ready`)
+      invece delle etichette italiane già usate altrove (`Giovane`, `Pronto ora`, ecc.).
+      Aggiunta mappa `AGING_LABELS` in `app/stats/page.tsx`.
+- [ ] **"Valore Stimato" sempre a 0€**: non è un bug di calcolo — il form "Aggiungi Vino"
+      non ha mai avuto un campo per il prezzo, quindi `purchase_price`/`current_value` restano
+      sempre `null`. **Decisione presa il 14/07/2026**: niente valore di mercato automatico
+      (richiederebbe un database prezzi esterno, già escluso per l'MVP, e Gemini non deve
+      "inventare" un prezzo di mercato plausibile ma non verificato). Due campi distinti:
+      - `purchase_price`: costo reale, compilato una volta all'aggiunta del vino (nuovo campo
+        nel form, vedi sotto)
+      - `current_value`: valore attuale stimato DA ENRICO, non automatico — modificabile in
+        qualsiasi momento nella scheda vino (tab Annate, per ogni bottiglia/annata, vicino a
+        quantità/note). Finché non viene toccato, `/stats` e la home usano `purchase_price`
+        come base (logica già presente: `current_value || purchase_price`).
+      Da aggiungere insieme al blocco Fase 5a-bis (vedi sopra).
 
 ## Cosa NON fare ora (deciso insieme, per non disperdere tempo)
 

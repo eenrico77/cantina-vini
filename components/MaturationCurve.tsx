@@ -4,91 +4,124 @@ import { useEffect, useState } from "react";
 
 type Props = {
   start: number;
-  peak: number;
+  peak?: number; // mantenuto per retrocompatibilità ma ignorato
   end: number;
   current: number;
 };
 
-export default function MaturationCurve({ start, peak, end, current }: Props) {
+export default function MaturationCurve({ start, end, current }: Props) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Calcolo delle percentuali
-  const totalDuration = Math.max(1, end - start);
-  
-  // Posizione dell'anno corrente
-  const currentPercRaw = ((current - start) / totalDuration) * 100;
+  const padding = Math.max(2, Math.floor((end - start) * 0.5));
+  const minYear = start - padding;
+  const maxYear = end + padding;
+  const totalYears = Math.max(1, maxYear - minYear);
+
+  const currentPercRaw = ((current - minYear) / totalYears) * 100;
   const currentPerc = Math.min(100, Math.max(0, currentPercRaw));
 
-  // Posizione dell'apice
-  const peakPercRaw = ((peak - start) / totalDuration) * 100;
-  const peakPerc = Math.min(100, Math.max(0, peakPercRaw));
-  
-  // Calcolo dinamico dello stop del gradiente (leggermente prima del picco inizia ad essere "quasi pronto")
-  const almostPerc = Math.max(0, peakPerc - 15);
+  const startPerc = ((start - minYear) / totalYears) * 100;
+  const endPerc = ((end - minYear) / totalYears) * 100;
+
+  // Calcola Y(t) sulla curva Bezier (x(t) è lineare a t con questi control points)
+  const getCurveY = (xPerc: number) => {
+    if (xPerc <= 50) {
+      const t = xPerc / 50;
+      return Math.pow(1 - t, 3) * 90 + 3 * Math.pow(1 - t, 2) * t * 90 + 3 * (1 - t) * Math.pow(t, 2) * 10 + Math.pow(t, 3) * 10;
+    } else {
+      const t = (xPerc - 50) / 50;
+      return Math.pow(1 - t, 3) * 10 + 3 * Math.pow(1 - t, 2) * t * 10 + 3 * (1 - t) * Math.pow(t, 2) * 90 + Math.pow(t, 3) * 90;
+    }
+  };
+
+  const currentY = getCurveY(currentPerc);
 
   return (
     <div className="bg-white rounded-2xl shadow-soft p-5 border border-sand-200 mt-4">
-      <div className="flex justify-between items-end mb-8">
+      <div className="flex justify-between items-end mb-4">
         <h3 className="text-sm font-semibold text-ink-700 uppercase tracking-wider">Curva di Maturazione</h3>
       </div>
 
-      <div className="relative pt-6 pb-6">
-        {/* Barra di sfondo (track) */}
-        <div className="h-3 w-full bg-sand-200 rounded-full overflow-hidden relative">
-          {/* Gradiente colorato animato */}
-          <div 
-            className="h-full rounded-full transition-all duration-1000 ease-out"
-            style={{
-              width: mounted ? '100%' : '0%',
-              background: `linear-gradient(90deg, #7a8f99 0%, #c7773a ${almostPerc}%, #5f8a5a ${peakPerc}%, #a9463a 100%)`
-            }}
+      <div className="relative w-full h-32 pt-2">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full overflow-visible">
+          <defs>
+            <linearGradient id="curveGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#10b981" />
+              <stop offset={`${startPerc}%`} stopColor="#f59e0b" />
+              <stop offset="50%" stopColor="#14b8a6" />
+              <stop offset={`${endPerc}%`} stopColor="#ef4444" />
+            </linearGradient>
+            
+            <linearGradient id="fillGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#10b981" stopOpacity="0.4" />
+              <stop offset={`${startPerc}%`} stopColor="#f59e0b" stopOpacity="0.4" />
+              <stop offset="50%" stopColor="#14b8a6" stopOpacity="0.4" />
+              <stop offset={`${endPerc}%`} stopColor="#ef4444" stopOpacity="0.4" />
+            </linearGradient>
+
+            <clipPath id="idealWindow">
+              <rect x={startPerc} y="0" width={endPerc - startPerc} height="100" />
+            </clipPath>
+          </defs>
+
+          {/* Sfondo curva intera leggera */}
+          <path 
+            d="M 0 90 C 16.6 90, 33.3 10, 50 10 C 66.6 10, 83.3 90, 100 90 L 100 100 L 0 100 Z" 
+            fill="url(#fillGrad)" 
+            opacity="0.15"
           />
-        </div>
 
-        {/* Marker Inizio */}
-        <div className="absolute top-0 left-0 -translate-x-1/2 flex flex-col items-center">
-          <div className="text-[10px] uppercase font-bold text-status-young mb-1">Giovane</div>
-          <div className="h-2 w-px bg-sand-200 mb-1"></div>
-          <span className="text-[10px] font-medium text-ink-500">{start}</span>
-        </div>
+          {/* Finestra ideale ombreggiata */}
+          <path 
+            d="M 0 90 C 16.6 90, 33.3 10, 50 10 C 66.6 10, 83.3 90, 100 90 L 100 100 L 0 100 Z" 
+            fill="url(#fillGrad)" 
+            clipPath="url(#idealWindow)"
+          />
 
-        {/* Marker Apice */}
+          {/* Linea principale della curva */}
+          <path 
+            d="M 0 90 C 16.6 90, 33.3 10, 50 10 C 66.6 10, 83.3 90, 100 90" 
+            fill="none" 
+            stroke="url(#curveGrad)" 
+            strokeWidth="3" 
+            strokeLinecap="round"
+          />
+        </svg>
+
+        {/* Etichette Finestra Ideale */}
         <div 
-          className="absolute top-0 flex flex-col items-center"
-          style={{ left: `${peakPerc}%`, transform: 'translateX(-50%)' }}
+          className="absolute top-0 flex flex-col items-center h-full"
+          style={{ left: `${startPerc}%`, transform: 'translateX(-50%)' }}
         >
-          <div className="text-[10px] uppercase font-bold text-status-ready mb-1">Apice</div>
-          <div className="h-2 w-px bg-status-ready mb-1"></div>
-          <span className="text-[10px] font-medium text-ink-500">{peak}</span>
+          <span className="text-[10px] font-bold text-ink-500 mb-1">{start}</span>
+          <div className="flex-1 w-px border-l border-dashed border-sand-300"></div>
         </div>
 
-        {/* Marker Fine */}
-        <div className="absolute top-0 right-0 translate-x-1/2 flex flex-col items-center">
-          <div className="text-[10px] uppercase font-bold text-status-decline mb-1">Declino</div>
-          <div className="h-2 w-px bg-sand-200 mb-1"></div>
-          <span className="text-[10px] font-medium text-ink-500">{end}</span>
-        </div>
-
-        {/* Marker "Oggi" animato */}
         <div 
-          className="absolute top-[21px] flex flex-col items-center transition-all duration-1000 ease-out z-10"
+          className="absolute top-0 flex flex-col items-center h-full"
+          style={{ left: `${endPerc}%`, transform: 'translateX(-50%)' }}
+        >
+          <span className="text-[10px] font-bold text-ink-500 mb-1">{end}</span>
+          <div className="flex-1 w-px border-l border-dashed border-sand-300"></div>
+        </div>
+
+        {/* Marker Oggi animato */}
+        <div 
+          className="absolute flex flex-col items-center transition-all duration-1000 ease-out z-10"
           style={{ 
             left: mounted ? `${currentPerc}%` : '0%',
-            transform: 'translateX(-50%)'
+            top: mounted ? `${currentY}%` : '90%',
+            transform: 'translate(-50%, calc(-100% + 8px))'
           }}
         >
-          {/* Pallino indicatore */}
-          <div className="w-5 h-5 bg-white border-[3px] border-ink-700 rounded-full shadow-md flex items-center justify-center">
-            <div className="w-1.5 h-1.5 bg-ink-700 rounded-full"></div>
-          </div>
-          {/* Etichetta "Oggi" */}
-          <div className="mt-1 bg-ink-700 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm whitespace-nowrap">
+          <div className="bg-ink-700 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm whitespace-nowrap mb-1">
             OGGI: {current}
           </div>
+          <div className="w-4 h-4 bg-white border-[3px] border-ink-700 rounded-full shadow-md"></div>
         </div>
       </div>
     </div>

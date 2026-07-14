@@ -55,3 +55,25 @@ export async function drinkBottleAction(formData: FormData) {
   revalidatePath('/diary');
   revalidatePath('/stats');
 }
+
+export async function updateBottleValueAction(formData: FormData) {
+  const bottleId = formData.get("bottleId") as string;
+  const wineId = formData.get("wineId") as string;
+  const currentValueRaw = formData.get("currentValue") as string;
+  const currentValue = currentValueRaw ? Number(currentValueRaw) : null;
+
+  if (!bottleId || !wineId) throw new Error("Mancano dati della bottiglia");
+
+  const supabase = createClient();
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth?.user) throw new Error("Non autenticato");
+
+  await supabase
+    .from("bottles")
+    .update({ current_value: currentValue })
+    .eq("id", bottleId)
+    .eq("user_id", auth.user.id);
+
+  revalidatePath(`/cantina/${wineId}`);
+  revalidatePath('/stats');
+}

@@ -40,6 +40,10 @@ export async function createWine(formData: FormData): Promise<void> {
   const decanting = (formData.get("decanting") as string) || null;
   const maturation_start = Number(formData.get("maturation_start"));
   const maturation_end = Number(formData.get("maturation_end"));
+  const glassware = (formData.get("glassware") as string) || null;
+  
+  const purchasePriceRaw = formData.get("purchase_price") as string;
+  const purchase_price = purchasePriceRaw ? Number(purchasePriceRaw) : null;
   
   const organolepticRaw = formData.get("organoleptic") as string;
   const tasteProfileRaw = formData.get("taste_profile") as string;
@@ -83,6 +87,7 @@ export async function createWine(formData: FormData): Promise<void> {
         vintage_review,
         ideal_temp,
         decanting_needed: decanting === "Sì" || decanting === "true" || decanting === "Yes",
+        glassware,
         organoleptic,
         taste_profile,
         ai_generated: true,
@@ -118,6 +123,7 @@ export async function createWine(formData: FormData): Promise<void> {
       cellar_id: cellarId,
       year,
       quantity,
+      purchase_price,
       peak_start: peakStart,
       peak_end: peakEnd,
       aging_status: agingStatus

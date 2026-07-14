@@ -13,8 +13,8 @@ export default function NewWinePage() {
   const [formData, setFormData] = useState({
     name: "", producer: "", color: "", region: "", country: "", year: "", quantity: "1",
     grapes: "", description: "", origin_notes: "", vintage_review: "",
-    maturation_start: "", maturation_end: "", ideal_temp: "", decanting: "",
-    organoleptic: "", taste_profile: ""
+    maturation_start: "", maturation_end: "", ideal_temp: "", decanting: "", glassware: "",
+    organoleptic: "", taste_profile: "", purchase_price: ""
   });
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,6 +42,7 @@ export default function NewWinePage() {
           maturation_end: aiResult.maturation_end?.toString() || prev.maturation_end,
           ideal_temp: aiResult.ideal_temp || prev.ideal_temp,
           decanting: aiResult.decanting || prev.decanting,
+          glassware: aiResult.glassware || prev.glassware,
           organoleptic: aiResult.organoleptic ? JSON.stringify(aiResult.organoleptic) : prev.organoleptic,
           taste_profile: aiResult.taste_profile ? JSON.stringify(aiResult.taste_profile) : prev.taste_profile,
         }));
@@ -124,6 +125,10 @@ export default function NewWinePage() {
               <label className="block text-xs font-semibold text-ink-500 uppercase">Quantità *</label>
               <input name="quantity" type="number" min={1} value={formData.quantity} onChange={handleChange} required className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" />
             </div>
+            <div>
+              <label className="block text-xs font-semibold text-ink-500 uppercase">Prezzo di acquisto (€)</label>
+              <input name="purchase_price" type="number" step="0.01" value={formData.purchase_price} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" placeholder="es. 15.50" />
+            </div>
           </div>
         </div>
 
@@ -164,6 +169,10 @@ export default function NewWinePage() {
               <div>
                 <label className="block text-xs font-semibold text-ink-500 uppercase">Temp. Ideale</label>
                 <input name="ideal_temp" value={formData.ideal_temp} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-ink-500 uppercase">Bicchiere Consigliato</label>
+                <input name="glassware" value={formData.glassware} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none" />
               </div>
               <div>
                 <label className="block text-xs font-semibold text-ink-500 uppercase">Decantazione</label>

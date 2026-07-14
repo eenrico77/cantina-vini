@@ -1,11 +1,85 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import Image from "next/image";
 import MaturationCurve from "@/components/MaturationCurve";
 import { getAgingLabel } from "@/lib/domain/maturation";
 import type { AgingStatus } from "@/types";
 import DrinkBottleModal from "@/components/DrinkBottleModal";
+import { updateBottleValueAction } from "@/app/cantina/[id]/actions";
+
+const getStaticPairings = (color: string) => {
+  switch (color) {
+    case "Rosso": return ["Arrosti", "Brasati", "Selvaggina", "Formaggi stagionati", "Grigliate rosse"];
+    case "Bianco": return ["Pesce", "Crostacei", "Risotti", "Formaggi freschi", "Antipasti di mare"];
+    case "Bollicine": return ["Aperitivo", "Crudo di mare", "Fritti", "Sushi", "Antipasti leggeri"];
+    case "Rosato": return ["Salumi", "Pesce grigliato", "Cucina estiva", "Insalate", "Pizza"];
+    case "Dolce": return ["Dessert", "Formaggi erborinati", "Frutta secca", "Crostate", "Cioccolato"];
+    default: return [];
+  }
+};
+
+function EditableValue({ bottle, wineId }: { bottle: any; wineId: string }) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [val, setVal] = useState(bottle.current_value || bottle.purchase_price || "");
+  const [isPending, startTransition] = useTransition();
+
+  const handleSave = () => {
+    startTransition(async () => {
+      const fd = new FormData();
+      fd.append("bottleId", bottle.id);
+      fd.append("wineId", wineId);
+      if (val !== "") fd.append("currentValue", val.toString());
+      await updateBottleValueAction(fd);
+      setIsEditing(false);
+    });
+  };
+
+  const displayVal = bottle.current_value;
+  const purchase = bottle.purchase_price;
+
+  if (isEditing) {
+    return (
+      <div className="bg-sand-50 rounded-2xl p-3 border border-brand-200 mt-3 flex items-center gap-2">
+        <span className="text-[10px] font-bold text-ink-500 uppercase">Valore (€)</span>
+        <input 
+          type="number" 
+          step="0.01"
+          value={val}
+          onChange={e => setVal(e.target.value)}
+          className="border border-sand-200 rounded p-1 w-20 text-sm focus:ring-brand-500 outline-none"
+        />
+        <button onClick={handleSave} disabled={isPending} className="bg-brand-500 text-white px-3 py-1 rounded font-bold text-xs">
+          {isPending ? "..." : "Salva"}
+        </button>
+        <button onClick={() => setIsEditing(false)} className="text-ink-400 font-bold text-xs px-2">
+          Annulla
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div 
+      className="bg-sand-50 rounded-2xl p-3 border border-sand-100 mt-3 flex justify-between items-center cursor-pointer hover:bg-sand-100 transition-colors"
+      onClick={() => setIsEditing(true)}
+    >
+      <div>
+        <div className="text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-0.5">Valore Attuale</div>
+        <div className="text-sm font-medium text-ink-700">
+          {displayVal ? (
+            <span>{displayVal}€</span>
+          ) : purchase ? (
+            <span className="text-ink-400">{purchase}€ <span className="text-[10px]">(prezzo acquisto)</span></span>
+          ) : (
+            <span className="text-ink-400 text-xs italic">Clicca per inserire</span>
+          )}
+        </div>
+      </div>
+      <div className="text-ink-300 text-xs">✏️</div>
+    </div>
+  );
+}
 
 export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
   const [activeTab, setActiveTab] = useState("annate");
@@ -115,6 +189,36 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
                           Dati di maturazione non disponibili
                         </div>
                       )}
+
+                      {/* Info Rapide: Temp, Bicchiere, Abbinamenti */}
+                      <div className="bg-sand-50 rounded-2xl p-4 mb-4 border border-sand-100 space-y-3">
+                        <div className="flex gap-2">
+                          {wine.ideal_temp && (
+                            <div className="flex-1 bg-white border border-sand-100 text-ink-700 text-xs font-semibold px-3 py-2 rounded-xl flex items-center justify-center gap-1.5 shadow-sm">
+                              <span className="text-xs opacity-70">🌡️</span> {wine.ideal_temp}
+                            </div>
+                          )}
+                          {wine.glassware && (
+                            <div className="flex-1 bg-white border border-sand-100 text-ink-700 text-xs font-semibold px-3 py-2 rounded-xl flex items-center justify-center gap-1.5 shadow-sm">
+                              <span className="text-xs opacity-70">🍷</span> {wine.glassware}
+                            </div>
+                          )}
+                        </div>
+                        {wine.color && (
+                          <div>
+                            <div className="text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-1.5 px-1">Abbinamenti</div>
+                            <div className="flex flex-wrap gap-1">
+                              {getStaticPairings(wine.color).map(p => (
+                                <span key={p} className="bg-white border border-sand-200 text-ink-600 text-[10px] font-semibold px-2 py-1.5 rounded-lg shadow-sm">
+                                  {p}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      <EditableValue bottle={bottle} wineId={wine.id} />
 
                       {bottle.notes && (
                         <div className="bg-sand-50 rounded-2xl p-4 mb-4 text-sm text-ink-700 italic border border-sand-100">

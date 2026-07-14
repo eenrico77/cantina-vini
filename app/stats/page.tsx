@@ -1,5 +1,13 @@
 import { createClient } from "@/lib/supabase/server";
 
+const AGING_LABELS: Record<string, string> = {
+  too_young: "Giovane",
+  almost_ready: "Quasi pronto",
+  ready: "Pronto ora",
+  past_peak: "In declino",
+  Sconosciuto: "Sconosciuto",
+};
+
 export default async function StatsPage() {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -76,7 +84,7 @@ export default async function StatsPage() {
         <div className="bg-white p-4 rounded-xl shadow-sm border border-sand-200 space-y-2">
           {Object.entries(byAging).map(([status, qty]) => (
             <div key={status} className="flex justify-between items-center">
-              <span className="text-sm font-medium">{status}</span>
+              <span className="text-sm font-medium">{AGING_LABELS[status] || status}</span>
               <span className="text-sm font-bold bg-sand-100 px-2 py-0.5 rounded-full">{qty}</span>
             </div>
           ))}
