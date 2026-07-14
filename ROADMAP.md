@@ -278,14 +278,20 @@ riorganizzate in un task concreto in una fase.
       sul telefono (l'app è già pensata mobile-first — colonna stretta, bottom nav, upload con
       fotocamera — ma senza l'icona home screen resta "solo" un sito aperto dal browser).
       Non urgente, comodo da aggiungere in futuro.
-- [x] **Corretto il 14/07/2026 (bug reale, non solo UX)**: mancava completamente la gestione
-      del ritorno dai link email di Supabase (magic link, reset password, conferma) — il
-      `middleware.js` rimandava sempre a `/login` prima ancora che il `code` nell'URL potesse
-      essere scambiato per una sessione, quindi qualunque link ricevuto via email avrebbe
-      fallito silenziosamente. Aggiunta gestione del `code` in `middleware.js` (scambio sessione
-      prima del controllo di autenticazione) e creata `app/auth/callback/route.ts` come route
-      dedicata per usi futuri (es. OAuth). Scoperto testando un vero blocco: Enrico non
-      riusciva più ad accedere all'app appena deployata perché aveva dimenticato la password.
+- [x] **Corretto il 14/07/2026 (bug reale, non solo UX, due parti)**: mancava completamente
+      la gestione del ritorno dai link email di Supabase (magic link, reset password,
+      conferma). Scoperto testando un vero blocco: Enrico non riusciva più ad accedere
+      all'app appena deployata perché aveva dimenticato la password.
+      1. Aggiunta gestione di un eventuale `?code=...` in `middleware.js` (scambio sessione
+         PRIMA del redirect al login) + creata `app/auth/callback/route.ts` per usi futuri
+         (PKCE, es. OAuth) — ma si è scoperto che il bottone "Send magic link" del pannello
+         Supabase non usa questo formato.
+      2. **Causa reale**: il link inviato da Supabase torna con il token dopo il cancelletto
+         (`#access_token=...&refresh_token=...`, "implicit flow"), che il server non vede mai
+         (i browser non inviano la parte dopo `#` nelle richieste HTTP) — va letto e scambiato
+         per una sessione lato browser. Corretto in `app/login/page.jsx`: legge
+         `window.location.hash` al caricamento della pagina, e se trova i token chiama
+         `supabase.auth.setSession(...)` per completare l'accesso.
 - [ ] **Manca ancora "Password dimenticata" nell'interfaccia di `/login`**: oggi si può
       recuperare l'accesso solo manualmente dal pannello Supabase (Authentication → Users →
       "Send magic link"/"Reset password"), ora che il callback funziona. Da aggiungere in
