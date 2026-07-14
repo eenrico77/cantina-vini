@@ -94,7 +94,7 @@ export async function createWine(formData: FormData): Promise<void> {
         origin_notes,
         vintage_review,
         ideal_temp,
-        decanting_needed: decanting === "Sì" || decanting === "true" || decanting === "Yes",
+        decanting_needed: Boolean(decanting && decanting.trim().length > 0),
         glassware,
         organoleptic,
         taste_profile,

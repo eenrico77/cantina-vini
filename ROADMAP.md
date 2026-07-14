@@ -206,6 +206,7 @@ Ordine deciso: prima la curva di maturazione (priorità esplicita di Enrico), po
 ### Fase 7 — UI e Rifiniture
 
 - [x] Consolidare le azioni sparse nella scheda di dettaglio vino in un pulsante "••• Azioni" con bottom sheet (ispirazione Oeni).
+- [x] Redesign del form "Aggiungi Vino" a blocchi (card per ogni sezione logica) con logica decantazione corretta.
 
 - [x] **Tradurre tutte le etichette rimaste in inglese** trovate testando il 13/07/2026:
       "Storage & Service", "TEMP.", "DECANTING", "Maturation Start/End (offset)" nel form

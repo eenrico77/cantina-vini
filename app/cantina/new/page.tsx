@@ -177,7 +177,7 @@ export default function NewWinePage() {
         </div>
       </div>
 
-      <form action={createWine} onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded-xl shadow-sm border border-sand-200">
+      <form action={createWine} onSubmit={handleSubmit} className="space-y-6">
         
         {/* Campi nascosti per i dati JSON e wishlist */}
         <input type="hidden" name="organoleptic" value={formData.organoleptic} />
@@ -185,26 +185,36 @@ export default function NewWinePage() {
         <input type="hidden" name="wishlistId" value={wishlistId} />
         <input type="hidden" name="final_image" value={selectedImage === "real" ? (realImage || "") : selectedImage === "catalog" ? (catalogImage || "") : ""} />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-semibold text-ink-500 uppercase">Nome Vino *</label>
-            <input name="name" value={formData.name} onChange={handleChange} required className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" />
-          </div>
-          <div>
-            <label className="block text-xs font-semibold text-ink-500 uppercase">Produttore *</label>
-            <input name="producer" value={formData.producer} onChange={handleChange} required className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" />
+        {/* Card: Il Vino */}
+        <div className="bg-white p-5 rounded-xl shadow-sm border border-sand-200">
+          <h2 className="text-sm font-bold text-brand-600 uppercase tracking-wider mb-4">Il vino</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-ink-500 uppercase">Nome Vino *</label>
+              <input name="name" value={formData.name} onChange={handleChange} required className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-ink-500 uppercase">Produttore *</label>
+              <input name="producer" value={formData.producer} onChange={handleChange} required className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" />
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-semibold text-ink-500 uppercase">Tipologia *</label>
-            <select name="color" value={formData.color} onChange={handleChange} required className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none">
-              <option value="" disabled>Seleziona tipologia</option>
-              {COLORS.map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
-          </div>
-          <div className="grid grid-cols-2 gap-2">
+        {/* Card: Dettagli */}
+        <div className="bg-white p-5 rounded-xl shadow-sm border border-sand-200">
+          <h2 className="text-sm font-bold text-brand-600 uppercase tracking-wider mb-4">Dettagli</h2>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="col-span-2 md:col-span-1">
+              <label className="block text-xs font-semibold text-ink-500 uppercase">Tipologia *</label>
+              <select name="color" value={formData.color} onChange={handleChange} required className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none bg-white">
+                <option value="" disabled>Seleziona tipologia</option>
+                {COLORS.map((c) => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+            <div className="col-span-2 md:col-span-1">
+              <label className="block text-xs font-semibold text-ink-500 uppercase">Prezzo acquisto (€)</label>
+              <input name="purchase_price" type="number" step="0.01" value={formData.purchase_price} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" placeholder="es. 15.50" />
+            </div>
             <div>
               <label className="block text-xs font-semibold text-ink-500 uppercase">Annata *</label>
               <input name="year" type="number" value={formData.year} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" />
@@ -213,79 +223,89 @@ export default function NewWinePage() {
               <label className="block text-xs font-semibold text-ink-500 uppercase">Quantità *</label>
               <input name="quantity" type="number" min={1} value={formData.quantity} onChange={handleChange} required className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" />
             </div>
+          </div>
+        </div>
+
+        {/* Card: Provenienza */}
+        <div className="bg-white p-5 rounded-xl shadow-sm border border-sand-200">
+          <h2 className="text-sm font-bold text-brand-600 uppercase tracking-wider mb-4">Provenienza</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-ink-500 uppercase">Prezzo di acquisto (€)</label>
-              <input name="purchase_price" type="number" step="0.01" value={formData.purchase_price} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" placeholder="es. 15.50" />
+              <label className="block text-xs font-semibold text-ink-500 uppercase">Regione</label>
+              <input name="region" value={formData.region} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-ink-500 uppercase">Paese</label>
+              <input name="country" value={formData.country} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" />
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-semibold text-ink-500 uppercase">Regione</label>
-            <input name="region" value={formData.region} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" />
-          </div>
-          <div>
-            <label className="block text-xs font-semibold text-ink-500 uppercase">Paese</label>
-            <input name="country" value={formData.country} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" />
-          </div>
+        {/* Card: Dettagli Extra (AI) */}
+        <div className="bg-white p-5 rounded-xl shadow-sm border border-sand-200">
+          <details className="group">
+            <summary className="cursor-pointer font-bold text-brand-600 uppercase tracking-wider list-none flex items-center justify-between text-sm">
+              Mostra dettagli extra (AI)
+              <span className="text-brand-600 transform group-open:rotate-180 transition-transform">▼</span>
+            </summary>
+            <div className="mt-6 space-y-6">
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-ink-500 uppercase">Uvaggio</label>
+                  <input name="grapes" value={formData.grapes} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-ink-500 uppercase">Descrizione AI</label>
+                  <textarea name="description" value={formData.description} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none h-20" />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-ink-500 uppercase">Temp. Ideale</label>
+                  <input name="ideal_temp" value={formData.ideal_temp} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-brand-500" />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-ink-500 uppercase">Bicchiere</label>
+                  <input name="glassware" value={formData.glassware} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-brand-500" />
+                </div>
+                <div className="col-span-2 md:col-span-1">
+                  <label className="block text-xs font-semibold text-ink-500 uppercase">Decantazione</label>
+                  <input name="decanting" value={formData.decanting} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-brand-500" />
+                </div>
+              </div>
+
+              <div className="space-y-2 border-t border-sand-100 pt-4">
+                <label className="block text-xs font-semibold text-ink-500 uppercase mb-2">Finestra di maturazione (anni dalla vendemmia)</label>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-bold text-ink-400 uppercase">Da</label>
+                    <input name="maturation_start" type="number" value={formData.maturation_start} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-brand-500" />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-ink-400 uppercase">A</label>
+                    <input name="maturation_end" type="number" value={formData.maturation_end} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-brand-500" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-sand-100 pt-4">
+                <div>
+                  <label className="block text-xs font-semibold text-ink-500 uppercase">Note Terroir</label>
+                  <textarea name="origin_notes" value={formData.origin_notes} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-brand-500 h-24" />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-ink-500 uppercase">Recensione Annata</label>
+                  <textarea name="vintage_review" value={formData.vintage_review} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-brand-500 h-24" />
+                </div>
+              </div>
+              
+            </div>
+          </details>
         </div>
 
-        <div className="grid grid-cols-1 gap-4">
-          <div>
-            <label className="block text-xs font-semibold text-ink-500 uppercase">Uvaggio</label>
-            <input name="grapes" value={formData.grapes} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" />
-          </div>
-          <div>
-            <label className="block text-xs font-semibold text-ink-500 uppercase">Descrizione AI</label>
-            <textarea name="description" value={formData.description} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none h-20" />
-          </div>
-        </div>
-
-        <details className="text-sm">
-          <summary className="cursor-pointer font-medium text-blue-600">Mostra dettagli extra (AI)</summary>
-          <div className="mt-4 space-y-4">
-            
-            {/* Campi brevi: griglia 2 cols mobile, 3 cols desktop */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              <div>
-                <label className="block text-xs font-semibold text-ink-500 uppercase truncate">Temp. Ideale</label>
-                <input name="ideal_temp" value={formData.ideal_temp} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2 rounded-lg outline-none text-sm focus:ring-2 focus:ring-brand-500" />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-ink-500 uppercase truncate">Bicchiere</label>
-                <input name="glassware" value={formData.glassware} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2 rounded-lg outline-none text-sm focus:ring-2 focus:ring-brand-500" />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-ink-500 uppercase truncate">Decantazione</label>
-                <input name="decanting" value={formData.decanting} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2 rounded-lg outline-none text-sm focus:ring-2 focus:ring-brand-500" />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-ink-500 uppercase truncate" title="Anni dalla vendemmia">Inizio Matur. (+anni)</label>
-                <input name="maturation_start" type="number" value={formData.maturation_start} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2 rounded-lg outline-none text-sm focus:ring-2 focus:ring-brand-500" />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-ink-500 uppercase truncate" title="Anni dalla vendemmia">Fine Matur. (+anni)</label>
-                <input name="maturation_end" type="number" value={formData.maturation_end} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2 rounded-lg outline-none text-sm focus:ring-2 focus:ring-brand-500" />
-              </div>
-            </div>
-
-            {/* Campi lunghi: 1 col mobile, 2 cols desktop */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-semibold text-ink-500 uppercase">Note Terroir</label>
-                <textarea name="origin_notes" value={formData.origin_notes} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-brand-500 h-24" />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-ink-500 uppercase">Recensione Annata</label>
-                <textarea name="vintage_review" value={formData.vintage_review} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-brand-500 h-24" />
-              </div>
-            </div>
-            
-          </div>
-        </details>
-
-        <button type="submit" className="w-full bg-brand-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-brand-600 transition-colors">
+        <button type="submit" className="w-full bg-brand-500 text-white px-6 py-4 rounded-xl font-bold hover:bg-brand-600 transition-colors shadow-sm">
           Conferma e Salva Vino
         </button>
       </form>
