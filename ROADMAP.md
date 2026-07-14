@@ -215,6 +215,7 @@ Ordine deciso: prima la curva di maturazione (priorità esplicita di Enrico), po
 - [x] Rimuovere alert JavaScript grezzi e sostituirli con toast o messaggi in pagina integrati,
       specialmente per gli errori non bloccanti — verificato via QA 14/07/2026.
 - [x] Aggiungere pagina Account (/account) per impostare la password dopo login via magic link.
+- [x] Aggiunta foto etichetta (AI) anche nella Wishlist per precompilare il form.
 - [ ] Configurazione progetto Vercel (env vars)
 - [ ] Push DB di produzione (eseguire tutte le migrazioni)
 - [ ] Verificare che non ci siano "console.log" dimenticati o warning di Next.js in build.
