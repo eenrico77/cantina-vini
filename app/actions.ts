@@ -2,6 +2,13 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { getFoodPairingRecommendation } from "@/lib/ai/enrichWine";
+import { redirect } from "next/navigation";
+
+export async function signOutAction() {
+  const supabase = createClient();
+  await supabase.auth.signOut();
+  redirect('/login');
+}
 
 export async function getPairingAction(food: string) {
   if (!food) throw new Error("Inserisci il cibo");

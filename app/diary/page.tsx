@@ -1,10 +1,11 @@
 import { createClient } from "@/lib/supabase/server";
+import NotAuthenticated from "@/components/NotAuthenticated";
 
 export default async function DiaryPage() {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user) return <div className="p-6">Non autenticato</div>;
+  if (!user) return <NotAuthenticated />;
 
   const { data: entries, error } = await supabase
     .from("diary_entries")

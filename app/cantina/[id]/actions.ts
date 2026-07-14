@@ -30,19 +30,21 @@ export async function drinkBottleAction(formData: FormData) {
 
   const newQuantity = Math.max(0, currentBottle.quantity - 1);
 
-  await supabase
+  const { error: updateErr } = await supabase
     .from("bottles")
     .update({ quantity: newQuantity })
     .eq("id", bottleId)
     .eq("user_id", auth.user.id);
 
+  if (updateErr) throw new Error(updateErr.message);
+
   // Insert into diary
-  await supabase
+  const { error: insertErr } = await supabase
     .from("diary_entries")
     .insert({
       user_id: auth.user.id,
       wine_id: parseInt(wineId, 10),
-      bottle_id: parseInt(bottleId, 10),
+      bottle_id: bottleId, // bottles.id è uuid, non bigint: niente parseInt qui
       wine_name: wineName,
       producer,
       year,
@@ -50,6 +52,8 @@ export async function drinkBottleAction(formData: FormData) {
       rating,
       notes
     });
+
+  if (insertErr) throw new Error(insertErr.message);
 
   revalidatePath(`/cantina/${wineId}`);
   revalidatePath('/diary');
@@ -68,11 +72,13 @@ export async function updateBottleValueAction(formData: FormData) {
   const { data: auth } = await supabase.auth.getUser();
   if (!auth?.user) throw new Error("Non autenticato");
 
-  await supabase
+  const { error } = await supabase
     .from("bottles")
     .update({ current_value: currentValue })
     .eq("id", bottleId)
     .eq("user_id", auth.user.id);
+
+  if (error) throw new Error(error.message);
 
   revalidatePath(`/cantina/${wineId}`);
   revalidatePath('/stats');

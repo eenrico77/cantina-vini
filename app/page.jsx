@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import NotAuthenticated from "@/components/NotAuthenticated";
 import { mapBottleFromDB } from "@/lib/adapters/bottleAdapter";
 import FoodPairingForm from "@/components/FoodPairingForm";
 
@@ -11,7 +12,7 @@ export default async function HomePage() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return <div className="p-6">Non autenticato</div>;
+    return <NotAuthenticated />;
   }
 
   const { data, error } = await supabase

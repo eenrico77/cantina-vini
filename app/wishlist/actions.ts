@@ -11,7 +11,7 @@ export async function addWishlistItem(formData: FormData) {
   const { data: auth } = await supabase.auth.getUser();
   if (!auth?.user) throw new Error("Non autenticato");
 
-  await supabase.from("wishlist_items").insert({
+  const { error } = await supabase.from("wishlist_items").insert({
     user_id: auth.user.id,
     name,
     producer,
@@ -22,6 +22,8 @@ export async function addWishlistItem(formData: FormData) {
     notes: formData.get("notes") || null
   });
 
+  if (error) throw new Error(error.message);
+
   revalidatePath('/wishlist');
 }
 
@@ -30,10 +32,12 @@ export async function deleteWishlistItem(id: string) {
   const { data: auth } = await supabase.auth.getUser();
   if (!auth?.user) throw new Error("Non autenticato");
 
-  await supabase
+  const { error } = await supabase
     .from("wishlist_items")
     .delete()
     .eq("id", id)
     .eq("user_id", auth.user.id);
+  
+  if (error) throw new Error(error.message);
   revalidatePath('/wishlist');
 }

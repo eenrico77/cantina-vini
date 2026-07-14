@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import NotAuthenticated from "@/components/NotAuthenticated";
 import { mapBottleFromDB } from "@/lib/adapters/bottleAdapter";
 import WineCard from "@/components/Winecard";
 import WineListClient from "@/components/WineListClient";
@@ -12,7 +13,7 @@ export default async function WinesPage() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return <div style={{ padding: 24 }}>Non autenticato</div>;
+    return <NotAuthenticated />;
   }
 
   const { data, error } = await supabase

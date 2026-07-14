@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createWine, analyzeLabelAction } from "./actions";
 
 const COLORS = ["Rosso", "Bianco", "Rosato", "Bollicine", "Dolce"];
@@ -16,6 +16,26 @@ export default function NewWinePage() {
     maturation_start: "", maturation_end: "", ideal_temp: "", decanting: "", glassware: "",
     organoleptic: "", taste_profile: "", purchase_price: ""
   });
+  const [wishlistId, setWishlistId] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const wId = params.get('wishlistId');
+      if (wId) {
+        setWishlistId(wId);
+        setFormData(prev => ({
+          ...prev,
+          name: params.get('name') || prev.name,
+          producer: params.get('producer') || prev.producer,
+          region: params.get('region') || prev.region,
+          country: params.get('country') || prev.country,
+          color: params.get('color') || prev.color,
+          year: params.get('year') || prev.year,
+        }));
+      }
+    }
+  }, []);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -80,7 +100,7 @@ export default function NewWinePage() {
       <h1 className="text-3xl font-extrabold text-ink-700 tracking-tight">Aggiungi Vino</h1>
 
       <div className="bg-sand-50 p-4 rounded-xl border border-dashed border-sand-200">
-        <label className="block text-sm font-medium text-ink-500 mb-2">📸 Scansiona etichetta con AI</label>
+        <label className="block text-sm font-medium text-ink-500 mb-2">📸 Scatta una foto (mobile) o carica un'immagine dell'etichetta</label>
         <input 
           type="file" 
           accept="image/*" 
@@ -93,9 +113,10 @@ export default function NewWinePage() {
 
       <form action={createWine} onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded-xl shadow-sm border border-sand-200">
         
-        {/* Campi nascosti per i dati JSON */}
+        {/* Campi nascosti per i dati JSON e wishlist */}
         <input type="hidden" name="organoleptic" value={formData.organoleptic} />
         <input type="hidden" name="taste_profile" value={formData.taste_profile} />
+        <input type="hidden" name="wishlistId" value={wishlistId} />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -156,39 +177,44 @@ export default function NewWinePage() {
 
         <details className="text-sm">
           <summary className="cursor-pointer font-medium text-blue-600">Mostra dettagli extra (AI)</summary>
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-ink-500 uppercase">Note Terroir</label>
-              <textarea name="origin_notes" value={formData.origin_notes} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none" />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-ink-500 uppercase">Recensione Annata</label>
-              <textarea name="vintage_review" value={formData.vintage_review} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none" />
-            </div>
-            <div className="grid grid-cols-2 gap-2">
+          <div className="mt-4 space-y-4">
+            
+            {/* Campi brevi: griglia 2 cols mobile, 3 cols desktop */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               <div>
-                <label className="block text-xs font-semibold text-ink-500 uppercase">Temp. Ideale</label>
-                <input name="ideal_temp" value={formData.ideal_temp} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none" />
+                <label className="block text-xs font-semibold text-ink-500 uppercase truncate">Temp. Ideale</label>
+                <input name="ideal_temp" value={formData.ideal_temp} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2 rounded-lg outline-none text-sm focus:ring-2 focus:ring-brand-500" />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-ink-500 uppercase">Bicchiere Consigliato</label>
-                <input name="glassware" value={formData.glassware} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none" />
+                <label className="block text-xs font-semibold text-ink-500 uppercase truncate">Bicchiere</label>
+                <input name="glassware" value={formData.glassware} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2 rounded-lg outline-none text-sm focus:ring-2 focus:ring-brand-500" />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-ink-500 uppercase">Decantazione</label>
-                <input name="decanting" value={formData.decanting} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none" />
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <label className="block text-xs font-semibold text-ink-500 uppercase">Inizio Maturazione (anni dalla vendemmia)</label>
-                <input name="maturation_start" type="number" value={formData.maturation_start} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none" />
+                <label className="block text-xs font-semibold text-ink-500 uppercase truncate">Decantazione</label>
+                <input name="decanting" value={formData.decanting} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2 rounded-lg outline-none text-sm focus:ring-2 focus:ring-brand-500" />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-ink-500 uppercase">Fine Maturazione (anni dalla vendemmia)</label>
-                <input name="maturation_end" type="number" value={formData.maturation_end} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none" />
+                <label className="block text-xs font-semibold text-ink-500 uppercase truncate" title="Anni dalla vendemmia">Inizio Matur. (+anni)</label>
+                <input name="maturation_start" type="number" value={formData.maturation_start} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2 rounded-lg outline-none text-sm focus:ring-2 focus:ring-brand-500" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-ink-500 uppercase truncate" title="Anni dalla vendemmia">Fine Matur. (+anni)</label>
+                <input name="maturation_end" type="number" value={formData.maturation_end} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2 rounded-lg outline-none text-sm focus:ring-2 focus:ring-brand-500" />
               </div>
             </div>
+
+            {/* Campi lunghi: 1 col mobile, 2 cols desktop */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-ink-500 uppercase">Note Terroir</label>
+                <textarea name="origin_notes" value={formData.origin_notes} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-brand-500 h-24" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-ink-500 uppercase">Recensione Annata</label>
+                <textarea name="vintage_review" value={formData.vintage_review} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-brand-500 h-24" />
+              </div>
+            </div>
+            
           </div>
         </details>
 

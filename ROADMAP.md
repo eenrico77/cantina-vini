@@ -144,7 +144,7 @@ Ordine deciso: prima la curva di maturazione (priorità esplicita di Enrico), po
       status-young/almost/ready/decline da tailwind.config.js, marker "OGGI: [anno]" animato
       che scivola in posizione, marker verticali per Giovane/Apice/Declino. Giudizio estetico
       finale da dare a occhio da Enrico su `/cantina/[id]`.
-- [ ] **Bocciato da Enrico il 14/07/2026 e da rifare**: la barra piatta non convince
+- [x] **Rifatta e completata il 14/07/2026** (bocciata la versione a barra piatta): la barra piatta non convince
       esteticamente, e c'è un'incoerenza logica trovata da Enrico — il testo sotto il grafico
       dice "Quasi pronto — al meglio dal 2027" ma il marker "Apice" nel grafico mostra 2031
       (perché "Apice" è calcolato come punto medio tra peak_start e peak_end, un concetto
@@ -175,6 +175,13 @@ Ordine deciso: prima la curva di maturazione (priorità esplicita di Enrico), po
            - Dolce: Dessert, Formaggi erborinati, Frutta secca, Crostate, Cioccolato fondente
       - La tab "Info Vino" resta com'è oggi (temperatura/decantazione/note AI complete), questa
         è solo l'anteprima rapida vicino al grafico, non una sostituzione
+      - **Verificato via codice il 14/07/2026**: curva Bezier reale con finestra ideale
+        ombreggiata coerente (niente più "Apice" fuori posto), chip temperatura/bicchiere/
+        abbinamenti sotto il grafico, campo "Valore Attuale" modificabile per bottiglia
+        (`updateBottleValueAction`, filtrata per `user_id`), prezzo di acquisto nel form.
+      - **Corretto direttamente da Claude**: la curva usava colori hardcoded nuovi
+        (`#10b981`/`#f59e0b`/`#14b8a6`/`#ef4444`) invece dei token `status-*` richiesti
+        esplicitamente due volte — sostituiti con gli hex ufficiali della palette.
 
 ### Fase 5b — Componenti base e design system
 
@@ -233,7 +240,7 @@ davvero); gli item residui di fasi precedenti si chiudono dentro questa fase, no
       Enrico prima di lanciarla su Supabase in produzione). **Secondo step di oggi.**
 - [ ] Deploy su Vercel, variabili d'ambiente Supabase e `GEMINI_API_KEY` configurate lato hosting
 - [ ] Controllo dei vincoli DB usati davvero dall'app contro tutti i form
-- [ ] Passata di QA manuale su tutti i flussi: login, aggiungi vino (con e senza foto AI, con
+- [x] Passata di QA manuale su tutti i flussi: login, aggiungi vino (con e senza foto AI, con
       e senza annata), segna come bevuta, abbinamento cibo-vino, wishlist, statistiche
 
 ## Decisioni aperte (da chiudere prima di iniziare le fasi corrispondenti)
@@ -273,6 +280,61 @@ riorganizzate in un task concreto in una fase.
         quantità/note). Finché non viene toccato, `/stats` e la home usano `purchase_price`
         come base (logica già presente: `current_value || purchase_price`).
       Da aggiungere insieme al blocco Fase 5a-bis (vedi sopra).
+
+### QA manuale di Enrico dopo le migrazioni 0004/0005/0006 (14/07/2026)
+
+- [x] **CAUSA REALE TROVATA il 14/07/2026 (non era una cache)**: la migrazione
+      `0003_diary_wishlist.sql` non era mai stata eseguita sul Supabase reale — verificato dal
+      Table Editor: esistono solo `bottles`/`cellars`/`wines` (nostre) più `profiles`/
+      `tastings`/`wine_values` (residui del vecchio progetto abbandonato, zero riferimenti nel
+      codice attuale), ma NON `diary_entries` né `wishlist_items`. Diario e Wishlist non hanno
+      mai davvero funzionato: "segna come bevuta" scalava la quantità (tabella esistente) ma
+      l'inserimento nel diario falliva silenziosamente (nessun controllo errore sul risultato
+      dell'insert). Corretto eseguendo la migrazione 0003 (versione con tipi giusti, vedi voce
+      sotto sull'incompatibilità uuid/bigint) sul Supabase reale — **verificato funzionante il
+      14/07/2026**: "segna come bevuta" ora crea davvero una voce reale in `/diary` con nome,
+      data e voto corretti.
+      **Da fare da Antigravity**: aggiungere controllo esplicito dell'errore su OGNI insert/
+      update Supabase in `drinkBottleAction`, `deleteWishlistItem`, `addWishlistItem` (e
+      qualunque altra azione di scrittura) — se `error` non è null, lanciare un'eccezione
+      invece di ignorarlo, così un problema come questo si vede subito invece di fallire in
+      silenzio.
+- [x] **Scoperta collegata e corretta il 14/07/2026 — inconsistenza di tipi tra tabelle**:
+      `wines.id` è `bigint`, ma `bottles.id` e `cellars.id` sono `uuid` (eredità dello schema
+      originale pre-esistente, mai uniformato). La migrazione 0003 dichiarava
+      `diary_entries.bottle_id` come `bigint` con FK verso `bottles(id)` (uuid) — Postgres ha
+      bloccato la creazione della tabella per l'incompatibilità di tipo. Corretto: colonna
+      cambiata in `uuid` nella migrazione, e in `app/cantina/[id]/actions.ts` rimosso un
+      `parseInt(bottleId, 10)` che avrebbe scritto un id numerico senza senso invece del vero
+      UUID della bottiglia. `wine_id` resta `bigint` (coerente con `wines.id`, corretto così).
+      **Da tenere a mente**: qualunque nuovo codice che tocca `bottles.id`/`cellars.id` deve
+      trattarli come stringhe/UUID, mai con `parseInt`/`Number()`.
+- [ ] **Filtri `/wines` illeggibili**: le etichette delle select ("Tutte le tipologie", "Tutte
+      le maturazioni", ecc.) sono tagliate ("Tutte le tip⌄") perché le caselle sono troppo
+      strette. Allargare le select o accorciare i placeholder, e sistemare l'allineamento
+      della griglia dei filtri.
+- [ ] **Manca login/logout visibile**: non esiste da nessuna parte un modo per fare logout
+      (verificato: nessun bottone/azione di sign-out in tutto il codice). Aggiungere un modo
+      chiaro per uscire (es. nel menu in basso o in un'icona profilo in alto), e verificare che
+      il login stesso sia chiaro quando non si è autenticati.
+- [ ] **Upload foto poco chiaro**: in "Aggiungi Vino" si vede solo "Scegli file", non è chiaro
+      se si può scattare una foto al volo o solo caricarne una esistente. Su desktop il
+      comportamento della fotocamera diretta non è comunque garantito (dipende dal browser),
+      quindi va chiarita la label/testo di supporto invece di promettere una funzione che su
+      desktop potrebbe non esserci (su mobile invece dovrebbe aprire la fotocamera grazie a
+      `capture="environment"` già presente nel codice).
+- [ ] **Sezione "dettagli extra (AI)" da rifare**: troppo testo dentro box che non c'entrano,
+      caselle non allineate in griglia, testo che sborda dai contenitori. Dati brevi come
+      "Decantazione" (Sì/No) non hanno bisogno di un riquadro dedicato — vanno mostrati come
+      semplice testo/etichetta inline, non incasellati come i campi lunghi (descrizione, note
+      terroir, ecc.). Rivedere tutta la sezione con una griglia coerente in base alla
+      lunghezza attesa del contenuto.
+- [ ] **Wishlist poco utile così com'è**: oggi si può solo aggiungere/rimuovere un vino
+      desiderato, ma non c'è modo di "promuoverlo" a vino posseduto quando lo si compra
+      davvero. Aggiungere un'azione (es. stellina/bottone "Ho comprato questo vino") che apre
+      il form "Aggiungi Vino" pre-compilato con i dati della voce wishlist (nome, produttore,
+      regione, colore, annata se presente), e rimuove la voce dalla wishlist una volta creato
+      il vino vero.
 
 ## Cosa NON fare ora (deciso insieme, per non disperdere tempo)
 

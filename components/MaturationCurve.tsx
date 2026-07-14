@@ -50,17 +50,17 @@ export default function MaturationCurve({ start, end, current }: Props) {
         <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full overflow-visible">
           <defs>
             <linearGradient id="curveGrad" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#10b981" />
-              <stop offset={`${startPerc}%`} stopColor="#f59e0b" />
-              <stop offset="50%" stopColor="#14b8a6" />
-              <stop offset={`${endPerc}%`} stopColor="#ef4444" />
+              <stop offset="0%" stopColor="#7a8f99" />
+              <stop offset={`${startPerc}%`} stopColor="#c7773a" />
+              <stop offset="50%" stopColor="#5f8a5a" />
+              <stop offset={`${endPerc}%`} stopColor="#a9463a" />
             </linearGradient>
-            
+
             <linearGradient id="fillGrad" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#10b981" stopOpacity="0.4" />
-              <stop offset={`${startPerc}%`} stopColor="#f59e0b" stopOpacity="0.4" />
-              <stop offset="50%" stopColor="#14b8a6" stopOpacity="0.4" />
-              <stop offset={`${endPerc}%`} stopColor="#ef4444" stopOpacity="0.4" />
+              <stop offset="0%" stopColor="#7a8f99" stopOpacity="0.4" />
+              <stop offset={`${startPerc}%`} stopColor="#c7773a" stopOpacity="0.4" />
+              <stop offset="50%" stopColor="#5f8a5a" stopOpacity="0.4" />
+              <stop offset={`${endPerc}%`} stopColor="#a9463a" stopOpacity="0.4" />
             </linearGradient>
 
             <clipPath id="idealWindow">

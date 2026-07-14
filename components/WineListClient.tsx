@@ -45,13 +45,13 @@ export default function WineListClient({ bottles }) {
     <div className="space-y-6">
       <div className="bg-white p-4 rounded-xl shadow-sm border border-sand-200/70 space-y-4">
         <h3 className="text-sm font-semibold text-ink-500 uppercase tracking-wider">Filtra Cantina</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
           <select
             className="p-2 text-sm border rounded-lg bg-sand-50 focus:ring-2 focus:ring-brand-500 outline-none"
             value={filters.type}
             onChange={(e) => setFilters({ ...filters, type: e.target.value })}
           >
-            <option value="">Tutte le tipologie</option>
+            <option value="">Tipologia</option>
             {uniqueTypes.map(t => <option key={t} value={t}>{t}</option>)}
           </select>
 
@@ -60,7 +60,7 @@ export default function WineListClient({ bottles }) {
             value={filters.aging}
             onChange={(e) => setFilters({ ...filters, aging: e.target.value })}
           >
-            <option value="">Tutte le maturazioni</option>
+            <option value="">Maturazione</option>
             <option value="too_young">Giovane</option>
             <option value="almost_ready">Quasi pronto</option>
             <option value="ready">Pronto ora</option>
@@ -72,7 +72,7 @@ export default function WineListClient({ bottles }) {
             value={filters.year}
             onChange={(e) => setFilters({ ...filters, year: e.target.value })}
           >
-            <option value="">Tutte le annate</option>
+            <option value="">Annata</option>
             {uniqueYears.map(y => <option key={y} value={y}>{y}</option>)}
           </select>
 
@@ -81,7 +81,7 @@ export default function WineListClient({ bottles }) {
             value={filters.region}
             onChange={(e) => setFilters({ ...filters, region: e.target.value })}
           >
-            <option value="">Tutte le regioni</option>
+            <option value="">Regione</option>
             {uniqueRegions.map(r => <option key={r} value={r}>{r}</option>)}
           </select>
         </div>

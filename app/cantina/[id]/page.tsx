@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import NotAuthenticated from "@/components/NotAuthenticated";
 import WineDetailClient from "@/components/WineDetailClient";
 
 export default async function WineDetailPage({ params }: { params: { id: string } }) {
@@ -6,7 +7,7 @@ export default async function WineDetailPage({ params }: { params: { id: string 
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
-    return <div className="p-6">Non autenticato</div>;
+    return <NotAuthenticated />;
   }
 
   // Vino

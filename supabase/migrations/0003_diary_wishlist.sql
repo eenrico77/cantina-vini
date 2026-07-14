@@ -5,7 +5,7 @@ create table if not exists diary_entries (
   id bigint generated always as identity primary key,
   user_id uuid not null references auth.users(id) on delete cascade,
   wine_id bigint references wines(id) on delete set null,
-  bottle_id bigint references bottles(id) on delete set null,
+  bottle_id uuid references bottles(id) on delete set null,
   wine_name text not null,
   producer text,
   year int,

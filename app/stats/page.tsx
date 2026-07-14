@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import NotAuthenticated from "@/components/NotAuthenticated";
 
 const AGING_LABELS: Record<string, string> = {
   too_young: "Giovane",
@@ -12,7 +13,7 @@ export default async function StatsPage() {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user) return <div className="p-6">Non autenticato</div>;
+  if (!user) return <NotAuthenticated />;
 
   // Fetch bottles
   const { data: bottles } = await supabase

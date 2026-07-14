@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import NotAuthenticated from "@/components/NotAuthenticated";
 import { addWishlistItem } from "./actions";
 import WishlistClientList from "@/components/WishlistClientList";
 
@@ -6,7 +7,7 @@ export default async function WishlistPage() {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user) return <div className="p-6">Non autenticato</div>;
+  if (!user) return <NotAuthenticated />;
 
   const { data: items } = await supabase
     .from("wishlist_items")

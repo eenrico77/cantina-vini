@@ -49,6 +49,7 @@ export async function createWine(formData: FormData): Promise<void> {
   const tasteProfileRaw = formData.get("taste_profile") as string;
   const organoleptic = organolepticRaw ? JSON.parse(organolepticRaw) : null;
   const taste_profile = tasteProfileRaw ? JSON.parse(tasteProfileRaw) : null;
+  const wishlistId = formData.get("wishlistId") as string;
 
   if (!name || !producer || !color) {
     throw new Error("Dati mancanti: Nome, Produttore e Tipologia sono obbligatori.");
@@ -147,6 +148,15 @@ export async function createWine(formData: FormData): Promise<void> {
       }
     };
     waitUntil(generateAndSave()); // Chiamata asincrona registrata per Vercel
+  }
+
+  if (wishlistId) {
+    const { error: delErr } = await supabase
+      .from("wishlist_items")
+      .delete()
+      .eq("id", wishlistId)
+      .eq("user_id", userId);
+    if (delErr) console.error("Errore cancellazione wishlist:", delErr);
   }
 
   redirect(`/cantina/${wineId}`);
