@@ -16,7 +16,13 @@ export async function analyzeLabelAction(formData: FormData) {
   const dataUri = `data:${file.type};base64,${base64}`;
   
   const result = await analyzeWineLabel(dataUri);
-  return result;
+  return { ...result, originalImage: dataUri };
+}
+
+export async function generateCatalogImageAction(name: string, producer: string, color: string) {
+  if (!name || !producer || !color) throw new Error("Dati mancanti per generare l'immagine da catalogo");
+  const result = await generateProfessionalWineImage(name, producer, color);
+  return result; // base64 data URI
 }
 
 export async function createWine(formData: FormData): Promise<void> {
@@ -50,6 +56,7 @@ export async function createWine(formData: FormData): Promise<void> {
   const organoleptic = organolepticRaw ? JSON.parse(organolepticRaw) : null;
   const taste_profile = tasteProfileRaw ? JSON.parse(tasteProfileRaw) : null;
   const wishlistId = formData.get("wishlistId") as string;
+  const finalImageBase64 = formData.get("final_image") as string;
 
   if (!name || !producer || !color) {
     throw new Error("Dati mancanti: Nome, Produttore e Tipologia sono obbligatori.");
@@ -136,18 +143,35 @@ export async function createWine(formData: FormData): Promise<void> {
     throw new Error(insertBottleError?.message ?? "Creazione bottiglia fallita");
   }
 
-  if (!imageUrl) {
-    const generateAndSave = async () => {
-      try {
-        const newImage = await generateProfessionalWineImage(name, producer, color);
-        if (newImage) {
-          await supabase.from("wines").update({ image_url: newImage }).eq("id", wineId);
+  if (finalImageBase64 && finalImageBase64.startsWith("data:image/")) {
+    const matches = finalImageBase64.match(/^data:(image\/[A-Za-z-+\/]+);base64,(.+)$/);
+    if (matches && matches.length === 3) {
+      const mimeType = matches[1];
+      const base64Data = matches[2];
+      const buffer = Buffer.from(base64Data, "base64");
+      
+      const ext = mimeType.split("/")[1] || "png";
+      const fileName = `${userId}/${Date.now()}.${ext}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("wine-images")
+        .upload(fileName, buffer, {
+          contentType: mimeType,
+          upsert: true
+        });
+
+      if (!uploadError) {
+        const { data: publicUrlData } = supabase.storage
+          .from("wine-images")
+          .getPublicUrl(fileName);
+        
+        if (publicUrlData?.publicUrl) {
+          await supabase.from("wines").update({ image_url: publicUrlData.publicUrl }).eq("id", wineId);
         }
-      } catch (e) {
-        console.warn("Immagine non generata in background", e);
+      } else {
+        console.error("Errore upload immagine:", uploadError);
       }
-    };
-    waitUntil(generateAndSave()); // Chiamata asincrona registrata per Vercel
+    }
   }
 
   if (wishlistId) {

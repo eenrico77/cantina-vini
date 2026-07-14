@@ -309,32 +309,47 @@ riorganizzate in un task concreto in una fase.
       UUID della bottiglia. `wine_id` resta `bigint` (coerente con `wines.id`, corretto così).
       **Da tenere a mente**: qualunque nuovo codice che tocca `bottles.id`/`cellars.id` deve
       trattarli come stringhe/UUID, mai con `parseInt`/`Number()`.
-- [ ] **Filtri `/wines` illeggibili**: le etichette delle select ("Tutte le tipologie", "Tutte
-      le maturazioni", ecc.) sono tagliate ("Tutte le tip⌄") perché le caselle sono troppo
-      strette. Allargare le select o accorciare i placeholder, e sistemare l'allineamento
-      della griglia dei filtri.
-- [ ] **Manca login/logout visibile**: non esiste da nessuna parte un modo per fare logout
-      (verificato: nessun bottone/azione di sign-out in tutto il codice). Aggiungere un modo
-      chiaro per uscire (es. nel menu in basso o in un'icona profilo in alto), e verificare che
-      il login stesso sia chiaro quando non si è autenticati.
-- [ ] **Upload foto poco chiaro**: in "Aggiungi Vino" si vede solo "Scegli file", non è chiaro
-      se si può scattare una foto al volo o solo caricarne una esistente. Su desktop il
-      comportamento della fotocamera diretta non è comunque garantito (dipende dal browser),
-      quindi va chiarita la label/testo di supporto invece di promettere una funzione che su
-      desktop potrebbe non esserci (su mobile invece dovrebbe aprire la fotocamera grazie a
-      `capture="environment"` già presente nel codice).
-- [ ] **Sezione "dettagli extra (AI)" da rifare**: troppo testo dentro box che non c'entrano,
-      caselle non allineate in griglia, testo che sborda dai contenitori. Dati brevi come
-      "Decantazione" (Sì/No) non hanno bisogno di un riquadro dedicato — vanno mostrati come
-      semplice testo/etichetta inline, non incasellati come i campi lunghi (descrizione, note
-      terroir, ecc.). Rivedere tutta la sezione con una griglia coerente in base alla
-      lunghezza attesa del contenuto.
-- [ ] **Wishlist poco utile così com'è**: oggi si può solo aggiungere/rimuovere un vino
-      desiderato, ma non c'è modo di "promuoverlo" a vino posseduto quando lo si compra
-      davvero. Aggiungere un'azione (es. stellina/bottone "Ho comprato questo vino") che apre
-      il form "Aggiungi Vino" pre-compilato con i dati della voce wishlist (nome, produttore,
-      regione, colore, annata se presente), e rimuove la voce dalla wishlist una volta creato
-      il vino vero.
+- [x] **Filtri `/wines`**: griglia 1 colonna su mobile, 4 su desktop, placeholder accorciati
+      ("Tipologia" invece di "Tutte le tipologie") — verificato via codice il 14/07/2026.
+- [x] **Login/logout**: `components/Header.tsx` con bottone "Esci" (`signOutAction` in
+      `app/actions.ts`), `components/NotAuthenticated.tsx` sostituisce i vecchi "Non
+      autenticato" grezzi in TUTTE le pagine protette (verificato: home, /wines, /stats,
+      /diary, /wishlist, /cantina/[id]) — verificato via codice il 14/07/2026.
+- [x] **Upload foto**: label chiarita in `app/cantina/new/page.tsx` — verificato via codice.
+- [x] **Sezione "dettagli extra (AI)"**: griglia compatta 2-3 colonne per i campi brevi
+      (Temp./Bicchiere/Decantazione/Maturazione), textarea a piena larghezza solo per i campi
+      lunghi (Terroir/Recensione) — verificato via codice il 14/07/2026.
+- [x] **Wishlist → Cantina**: bottone "⭐️ Comprato" in `WishlistClientList.tsx` porta a
+      `/cantina/new?wishlistId=...` con tutti i campi pre-compilati via query string, letti in
+      `page.tsx` e passati come hidden field a `createWine`, che cancella la voce wishlist dopo
+      il salvataggio riuscito — verificato via codice il 14/07/2026, flusso completo e corretto.
+
+### Fase 6-bis — Gestione immagini reali (decisa il 14/07/2026)
+
+Oggi la foto dell'etichetta serve SOLO al riconoscimento AI e viene scartata; l'immagine
+mostrata è sempre quella generata dall'AI (stile catalogo), salvata come base64 grezzo dentro
+`wines.image_url` (pesante, lento). Enrico vuole poter scegliere tra la sua foto vera e quella
+da catalogo. Decisioni prese: generazione foto da catalogo SU RICHIESTA (bottone dedicato, non
+automatica) per non rallentare chi non la vuole; migrazione a Supabase Storage vero (via URL)
+al posto del base64, approfittandone visto che tocchiamo comunque il salvataggio immagini.
+
+- [x] Nuova migrazione `supabase/migrations/0007_storage_bucket.sql`: crea bucket pubblico
+      `wine-images` in `storage.buckets`, con policy RLS su `storage.objects` — insert/update
+      solo per l'utente proprietario (path `${userId}/...`), select pubblica (serve per
+      mostrare le immagini senza autenticazione lato client)
+- [x] In `app/cantina/new/page.tsx`, dopo l'upload e il riconoscimento AI: mostrare subito
+      l'anteprima della foto reale caricata dall'utente, più un bottone "Genera foto da
+      catalogo" (chiama una nuova server action che usa `generateProfessionalWineImage`,
+      mostra un caricamento, poi la anteprima del risultato). L'utente sceglie quale delle due
+      tenere (default: la propria foto se non genera quella da catalogo)
+- [x] In `createWine` (actions.ts): caricare l'immagine scelta (propria o da catalogo) su
+      Supabase Storage (bucket `wine-images`, path tipo `${userId}/${timestamp}.png`), salvare
+      in `wines.image_url` l'URL pubblico risultante, NON più il base64 diretto
+- [x] Rimuovere il vecchio meccanismo "fire and forget" (`waitUntil`/`generateAndSave`
+      automatico dopo il salvataggio) — non serve più, la scelta ora avviene prima del submit
+- [ ] Non prioritario/facoltativo per ora: possibilità di cambiare l'immagine di un vino già
+      salvato dalla sua scheda dettaglio — si può rimandare a dopo la prima release se non c'è
+      tempo, non blocca il deploy
 
 ## Cosa NON fare ora (deciso insieme, per non disperdere tempo)
 
