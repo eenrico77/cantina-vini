@@ -139,45 +139,43 @@ export default function NewWinePage() {
         {loadingAI && <p className="text-sm text-blue-600 mt-2">Analisi in corso, attendi qualche secondo...</p>}
         
         {/* Scelta Immagine */}
-        {(realImage || catalogImage) && (
-          <div className="mt-4 pt-4 border-t border-sand-200">
-            <p className="text-sm font-semibold text-ink-700 mb-3">Scegli l'immagine da salvare</p>
-            <div className="flex flex-wrap gap-4">
-              {realImage && (
-                <div 
-                  className={`relative cursor-pointer rounded-xl overflow-hidden border-4 transition-all w-32 h-40 ${selectedImage === "real" ? "border-brand-500 shadow-md" : "border-transparent opacity-70 hover:opacity-100"}`}
-                  onClick={() => setSelectedImage("real")}
+        <div className="mt-4 pt-4 border-t border-sand-200">
+          <p className="text-sm font-semibold text-ink-700 mb-3">Scegli l'immagine da salvare</p>
+          <div className="flex flex-wrap gap-4 items-end">
+            {realImage && (
+              <div 
+                className={`relative cursor-pointer rounded-xl overflow-hidden border-4 transition-all w-32 h-40 ${selectedImage === "real" ? "border-brand-500 shadow-md" : "border-transparent opacity-70 hover:opacity-100"}`}
+                onClick={() => setSelectedImage("real")}
+              >
+                <img src={realImage} alt="Foto originale" className="w-full h-full object-cover" />
+                {selectedImage === "real" && <div className="absolute top-1 right-1 bg-brand-500 text-white rounded-full p-1 shadow"><svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg></div>}
+                <div className="absolute bottom-0 inset-x-0 bg-black/50 text-white text-[10px] p-1 text-center font-medium">Foto Reale</div>
+              </div>
+            )}
+            {catalogImage && (
+              <div 
+                className={`relative cursor-pointer rounded-xl overflow-hidden border-4 transition-all w-32 h-40 ${selectedImage === "catalog" ? "border-brand-500 shadow-md" : "border-transparent opacity-70 hover:opacity-100"}`}
+                onClick={() => setSelectedImage("catalog")}
+              >
+                <img src={catalogImage} alt="Foto da catalogo" className="w-full h-full object-cover" />
+                {selectedImage === "catalog" && <div className="absolute top-1 right-1 bg-brand-500 text-white rounded-full p-1 shadow"><svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg></div>}
+                <div className="absolute bottom-0 inset-x-0 bg-black/50 text-white text-[10px] p-1 text-center font-medium">Catalogo</div>
+              </div>
+            )}
+            {!catalogImage && (
+              <div className="flex items-center h-full pb-2">
+                <button 
+                  type="button" 
+                  onClick={handleGenerateCatalog} 
+                  disabled={generatingCatalog || !formData.name || !formData.producer || !formData.color}
+                  className="text-xs bg-white border border-brand-200 text-brand-600 font-bold px-3 py-2 rounded-lg hover:bg-brand-50 transition-colors disabled:opacity-50 flex items-center gap-2"
                 >
-                  <img src={realImage} alt="Foto originale" className="w-full h-full object-cover" />
-                  {selectedImage === "real" && <div className="absolute top-1 right-1 bg-brand-500 text-white rounded-full p-1 shadow"><svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg></div>}
-                  <div className="absolute bottom-0 inset-x-0 bg-black/50 text-white text-[10px] p-1 text-center font-medium">Foto Reale</div>
-                </div>
-              )}
-              {catalogImage && (
-                <div 
-                  className={`relative cursor-pointer rounded-xl overflow-hidden border-4 transition-all w-32 h-40 ${selectedImage === "catalog" ? "border-brand-500 shadow-md" : "border-transparent opacity-70 hover:opacity-100"}`}
-                  onClick={() => setSelectedImage("catalog")}
-                >
-                  <img src={catalogImage} alt="Foto da catalogo" className="w-full h-full object-cover" />
-                  {selectedImage === "catalog" && <div className="absolute top-1 right-1 bg-brand-500 text-white rounded-full p-1 shadow"><svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg></div>}
-                  <div className="absolute bottom-0 inset-x-0 bg-black/50 text-white text-[10px] p-1 text-center font-medium">Catalogo</div>
-                </div>
-              )}
-              {!catalogImage && (
-                <div className="flex items-center">
-                  <button 
-                    type="button" 
-                    onClick={handleGenerateCatalog} 
-                    disabled={generatingCatalog || !formData.name || !formData.producer || !formData.color}
-                    className="text-xs bg-white border border-brand-200 text-brand-600 font-bold px-3 py-2 rounded-lg hover:bg-brand-50 transition-colors disabled:opacity-50 flex items-center gap-2"
-                  >
-                    {generatingCatalog ? "Generazione..." : "✨ Genera da catalogo"}
-                  </button>
-                </div>
-              )}
-            </div>
+                  {generatingCatalog ? "Generazione..." : "✨ Genera da catalogo"}
+                </button>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
 
       <form action={createWine} onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded-xl shadow-sm border border-sand-200">
