@@ -203,7 +203,9 @@ Ordine deciso: prima la curva di maturazione (priorità esplicita di Enrico), po
 - [x] Immagini vere/rappresentative al posto dei segnaposto — già in hero di `/cantina/[id]`,
       con fallback 🍷 se `image_url` assente
 
-### Fase 5d — Rifiniture testuali
+### Fase 7 — UI e Rifiniture
+
+- [x] Consolidare le azioni sparse nella scheda di dettaglio vino in un pulsante "••• Azioni" con bottom sheet (ispirazione Oeni).
 
 - [x] **Tradurre tutte le etichette rimaste in inglese** trovate testando il 13/07/2026:
       "Storage & Service", "TEMP.", "DECANTING", "Maturation Start/End (offset)" nel form
@@ -405,3 +407,44 @@ al posto del base64, approfittandone visto che tocchiamo comunque il salvataggio
 - Niente funzioni social/community (contro la visione di prodotto)
 - Niente refactor strutturali ulteriori sul modello dati: wines/bottles/cellars è quello giusto, si costruisce sopra, non si ridiscute
 - Niente rifinitura grafica a pezzi: colori/stile/immagini vere si fanno tutti insieme in Fase 5, non prima
+
+## Fase 7 — Revisione grafica e UX generale (avviata 14/07/2026)
+
+App live e funzionante (Fase 6 completata: RLS attiva, upload etichette, wishlist con foto,
+password reale). Enrico ha condiviso screenshot di un'app concorrente ben fatta (Oeni) per
+prendere spunti grafici/funzionali. Backlog prioritizzato di conseguenza, dal più al meno
+impattante/economico da realizzare. Coerente con le decisioni "Cosa NON fare" sopra: niente 3D,
+niente social/gamification, niente refactor del modello dati.
+
+### Priorità 1 — alto impatto, sforzo contenuto
+- [ ] Bottone unico "Azioni" nella scheda vino (`WineDetailClient.tsx`): bottom sheet con le
+      azioni disponibili (Segna come bevuta, Modifica valore, Aggiungi nota, ecc.) invece di
+      pulsanti sparsi per la pagina — spunto segnalato direttamente da Enrico su uno screenshot
+      annotato a mano ("TASTO AZIONI")
+- [ ] Curva di maturazione: aggiungere faccine/emoji lungo la curva (giovane/apice/declino) e
+      una legenda sotto con fasce d'età + nome fase, per renderla ancora più leggibile
+- [ ] Empty state illustrati e più caldi per Diario/Wishlist/Vini quando vuoti, invece di solo
+      testo semplice
+- [ ] Nella lista "I miei vini": mostrare inline prezzo d'acquisto vs valore corrente con
+      percentuale (come già discusso su valore reale della cantina), non solo nelle statistiche
+      aggregate
+
+### Priorità 2 — impatto medio, richiede più lavoro
+- [ ] Sezione abbinamenti cibo-vino: sostituire i chip testuali con card fotografiche (foto
+      reali del piatto) e percentuale di match, sia nella scheda vino che nella pagina "Cibo e
+      vino" dedicata
+- [ ] Scheda vino: hero fotografico (sfondo vigneto/atmosfera) dietro l'immagine della bottiglia
+- [ ] Caratteristiche gusto: due slider orizzontali (Leggero↔Corposo, Piatto↔Frizzante) al posto
+      dell'attuale rappresentazione, riusando i dati già presenti in `taste_profile`
+- [ ] Tag liberi sul vino (es. "Regalo", "Occasione speciale") per organizzazione leggera
+
+### Priorità 3 — idee valide ma da valutare più avanti
+- [ ] Gestione multi-annata/formato sotto un'unica scheda prodotto (oggi ogni bottiglia è
+      un'entry a sé) — cambierebbe struttura della UI di dettaglio, non il modello dati
+      sottostante; da valutare se serve davvero per uso personale
+- [ ] Barra "Qualità annata" con icona meteo, derivata automaticamente dal testo
+      `vintage_review` già generato dall'AI
+
+### Esplicitamente escluso (coerente con "Cosa NON fare")
+- Cantina 3D, gamification a punti/sfide, funzioni social/amici — viste su Oeni ma fuori scope
+  per un'app di uso personale

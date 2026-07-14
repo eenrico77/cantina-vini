@@ -5,7 +5,7 @@ import Image from "next/image";
 import MaturationCurve from "@/components/MaturationCurve";
 import { getAgingLabel } from "@/lib/domain/maturation";
 import type { AgingStatus } from "@/types";
-import DrinkBottleModal from "@/components/DrinkBottleModal";
+import BottleActionsSheet from "@/components/BottleActionsSheet";
 import { updateBottleValueAction } from "@/app/cantina/[id]/actions";
 
 const getStaticPairings = (color: string) => {
@@ -19,8 +19,7 @@ const getStaticPairings = (color: string) => {
   }
 };
 
-function EditableValue({ bottle, wineId }: { bottle: any; wineId: string }) {
-  const [isEditing, setIsEditing] = useState(false);
+function EditableValue({ bottle, wineId, isEditing, setIsEditing }: { bottle: any; wineId: string; isEditing: boolean; setIsEditing: (v: boolean) => void }) {
   const [val, setVal] = useState(bottle.current_value || bottle.purchase_price || "");
   const [isPending, startTransition] = useTransition();
 
@@ -40,7 +39,7 @@ function EditableValue({ bottle, wineId }: { bottle: any; wineId: string }) {
 
   if (isEditing) {
     return (
-      <div className="bg-sand-50 rounded-2xl p-3 border border-brand-200 mt-3 flex items-center gap-2">
+      <div className="bg-sand-50 rounded-2xl p-3 border border-brand-200 mb-4 flex items-center gap-2">
         <span className="text-[10px] font-bold text-ink-500 uppercase">Valore (€)</span>
         <input 
           type="number" 
@@ -60,10 +59,7 @@ function EditableValue({ bottle, wineId }: { bottle: any; wineId: string }) {
   }
 
   return (
-    <div 
-      className="bg-sand-50 rounded-2xl p-3 border border-sand-100 mt-3 flex justify-between items-center cursor-pointer hover:bg-sand-100 transition-colors"
-      onClick={() => setIsEditing(true)}
-    >
+    <div className="bg-sand-50 rounded-2xl p-3 border border-sand-100 mb-4 flex justify-between items-center">
       <div>
         <div className="text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-0.5">Valore Attuale</div>
         <div className="text-sm font-medium text-ink-700">
@@ -72,11 +68,98 @@ function EditableValue({ bottle, wineId }: { bottle: any; wineId: string }) {
           ) : purchase ? (
             <span className="text-ink-400">{purchase}€ <span className="text-[10px]">(prezzo acquisto)</span></span>
           ) : (
-            <span className="text-ink-400 text-xs italic">Clicca per inserire</span>
+            <span className="text-ink-400 text-xs italic">—</span>
           )}
         </div>
       </div>
-      <div className="text-ink-300 text-xs">✏️</div>
+    </div>
+  );
+}
+
+function BottleCard({ bottle, wine, currentYear }: { bottle: any; wine: any; currentYear: number }) {
+  const [isEditingValue, setIsEditingValue] = useState(false);
+  const hasCurve = typeof bottle.peak_start === "number" && typeof bottle.peak_end === "number";
+  const peak = hasCurve ? Math.floor((bottle.peak_start + bottle.peak_end) / 2) : null;
+
+  return (
+    <div className="bg-white border border-sand-200 rounded-3xl p-5 shadow-soft relative overflow-hidden">
+      <div className="grid grid-cols-2 gap-3 mb-4">
+        <div className="bg-sand-50 rounded-2xl p-3 text-center border border-sand-100">
+          <div className="text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-1">Annata</div>
+          <div className="text-2xl font-black text-ink-700">{bottle.year}</div>
+        </div>
+        <div className="bg-sand-50 rounded-2xl p-3 text-center border border-sand-100">
+          <div className="text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-1">Bottiglie</div>
+          <div className="text-2xl font-black text-ink-700">{bottle.quantity}</div>
+        </div>
+      </div>
+
+      {hasCurve ? (
+        <div className="mb-4">
+          <MaturationCurve
+            start={bottle.peak_start}
+            peak={peak as number}
+            end={bottle.peak_end}
+            current={currentYear}
+          />
+          {bottle.aging_status && (
+            <div className="mt-4 text-center text-xs font-semibold text-ink-500 uppercase tracking-wider">
+              Stato: {getAgingLabel(bottle.aging_status, bottle.peak_start, bottle.peak_end)}
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="bg-sand-50 border border-sand-100 rounded-2xl p-4 text-center text-sm text-ink-500 mb-4">
+          Dati di maturazione non disponibili
+        </div>
+      )}
+
+      {/* Info Rapide: Temp, Bicchiere, Abbinamenti */}
+      <div className="bg-sand-50 rounded-2xl p-4 mb-4 border border-sand-100 space-y-3">
+        <div className="flex gap-2">
+          {wine.ideal_temp && (
+            <div className="flex-1 bg-white border border-sand-100 text-ink-700 text-xs font-semibold px-3 py-2 rounded-xl flex items-center justify-center gap-1.5 shadow-sm">
+              <span className="text-xs opacity-70">🌡️</span> {wine.ideal_temp}
+            </div>
+          )}
+          {wine.glassware && (
+            <div className="flex-1 bg-white border border-sand-100 text-ink-700 text-xs font-semibold px-3 py-2 rounded-xl flex items-center justify-center gap-1.5 shadow-sm">
+              <span className="text-xs opacity-70">🍷</span> {wine.glassware}
+            </div>
+          )}
+        </div>
+        {wine.color && (
+          <div>
+            <div className="text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-1.5 px-1">Abbinamenti</div>
+            <div className="flex flex-wrap gap-1">
+              {getStaticPairings(wine.color).map((p: string) => (
+                <span key={p} className="bg-white border border-sand-200 text-ink-600 text-[10px] font-semibold px-2 py-1.5 rounded-lg shadow-sm">
+                  {p}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <EditableValue bottle={bottle} wineId={wine.id} isEditing={isEditingValue} setIsEditing={setIsEditingValue} />
+
+      {bottle.notes && (
+        <div className="bg-sand-50 rounded-2xl p-4 mb-4 text-sm text-ink-700 italic border border-sand-100">
+          "{bottle.notes}"
+        </div>
+      )}
+
+      {typeof bottle.rating === "number" && (
+        <div className="text-sm font-bold text-brand-500 mb-4 flex justify-center text-lg">
+          {"★".repeat(bottle.rating)}
+        </div>
+      )}
+
+      {/* Azioni Consolidate */}
+      <div className="mt-4">
+        <BottleActionsSheet bottle={bottle} wine={wine} onEditValue={() => setIsEditingValue(true)} />
+      </div>
     </div>
   );
 }
@@ -153,91 +236,7 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
                   Nessuna bottiglia di questo vino in cantina.
                 </div>
               ) : (
-                bottles.map((bottle: any) => {
-                  const hasCurve = typeof bottle.peak_start === "number" && typeof bottle.peak_end === "number";
-                  const peak = hasCurve ? Math.floor((bottle.peak_start + bottle.peak_end) / 2) : null;
-
-                  return (
-                    <div key={bottle.id} className="bg-white border border-sand-200 rounded-3xl p-5 shadow-soft relative overflow-hidden">
-                      <div className="grid grid-cols-2 gap-3 mb-4">
-                        <div className="bg-sand-50 rounded-2xl p-3 text-center border border-sand-100">
-                          <div className="text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-1">Annata</div>
-                          <div className="text-2xl font-black text-ink-700">{bottle.year}</div>
-                        </div>
-                        <div className="bg-sand-50 rounded-2xl p-3 text-center border border-sand-100">
-                          <div className="text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-1">Bottiglie</div>
-                          <div className="text-2xl font-black text-ink-700">{bottle.quantity}</div>
-                        </div>
-                      </div>
-
-                      {hasCurve ? (
-                        <div className="mb-4">
-                          <MaturationCurve
-                            start={bottle.peak_start}
-                            peak={peak as number}
-                            end={bottle.peak_end}
-                            current={currentYear}
-                          />
-                          {bottle.aging_status && (
-                            <div className="mt-4 text-center text-xs font-semibold text-ink-500 uppercase tracking-wider">
-                              Stato: {getAgingLabel(bottle.aging_status, bottle.peak_start, bottle.peak_end)}
-                            </div>
-                          )}
-                        </div>
-                      ) : (
-                        <div className="bg-sand-50 border border-sand-100 rounded-2xl p-4 text-center text-sm text-ink-500 mb-4">
-                          Dati di maturazione non disponibili
-                        </div>
-                      )}
-
-                      {/* Info Rapide: Temp, Bicchiere, Abbinamenti */}
-                      <div className="bg-sand-50 rounded-2xl p-4 mb-4 border border-sand-100 space-y-3">
-                        <div className="flex gap-2">
-                          {wine.ideal_temp && (
-                            <div className="flex-1 bg-white border border-sand-100 text-ink-700 text-xs font-semibold px-3 py-2 rounded-xl flex items-center justify-center gap-1.5 shadow-sm">
-                              <span className="text-xs opacity-70">🌡️</span> {wine.ideal_temp}
-                            </div>
-                          )}
-                          {wine.glassware && (
-                            <div className="flex-1 bg-white border border-sand-100 text-ink-700 text-xs font-semibold px-3 py-2 rounded-xl flex items-center justify-center gap-1.5 shadow-sm">
-                              <span className="text-xs opacity-70">🍷</span> {wine.glassware}
-                            </div>
-                          )}
-                        </div>
-                        {wine.color && (
-                          <div>
-                            <div className="text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-1.5 px-1">Abbinamenti</div>
-                            <div className="flex flex-wrap gap-1">
-                              {getStaticPairings(wine.color).map(p => (
-                                <span key={p} className="bg-white border border-sand-200 text-ink-600 text-[10px] font-semibold px-2 py-1.5 rounded-lg shadow-sm">
-                                  {p}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                      <EditableValue bottle={bottle} wineId={wine.id} />
-
-                      {bottle.notes && (
-                        <div className="bg-sand-50 rounded-2xl p-4 mb-4 text-sm text-ink-700 italic border border-sand-100">
-                          "{bottle.notes}"
-                        </div>
-                      )}
-
-                      {typeof bottle.rating === "number" && (
-                        <div className="text-sm font-bold text-brand-500 mb-4 flex justify-center text-lg">
-                          {"★".repeat(bottle.rating)}
-                        </div>
-                      )}
-
-                      {/* Azione Rapida */}
-                      <div className="mt-4">
-                        <DrinkBottleModal bottle={bottle} wine={wine} />
-                      </div>
-                    </div>
-                  );
+                  return <BottleCard key={bottle.id} bottle={bottle} wine={wine} currentYear={currentYear} />;
                 })
               )}
             </div>
