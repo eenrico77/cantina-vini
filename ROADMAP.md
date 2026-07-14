@@ -336,7 +336,10 @@ al posto del base64, approfittandone visto che tocchiamo comunque il salvataggio
 - [x] Nuova migrazione `supabase/migrations/0007_storage_bucket.sql`: crea bucket pubblico
       `wine-images` in `storage.buckets`, con policy RLS su `storage.objects` — insert/update
       solo per l'utente proprietario (path `${userId}/...`), select pubblica (serve per
-      mostrare le immagini senza autenticazione lato client)
+      mostrare le immagini senza autenticazione lato client). **Verificata via codice il
+      14/07/2026, corretta — ma NON ANCORA ESEGUITA su Supabase: senza il bucket, l'upload
+      dell'immagine scelta fallirà silenziosamente (errore loggato, vino salvato senza
+      immagine). Da eseguire come prossimo passo prima di testare questo flusso.**
 - [x] In `app/cantina/new/page.tsx`, dopo l'upload e il riconoscimento AI: mostrare subito
       l'anteprima della foto reale caricata dall'utente, più un bottone "Genera foto da
       catalogo" (chiama una nuova server action che usa `generateProfessionalWineImage`,
@@ -350,6 +353,17 @@ al posto del base64, approfittandone visto che tocchiamo comunque il salvataggio
 - [ ] Non prioritario/facoltativo per ora: possibilità di cambiare l'immagine di un vino già
       salvato dalla sua scheda dettaglio — si può rimandare a dopo la prima release se non c'è
       tempo, non blocca il deploy
+- [x] **Decisione presa il 14/07/2026**: "Genera foto da catalogo" resta DISATTIVATA per ora —
+      il modello di generazione immagine (`gemini-2.5-flash-preview-image`) ha quota gratuita
+      pari a zero (confermato dall'errore reale: `limit: 0`), e attivare la fatturazione sul
+      progetto Gemini attuale rimuoverebbe il livello gratuito per TUTTO il progetto (anche
+      riconoscimento etichetta e abbinamenti, che oggi sono gratis e funzionano bene). Enrico
+      non vuole spendere per ora. Se in futuro si vorrà riattivare: usare un progetto/chiave
+      API Gemini SEPARATA solo per le immagini (con fatturazione prepay lì), lasciando la
+      chiave attuale gratuita per tutto il resto — non riattivare sullo stesso progetto. Per
+      ora: nascondere/disabilitare il bottone "Genera foto da catalogo" con una nota invece di
+      lasciarlo fallire con un errore generico. La scelta "usa la tua foto reale" resta
+      l'unica opzione attiva e funziona perfettamente gratis.
 
 ## Cosa NON fare ora (deciso insieme, per non disperdere tempo)
 

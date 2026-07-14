@@ -166,11 +166,10 @@ export default function NewWinePage() {
               <div className="flex items-center h-full pb-2">
                 <button 
                   type="button" 
-                  onClick={handleGenerateCatalog} 
-                  disabled={generatingCatalog || !formData.name || !formData.producer || !formData.color}
-                  className="text-xs bg-white border border-brand-200 text-brand-600 font-bold px-3 py-2 rounded-lg hover:bg-brand-50 transition-colors disabled:opacity-50 flex items-center gap-2"
+                  disabled={true}
+                  className="text-xs bg-white border border-brand-200 text-brand-600 font-bold px-3 py-2 rounded-lg transition-colors opacity-50 cursor-not-allowed flex items-center gap-2"
                 >
-                  {generatingCatalog ? "Generazione..." : "✨ Genera da catalogo"}
+                  ✨ Foto da catalogo (non disponibile)
                 </button>
               </div>
             )}
