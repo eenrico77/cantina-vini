@@ -14,7 +14,7 @@ export default function NewWinePage() {
   const [formData, setFormData] = useState({
     name: "", producer: "", color: "", region: "", country: "", year: "", quantity: "1",
     grapes: "", description: "", origin_notes: "", vintage_review: "",
-    maturation_start: "", maturation_end: "", ideal_temp: "", decanting_needed: false, decanting_notes: "", glassware: "",
+    maturation_start: "", maturation_end: "", ideal_temp: "", decanting: "", glassware: "",
     organoleptic: "", taste_profile: "", purchase_price: ""
   });
   const [wishlistId, setWishlistId] = useState("");
@@ -89,8 +89,7 @@ export default function NewWinePage() {
           maturation_start: aiResult.maturation_start?.toString() || prev.maturation_start,
           maturation_end: aiResult.maturation_end?.toString() || prev.maturation_end,
           ideal_temp: aiResult.ideal_temp || prev.ideal_temp,
-          decanting_needed: aiResult.decanting ? true : prev.decanting_needed,
-          decanting_notes: aiResult.decanting || prev.decanting_notes,
+          decanting: aiResult.decanting || prev.decanting,
           glassware: aiResult.glassware || prev.glassware,
           organoleptic: aiResult.organoleptic ? JSON.stringify(aiResult.organoleptic) : prev.organoleptic,
           taste_profile: aiResult.taste_profile ? JSON.stringify(aiResult.taste_profile) : prev.taste_profile,
@@ -108,13 +107,22 @@ export default function NewWinePage() {
     }
   };
 
+  useEffect(() => {
+    document.querySelectorAll("textarea").forEach(t => {
+      const el = t as HTMLTextAreaElement;
+      el.style.height = "auto";
+      el.style.height = el.scrollHeight + "px";
+    });
+  }, [formData.description, formData.origin_notes, formData.vintage_review, formData.decanting]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const value = e.target.type === 'checkbox' ? (e.target as HTMLInputElement).checked : e.target.value;
     setFormData({ ...formData, [e.target.name]: value });
-  };
-
-  const handleToggleDecanting = (needed: boolean) => {
-    setFormData(prev => ({ ...prev, decanting_needed: needed }));
+    if (e.target.tagName.toLowerCase() === "textarea") {
+      const el = e.target as HTMLTextAreaElement;
+      el.style.height = "auto";
+      el.style.height = el.scrollHeight + "px";
+    }
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -210,7 +218,6 @@ export default function NewWinePage() {
         <input type="hidden" name="taste_profile" value={formData.taste_profile} />
         <input type="hidden" name="wishlistId" value={wishlistId} />
         <input type="hidden" name="final_image" value={selectedImage === "real" ? (realImage || "") : selectedImage === "catalog" ? (catalogImage || "") : ""} />
-        <input type="hidden" name="decanting_needed" value={formData.decanting_needed.toString()} />
 
         {/* Card: Il Vino */}
         <div className="bg-white p-5 rounded-xl shadow-sm border border-sand-200">
@@ -291,8 +298,9 @@ export default function NewWinePage() {
                     name="description" 
                     value={formData.description} 
                     onChange={handleChange} 
+                    rows={1}
                     placeholder="Aggiungi una descrizione"
-                    className="mt-1 w-full border-transparent bg-transparent p-2.5 rounded-lg outline-none hover:bg-sand-50 focus:bg-sand-50 focus:border-sand-200 border resize-none placeholder:text-ink-400 placeholder:italic transition-colors h-24 text-ink-700" 
+                    className="mt-1 w-full border-transparent bg-transparent p-2.5 rounded-lg outline-none hover:bg-sand-50 focus:bg-sand-50 focus:border-sand-200 border resize-none placeholder:text-ink-400 placeholder:italic transition-colors text-ink-700 overflow-hidden" 
                   />
                 </div>
               </div>
@@ -312,37 +320,20 @@ export default function NewWinePage() {
                       name="glassware" 
                       value={formData.glassware} 
                       onChange={handleChange} 
-                      className="w-full border border-sand-200 pl-9 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-brand-500" 
+                      className="w-full border-transparent bg-transparent pl-9 p-2.5 rounded-lg outline-none hover:bg-sand-50 focus:bg-sand-50 focus:border-sand-200 border transition-colors text-ink-700" 
                     />
                   </div>
                 </div>
                 <div className="col-span-1 md:col-span-1">
                   <label className="block text-xs font-semibold text-ink-500 uppercase mb-2">Decantazione</label>
-                  <div className="flex bg-sand-50 rounded-lg p-1 border border-sand-200 w-full max-w-[200px] mb-2">
-                    <button 
-                      type="button"
-                      onClick={() => handleToggleDecanting(true)}
-                      className={`flex-1 py-1.5 text-sm font-bold rounded-md transition-colors ${formData.decanting_needed ? "bg-brand-500 text-white shadow-sm" : "text-ink-500 hover:text-ink-700"}`}
-                    >
-                      Sì
-                    </button>
-                    <button 
-                      type="button"
-                      onClick={() => handleToggleDecanting(false)}
-                      className={`flex-1 py-1.5 text-sm font-bold rounded-md transition-colors ${!formData.decanting_needed ? "bg-white text-ink-700 shadow-sm border border-sand-200" : "text-ink-500 hover:text-ink-700"}`}
-                    >
-                      No
-                    </button>
-                  </div>
-                  {formData.decanting_needed && (
-                    <input 
-                      name="decanting_notes" 
-                      value={formData.decanting_notes} 
-                      onChange={handleChange} 
-                      placeholder="es. 30 minuti prima..."
-                      className="w-full border border-sand-200 p-2 text-sm rounded-lg outline-none focus:ring-2 focus:ring-brand-500" 
-                    />
-                  )}
+                  <textarea 
+                    name="decanting" 
+                    value={formData.decanting} 
+                    onChange={handleChange} 
+                    rows={1}
+                    placeholder="es. 30 minuti prima..."
+                    className="w-full border-transparent bg-transparent p-2.5 rounded-lg outline-none hover:bg-sand-50 focus:bg-sand-50 focus:border-sand-200 border resize-none placeholder:text-ink-400 placeholder:italic transition-colors text-ink-700 overflow-hidden" 
+                  />
                 </div>
               </div>
 
@@ -377,8 +368,9 @@ export default function NewWinePage() {
                     name="origin_notes" 
                     value={formData.origin_notes} 
                     onChange={handleChange} 
+                    rows={1}
                     placeholder="Aggiungi note terroir"
-                    className="mt-1 w-full border-transparent bg-transparent p-2.5 rounded-lg outline-none hover:bg-sand-50 focus:bg-sand-50 focus:border-sand-200 border resize-none placeholder:text-ink-400 placeholder:italic transition-colors h-24 text-ink-700" 
+                    className="mt-1 w-full border-transparent bg-transparent p-2.5 rounded-lg outline-none hover:bg-sand-50 focus:bg-sand-50 focus:border-sand-200 border resize-none placeholder:text-ink-400 placeholder:italic transition-colors text-ink-700 overflow-hidden" 
                   />
                 </div>
                 <div>
@@ -387,8 +379,9 @@ export default function NewWinePage() {
                     name="vintage_review" 
                     value={formData.vintage_review} 
                     onChange={handleChange} 
+                    rows={1}
                     placeholder="Aggiungi una recensione"
-                    className="mt-1 w-full border-transparent bg-transparent p-2.5 rounded-lg outline-none hover:bg-sand-50 focus:bg-sand-50 focus:border-sand-200 border resize-none placeholder:text-ink-400 placeholder:italic transition-colors h-24 text-ink-700" 
+                    className="mt-1 w-full border-transparent bg-transparent p-2.5 rounded-lg outline-none hover:bg-sand-50 focus:bg-sand-50 focus:border-sand-200 border resize-none placeholder:text-ink-400 placeholder:italic transition-colors text-ink-700 overflow-hidden" 
                   />
                 </div>
               </div>

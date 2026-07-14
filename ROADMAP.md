@@ -208,6 +208,7 @@ Ordine deciso: prima la curva di maturazione (priorità esplicita di Enrico), po
 - [x] Consolidare le azioni sparse nella scheda di dettaglio vino in un pulsante "••• Azioni" con bottom sheet (ispirazione Oeni).
 - [x] Redesign del form "Aggiungi Vino" a blocchi (card per ogni sezione logica) con logica decantazione corretta.
 - [x] 6 rifiniture form Aggiungi Vino (annata select, testo formattato, decantazione, bicchiere, maturazione leggibile, rimozione foto).
+- [x] Fix decantazione automatica e campi testo auto-espandibili.
 
 - [x] **Tradurre tutte le etichette rimaste in inglese** trovate testando il 13/07/2026:
       "Storage & Service", "TEMP.", "DECANTING", "Maturation Start/End (offset)" nel form
@@ -450,3 +451,13 @@ niente social/gamification, niente refactor del modello dati.
 ### Esplicitamente escluso (coerente con "Cosa NON fare")
 - Cantina 3D, gamification a punti/sfide, funzioni social/amici — viste su Oeni ma fuori scope
   per un'app di uso personale
+
+### Problema noto da indagare (segnalato da Enrico il 14/07/2026)
+- L'analisi foto etichetta (`analyzeLabelAction` -> `analyzeWineLabel` in `lib/ai/enrichWine.ts`)
+  impiega circa 2 minuti, troppo lento per un'attesa in-app. Ipotesi principale: chiediamo
+  troppi campi in un'unica chiamata al modello (nome, produttore, colore, regione, paese,
+  uvaggio, descrizione, terroir, recensione annata, maturazione, temperatura, bicchiere,
+  decantazione, analisi organolettica, profilo gustativo — tutto insieme). Da valutare in una
+  sessione dedicata: dividere in due chiamate (dati essenziali veloci + arricchimento testuale
+  più lento in background), o ridurre lo schema richiesto. Non affrontato ora per non
+  mischiarlo con i fix di stile in corso.
