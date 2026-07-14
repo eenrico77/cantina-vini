@@ -6,6 +6,13 @@ const nextConfig = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
+      {
+        protocol: "https",
+        // Dominio di Supabase Storage, dove salviamo le foto reali/da catalogo
+        // delle etichette (bucket "wine-images"). Senza questa riga next/image
+        // blocca l'immagine e mostra l'icona rotta.
+        hostname: "*.supabase.co",
+      },
     ],
   },
   experimental: {
