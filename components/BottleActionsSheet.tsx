@@ -27,7 +27,7 @@ export default function BottleActionsSheet({
       {/* Bottom Sheet Overlay */}
       {sheetOpen && (
         <div className="fixed inset-0 z-50 flex flex-col justify-end">
-          <div className="absolute inset-0 bg-ink-900/40 backdrop-blur-sm" onClick={() => setSheetOpen(false)}></div>
+          <div className="absolute inset-0 bg-ink-700/60 backdrop-blur-sm" onClick={() => setSheetOpen(false)}></div>
           <div className="bg-white w-full rounded-t-3xl p-6 pb-10 relative z-10 shadow-2xl">
             <div className="w-12 h-1.5 bg-sand-200 rounded-full mx-auto mb-6"></div>
             <h3 className="text-lg font-bold text-ink-700 mb-4 px-2">Azioni Annata {bottle.year}</h3>

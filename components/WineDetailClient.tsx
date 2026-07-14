@@ -236,8 +236,9 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
                   Nessuna bottiglia di questo vino in cantina.
                 </div>
               ) : (
-                  return <BottleCard key={bottle.id} bottle={bottle} wine={wine} currentYear={currentYear} />;
-                })
+                bottles.map((bottle: any) => (
+                  <BottleCard key={bottle.id} bottle={bottle} wine={wine} currentYear={currentYear} />
+                ))
               )}
             </div>
           )}
