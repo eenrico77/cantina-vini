@@ -219,6 +219,11 @@ Ordine deciso: prima la curva di maturazione (priorità esplicita di Enrico), po
 primo rilascio (resta solo la "Cantina predefinita" automatica, si valuta in futuro se serve
 davvero); gli item residui di fasi precedenti si chiudono dentro questa fase, non a parte.
 
+**Nota del 14/07/2026**: Enrico conferma che dopo il deploy resta ancora molto da rivedere
+lato grafica/interfaccia (nonostante la passata di Fase 5) — il deploy su Vercel NON è un
+punto di non ritorno, si continua a rifinire dopo, ogni push aggiorna il sito online in
+automatico. Non rimandare il deploy in attesa di una grafica perfetta.
+
 - [x] **Recuperato da Fase 2**: popup se manca l'Annata in `/cantina/new` — spiega perché serve
       (calcolo maturazione), permette di procedere comunque senza. Verificato via codice il
       13/07/2026 (`app/cantina/new/page.tsx`).
@@ -261,6 +266,32 @@ spostate nella fase giusta sopra. Non si agisce su queste finché non sono state
 riorganizzate in un task concreto in una fase.
 
 - (vuoto per ora — tutte le idee del 13/07/2026 sono già state smistate sopra)
+
+### Da fare dopo il deploy (14/07/2026)
+
+- [ ] **Rifinitura grafica generale**: Enrico conferma che, nonostante la Fase 5, restano
+      parecchi problemi di interfaccia da rivedere con calma dopo il deploy — non bloccante
+      per andare online, ma da riprendere presto.
+- [ ] **Dominio personalizzato**: da collegare quando Enrico ne compra uno (nessun costo
+      aggiuntivo su Vercel Hobby per aggiungerlo, solo il costo del dominio stesso).
+- [ ] **PWA / "Aggiungi a schermata Home"**: manca un manifest per installare l'app come icona
+      sul telefono (l'app è già pensata mobile-first — colonna stretta, bottom nav, upload con
+      fotocamera — ma senza l'icona home screen resta "solo" un sito aperto dal browser).
+      Non urgente, comodo da aggiungere in futuro.
+- [x] **Corretto il 14/07/2026 (bug reale, non solo UX)**: mancava completamente la gestione
+      del ritorno dai link email di Supabase (magic link, reset password, conferma) — il
+      `middleware.js` rimandava sempre a `/login` prima ancora che il `code` nell'URL potesse
+      essere scambiato per una sessione, quindi qualunque link ricevuto via email avrebbe
+      fallito silenziosamente. Aggiunta gestione del `code` in `middleware.js` (scambio sessione
+      prima del controllo di autenticazione) e creata `app/auth/callback/route.ts` come route
+      dedicata per usi futuri (es. OAuth). Scoperto testando un vero blocco: Enrico non
+      riusciva più ad accedere all'app appena deployata perché aveva dimenticato la password.
+- [ ] **Manca ancora "Password dimenticata" nell'interfaccia di `/login`**: oggi si può
+      recuperare l'accesso solo manualmente dal pannello Supabase (Authentication → Users →
+      "Send magic link"/"Reset password"), ora che il callback funziona. Da aggiungere in
+      futuro: link "Password dimenticata?" nel form di login che chiama
+      `supabase.auth.resetPasswordForEmail(email)`, più una pagina per impostare la nuova
+      password dopo il click sul link ricevuto via email.
 
 ### Bug trovati da Enrico testando /stats il 14/07/2026
 

@@ -22,6 +22,16 @@ export async function middleware(req) {
     }
   );
 
+  // Link ricevuti via email (magic link, reset password, conferma) tornano con
+  // un "code" nell'URL: va scambiato per una sessione vera PRIMA di decidere se
+  // rimandare al login, altrimenti il redirect qui sotto scatterebbe sempre.
+  const code = req.nextUrl.searchParams.get("code");
+  if (code) {
+    await supabase.auth.exchangeCodeForSession(code);
+    const redirectUrl = new URL(req.nextUrl.pathname, req.url);
+    return NextResponse.redirect(redirectUrl, { headers: res.headers });
+  }
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
