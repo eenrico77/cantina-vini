@@ -209,6 +209,7 @@ Ordine deciso: prima la curva di maturazione (priorità esplicita di Enrico), po
 - [x] Redesign del form "Aggiungi Vino" a blocchi (card per ogni sezione logica) con logica decantazione corretta.
 - [x] 6 rifiniture form Aggiungi Vino (annata select, testo formattato, decantazione, bicchiere, maturazione leggibile, rimozione foto).
 - [x] Fix decantazione automatica e campi testo auto-espandibili.
+- [x] Fase 7: campi testo come paragrafo con modifica esplicita, layout full-width, Azioni sheet compatto.
 
 - [x] **Tradurre tutte le etichette rimaste in inglese** trovate testando il 13/07/2026:
       "Storage & Service", "TEMP.", "DECANTING", "Maturation Start/End (offset)" nel form

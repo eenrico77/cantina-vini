@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { createWine, analyzeLabelAction, generateCatalogImageAction } from "./actions";
 import GlassIcon from "@/components/GlassIcon";
+import EditableTextField from "@/components/EditableTextField";
 
 const COLORS = ["Rosso", "Bianco", "Rosato", "Bollicine", "Dolce"];
 
@@ -113,7 +114,7 @@ export default function NewWinePage() {
       el.style.height = "auto";
       el.style.height = el.scrollHeight + "px";
     });
-  }, [formData.description, formData.origin_notes, formData.vintage_review, formData.decanting]);
+  }, [formData.decanting]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const value = e.target.type === 'checkbox' ? (e.target as HTMLInputElement).checked : e.target.value;
@@ -287,31 +288,30 @@ export default function NewWinePage() {
             </summary>
             <div className="mt-6 space-y-6">
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-ink-500 uppercase mb-1">Uvaggio</label>
+                  <label className="block text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-2">Uvaggio</label>
                   <input name="grapes" value={formData.grapes} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" />
                 </div>
-                <div>
-                  <label className="block text-xs font-semibold text-ink-500 uppercase mb-1">Descrizione AI</label>
-                  <textarea 
+                
+                <div className="border-t border-sand-100 pt-4">
+                  <EditableTextField 
+                    label="Descrizione AI" 
                     name="description" 
                     value={formData.description} 
                     onChange={handleChange} 
-                    rows={1}
-                    placeholder="Aggiungi una descrizione"
-                    className="mt-1 w-full border-transparent bg-transparent p-2.5 rounded-lg outline-none hover:bg-sand-50 focus:bg-sand-50 focus:border-sand-200 border resize-none placeholder:text-ink-400 placeholder:italic transition-colors text-ink-700 overflow-hidden" 
+                    placeholder="Aggiungi una descrizione..." 
                   />
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 border-t border-sand-100 pt-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-sand-100 pt-4">
                 <div>
-                  <label className="block text-xs font-semibold text-ink-500 uppercase mb-2">Temp. Ideale</label>
+                  <label className="block text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-2">Temp. Ideale</label>
                   <input name="ideal_temp" value={formData.ideal_temp} onChange={handleChange} className="w-full border border-sand-200 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-brand-500" />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-ink-500 uppercase mb-2">Bicchiere</label>
+                  <label className="block text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-2">Bicchiere</label>
                   <div className="relative flex items-center">
                     <div className="absolute left-3">
                       <GlassIcon text={formData.glassware} className="w-4 h-4 text-brand-600 opacity-70" />
@@ -320,21 +320,20 @@ export default function NewWinePage() {
                       name="glassware" 
                       value={formData.glassware} 
                       onChange={handleChange} 
-                      className="w-full border-transparent bg-transparent pl-9 p-2.5 rounded-lg outline-none hover:bg-sand-50 focus:bg-sand-50 focus:border-sand-200 border transition-colors text-ink-700" 
+                      className="w-full border-transparent bg-transparent pl-9 p-2.5 rounded-lg outline-none hover:bg-sand-50 focus:bg-sand-50 focus:border-sand-200 border transition-colors text-ink-700 text-sm" 
                     />
                   </div>
                 </div>
-                <div className="col-span-1 md:col-span-1">
-                  <label className="block text-xs font-semibold text-ink-500 uppercase mb-2">Decantazione</label>
-                  <textarea 
-                    name="decanting" 
-                    value={formData.decanting} 
-                    onChange={handleChange} 
-                    rows={1}
-                    placeholder="es. 30 minuti prima..."
-                    className="w-full border-transparent bg-transparent p-2.5 rounded-lg outline-none hover:bg-sand-50 focus:bg-sand-50 focus:border-sand-200 border resize-none placeholder:text-ink-400 placeholder:italic transition-colors text-ink-700 overflow-hidden" 
-                  />
-                </div>
+              </div>
+              
+              <div className="border-t border-sand-100 pt-4">
+                <EditableTextField 
+                  label="Decantazione" 
+                  name="decanting" 
+                  value={formData.decanting} 
+                  onChange={handleChange} 
+                  placeholder="es. 30 minuti prima..." 
+                />
               </div>
 
               <div className="space-y-2 border-t border-sand-100 pt-4">
@@ -361,29 +360,21 @@ export default function NewWinePage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-sand-100 pt-4">
-                <div>
-                  <label className="block text-xs font-semibold text-ink-500 uppercase mb-1">Note Terroir</label>
-                  <textarea 
-                    name="origin_notes" 
-                    value={formData.origin_notes} 
-                    onChange={handleChange} 
-                    rows={1}
-                    placeholder="Aggiungi note terroir"
-                    className="mt-1 w-full border-transparent bg-transparent p-2.5 rounded-lg outline-none hover:bg-sand-50 focus:bg-sand-50 focus:border-sand-200 border resize-none placeholder:text-ink-400 placeholder:italic transition-colors text-ink-700 overflow-hidden" 
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-ink-500 uppercase mb-1">Recensione Annata</label>
-                  <textarea 
-                    name="vintage_review" 
-                    value={formData.vintage_review} 
-                    onChange={handleChange} 
-                    rows={1}
-                    placeholder="Aggiungi una recensione"
-                    className="mt-1 w-full border-transparent bg-transparent p-2.5 rounded-lg outline-none hover:bg-sand-50 focus:bg-sand-50 focus:border-sand-200 border resize-none placeholder:text-ink-400 placeholder:italic transition-colors text-ink-700 overflow-hidden" 
-                  />
-                </div>
+              <div className="border-t border-sand-100 pt-4 space-y-6">
+                <EditableTextField 
+                  label="Note Terroir" 
+                  name="origin_notes" 
+                  value={formData.origin_notes} 
+                  onChange={handleChange} 
+                  placeholder="Aggiungi note terroir..." 
+                />
+                <EditableTextField 
+                  label="Recensione Annata" 
+                  name="vintage_review" 
+                  value={formData.vintage_review} 
+                  onChange={handleChange} 
+                  placeholder="Aggiungi una recensione..." 
+                />
               </div>
               
             </div>
