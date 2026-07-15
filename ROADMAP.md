@@ -466,7 +466,9 @@ più sotto per il contesto già raccolto.
 - [ ] Sezione abbinamenti cibo-vino: sostituire i chip testuali con card fotografiche (foto
       reali del piatto) e percentuale di match, sia nella scheda vino che nella pagina "Cibo e
       vino" dedicata — capofila naturale del punto sopra
-- [ ] Scheda vino: hero fotografico (sfondo vigneto/atmosfera) dietro l'immagine della bottiglia
+- [x] **Fatto il 15/07/2026**: hero fotografico nella scheda vino, foto fissa di vigneto/vista
+      panoramica (stessa per tutti i vini) con overlay scuro sfumato 40%→75%, testo bianco/
+      brand-200 sopra.
 - [x] **Fatto il 15/07/2026**: profilo gustativo ora mostrato con 5 slider orizzontali
       (Corpo/Intensità/Tannini/Acidità/Persistenza, con poli descrittivi), alcol a parte come
       testo. Adattato rispetto al piano originale: "Piatto↔Frizzante" non esiste nei dati
