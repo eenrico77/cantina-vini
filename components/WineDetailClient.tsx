@@ -219,7 +219,7 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
         style={{
           backgroundImage: `url('/hero-vigneto.png')`,
           backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundPosition: 'center 25%',
         }}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/60"></div>
