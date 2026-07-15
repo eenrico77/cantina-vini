@@ -68,6 +68,7 @@ export default function EditableTextField({
 
   return (
     <div className="mb-4 group">
+      <input type="hidden" name={name} value={value} />
       <div className="flex items-center gap-2 mb-1.5">
         <label className="block text-[10px] font-bold text-ink-500 uppercase tracking-wider">{label}</label>
         <button 
