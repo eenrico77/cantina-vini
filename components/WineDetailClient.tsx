@@ -214,7 +214,7 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
       <div 
         className="relative px-6 py-10 flex flex-col items-center text-center shadow-sm overflow-hidden"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?q=80&w=2000&auto=format&fit=crop')`,
+          backgroundImage: `url('/hero-vigneto.png')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
@@ -223,19 +223,17 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
         
         <div className="relative z-10 flex flex-col items-center w-full">
           {wine.image_url ? (
-            <div className="relative mb-6 flex flex-col items-center">
-              <div className="relative w-32 h-48 bg-sand-50/95 rounded-2xl shadow-xl border border-white/40 p-3">
-                <div className="relative w-full h-full">
-                  <Image 
-                    src={wine.image_url} 
-                    alt={wine.name} 
-                    fill 
-                    className="object-contain"
-                  />
-                </div>
+            <div className="relative flex flex-col items-center">
+              <div className="relative w-32 h-48 mb-6 rounded-2xl overflow-hidden shadow-xl border border-white/30 z-10">
+                <Image 
+                  src={wine.image_url} 
+                  alt={wine.name} 
+                  fill 
+                  className="object-cover"
+                />
               </div>
               {/* Floor shadow */}
-              <div className="absolute -bottom-1 w-24 h-2 bg-black/40 blur-md rounded-[100%] pointer-events-none"></div>
+              <div className="absolute bottom-4 w-24 h-2 bg-black/40 blur-md rounded-[100%] pointer-events-none"></div>
             </div>
           ) : (
             <div className="w-32 h-48 bg-white/10 backdrop-blur-sm rounded-2xl mb-6 flex items-center justify-center text-5xl shadow-sm border border-white/20">
