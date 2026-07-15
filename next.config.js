@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ['@imgly/background-removal', 'onnxruntime-web'],
   images: {
     remotePatterns: [
       {
@@ -23,25 +22,6 @@ const nextConfig = {
       // durante l'upload dell'etichetta.
       bodySizeLimit: "10mb",
     },
-  },
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        "onnxruntime-node": false,
-      };
-    }
-    
-    // Fix per i file .mjs di onnxruntime e imgly
-    config.module.rules.push({
-      test: /\.m?js$/,
-      type: "javascript/auto",
-      resolve: {
-        fullySpecified: false,
-      },
-    });
-
-    return config;
   },
 };
 

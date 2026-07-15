@@ -97,24 +97,8 @@ export default function NewWinePage() {
           taste_profile: aiResult.taste_profile ? JSON.stringify(aiResult.taste_profile) : prev.taste_profile,
         }));
         if ((aiResult as any).originalImage) {
-          setRemovingBg(true);
-          try {
-            const imgly = await import('@imgly/background-removal');
-            const imageBlob = await imgly.removeBackground(file);
-            const processedImageBase64 = await new Promise<string>((resolve) => {
-              const reader = new FileReader();
-              reader.onloadend = () => resolve(reader.result as string);
-              reader.readAsDataURL(imageBlob);
-            });
-            setRealImage(processedImageBase64);
-            setSelectedImage("real");
-          } catch (bgErr) {
-            console.warn("Errore durante la rimozione dello sfondo:", bgErr);
-            setRealImage((aiResult as any).originalImage);
-            setSelectedImage("real");
-          } finally {
-            setRemovingBg(false);
-          }
+          setRealImage((aiResult as any).originalImage);
+          setSelectedImage("real");
         }
       }
     } catch (e: any) {
