@@ -9,7 +9,6 @@ const COLORS = ["Rosso", "Bianco", "Rosato", "Bollicine", "Dolce"];
 
 export default function NewWinePage() {
   const [loadingAI, setLoadingAI] = useState(false);
-  const [removingBg, setRemovingBg] = useState(false);
   const [showYearPopup, setShowYearPopup] = useState(false);
   const [formDataToSubmit, setFormDataToSubmit] = useState<FormData | null>(null);
 
@@ -166,7 +165,14 @@ export default function NewWinePage() {
           onChange={handleImageUpload}
           className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
         />
-        {(loadingAI || removingBg) && <p className="text-sm text-brand-600 mt-2 font-medium">{removingBg ? "Rimozione sfondo in corso..." : "Analisi in corso, attendi qualche secondo..."}</p>}
+        {loadingAI && (
+          <div className="mt-3">
+            <p className="text-sm text-brand-600 mb-2 font-medium">Analisi in corso, attendi qualche secondo...</p>
+            <div className="w-full h-1.5 rounded-full bg-sand-200 overflow-hidden relative">
+              <div className="absolute top-0 bottom-0 left-0 w-1/3 bg-brand-500 rounded-full animate-progress"></div>
+            </div>
+          </div>
+        )}
         
         {/* Scelta Immagine */}
         <div className="mt-4 pt-4 border-t border-sand-200">

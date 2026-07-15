@@ -543,20 +543,23 @@ pixel, mentre Oeni pesca da un catalogo centralizzato con immagini già pulite (
 ricerca: nessun database italiano gratuito/completo con foto esiste, quindi non serve inseguire
 quella strada — il problema si risolve senza database, solo pulendo l'immagine che già abbiamo).
 
-- [x] **Fatto il 15/07/2026**: integrato `@imgly/background-removal` (rimozione sfondo
-      client-side via WASM/ONNX, gratuita, nessuna API key, nessun costo per immagine — a
-      differenza di remove.bg che nel piano gratuito dà solo 50 immagini/mese a bassa
-      risoluzione). Nota: licenza AGPL — da rivalutare se in futuro l'app diventa un prodotto
-      commerciale vero (Enrico ha detto che a quel punto pagherebbe volentieri un servizio AI
-      dedicato senza problemi).
-- [x] Rimosso il precedente trucco CSS (maschera radiale) nella hero — non necessario e
-      potenzialmente dannoso ora che la trasparenza è reale.
-- [x] Fix build Vercel: `next.config.js` con `transpilePackages` per i pacchetti imgly/onnxruntime-web,
-      alias `onnxruntime-node: false` lato client, regola webpack per i moduli `.mjs`.
-- **Nota**: i vini salvati PRIMA di questa modifica mantengono la foto con sfondo pieno originale
-  (nessun riprocessamento retroattivo) — tornano a un riquadro semplice nella hero, senza più
-  l'alone bianco sfocato del tentativo precedente. Solo i vini aggiunti da ora in poi hanno il
-  ritaglio pulito vero.
+- [x] **Tentato e ABBANDONATO il 15/07/2026**: integrato `@imgly/background-removal` (rimozione
+      sfondo client-side via WASM/ONNX, gratuita) ma non funzionante in questo setup Next.js/
+      Vercel — errore persistente `TypeError: e.replace is not a function` dentro lo schema di
+      validazione interno della libreria (Zod), riproducibile anche senza nessuna configurazione
+      personalizzata, quindi non un problema di config ma di bundling/conflitto di dipendenze.
+      Provati senza successo: `transpilePackages`, alias `onnxruntime-node: false`, regola
+      webpack sui moduli `.mjs`, `publicPath` esplicito. **Rollback completo**: libreria
+      disinstallata, `next.config.js` e `app/cantina/new/page.tsx` tornati allo stato precedente.
+- [x] **Soluzione adottata al suo posto**: "piedistallo curato" — la bottiglia nella hero ha una
+      vera card intenzionale (`bg-sand-50/95`, bordo `white/40`, `shadow-xl`, padding interno),
+      non più un tentativo di nascondere lo sfondo pieno della foto. Onesto e stabile, anche se
+      meno "seamless" del ritaglio vero.
+- **Da rivalutare in futuro (non ora)**: la rimozione sfondo vera resta un'idea valida — magari
+  con la variante Node.js della stessa libreria eseguita in una Server Action (aggirerebbe il
+  bundling lato browser che ha causato il problema), o un servizio esterno a pagamento se/quando
+  l'app diventa un prodotto commerciale vero (Enrico ha detto che a quel punto pagherebbe
+  volentieri un servizio AI dedicato).
 
 ## Fase 8 — Identità visiva e branding (segnalata da Enrico il 15/07/2026, da avviare dopo
 la Fase 7)

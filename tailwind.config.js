@@ -38,6 +38,15 @@ content: [
       boxShadow: {
         soft: '0 10px 30px rgba(15,23,42,0.08)', // ombra morbida tipo iOS
       },
+      keyframes: {
+        progress: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(300%)' },
+        }
+      },
+      animation: {
+        progress: 'progress 1.5s ease-in-out infinite',
+      },
     },
   },
   plugins: [],
