@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import MaturationCurve from "@/components/MaturationCurve";
 import { getAgingLabel } from "@/lib/domain/maturation";
 import type { AgingStatus } from "@/types";
@@ -220,6 +221,12 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
         }}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/75"></div>
+        
+        <Link href="/wines" className="absolute top-4 left-4 z-20 w-10 h-10 flex items-center justify-center bg-white/15 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-white/25 transition-colors shadow-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 pr-0.5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+          </svg>
+        </Link>
         
         <div className="relative z-10 flex flex-col items-center w-full">
           {wine.image_url ? (
