@@ -67,7 +67,7 @@ export default async function WinesPage() {
     <div className="p-4 md:p-8 max-w-4xl mx-auto space-y-6">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="font-serif text-3xl font-extrabold text-ink-700 tracking-tight">La tua cantina</h1>
+          <h1 className="font-serif text-3xl font-extrabold text-ink-700 tracking-tight inline-block border-b-2 border-brand-600 pb-1">La tua cantina</h1>
           <p className="text-sm text-ink-500 mt-1">
             {bottles.length} {bottles.length === 1 ? "bottiglia" : "bottiglie"} totali
           </p>

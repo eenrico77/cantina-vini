@@ -43,7 +43,7 @@ export default async function HomePage() {
   return (
     <div className="space-y-8 p-6">
       <header className="space-y-2">
-        <h1 className="font-serif text-2xl font-bold">🍷 La tua cantina</h1>
+        <h1 className="font-serif text-2xl font-bold inline-block border-b-2 border-brand-600 pb-1">🍷 La tua cantina</h1>
         <p className="text-sm text-ink-500">Stato attuale della tua cantina</p>
       </header>
 

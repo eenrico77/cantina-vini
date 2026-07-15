@@ -154,7 +154,7 @@ export default function NewWinePage() {
 
   return (
     <div className="p-4 md:p-8 max-w-2xl mx-auto space-y-6">
-      <h1 className="font-serif text-3xl font-extrabold text-ink-700 tracking-tight">Aggiungi Vino</h1>
+      <h1 className="font-serif text-3xl font-extrabold text-ink-700 tracking-tight inline-block border-b-2 border-brand-600 pb-1">Aggiungi Vino</h1>
 
       <div className="bg-sand-50 p-4 rounded-xl border border-dashed border-sand-200">
         <label className="block text-sm font-medium text-ink-500 mb-2">📸 Scatta una foto (mobile) o carica un'immagine dell'etichetta</label>

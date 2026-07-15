@@ -19,7 +19,7 @@ content: [
           600: "#a95f2a",
         },
         sand: {
-          50:  "#f9f8f6",   // sfondo app
+          50:  "#f4efe4",   // sfondo app
           100: "#f1f0ec",   // card chiare
           200: "#e6e3dc",   // bordi/divisori
         },

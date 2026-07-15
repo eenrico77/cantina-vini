@@ -17,7 +17,7 @@ export default async function WishlistPage() {
 
   return (
     <div className="p-4 md:p-8 max-w-2xl mx-auto space-y-8 mb-20">
-      <h1 className="font-serif text-3xl font-extrabold text-ink-700">Wishlist</h1>
+      <h1 className="font-serif text-3xl font-extrabold text-ink-700 inline-block border-b-2 border-brand-600 pb-1">Wishlist</h1>
 
       <WishlistAddForm />
 
