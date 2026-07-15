@@ -224,16 +224,18 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
         <div className="relative z-10 flex flex-col items-center w-full">
           {wine.image_url ? (
             <div className="relative mb-6 flex flex-col items-center">
-              <div className="relative w-32 h-48 drop-shadow-2xl">
-                <Image 
-                  src={wine.image_url} 
-                  alt={wine.name} 
-                  fill 
-                  className="object-contain"
-                />
+              <div className="relative w-32 h-48 bg-sand-50/95 rounded-2xl shadow-xl border border-white/40 p-3">
+                <div className="relative w-full h-full">
+                  <Image 
+                    src={wine.image_url} 
+                    alt={wine.name} 
+                    fill 
+                    className="object-contain"
+                  />
+                </div>
               </div>
               {/* Floor shadow */}
-              <div className="absolute -bottom-1 w-20 h-2 bg-black/40 blur-md rounded-[100%] pointer-events-none"></div>
+              <div className="absolute -bottom-1 w-24 h-2 bg-black/40 blur-md rounded-[100%] pointer-events-none"></div>
             </div>
           ) : (
             <div className="w-32 h-48 bg-white/10 backdrop-blur-sm rounded-2xl mb-6 flex items-center justify-center text-5xl shadow-sm border border-white/20">
