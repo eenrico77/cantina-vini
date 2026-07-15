@@ -28,7 +28,8 @@ const WINE_SCHEMA_PROPERTIES: Record<string, Schema> = {
       acidity: { type: Type.INTEGER }, persistence: { type: Type.INTEGER }, alcohol: { type: Type.NUMBER }
     },
     required: ["body", "intensity", "tannins", "acidity", "persistence", "alcohol"]
-  }
+  },
+  recognized: { type: Type.BOOLEAN, description: "true solo se l'immagine mostra chiaramente e per intero un'etichetta di vino leggibile, false altrimenti" }
 };
 
 export async function analyzeWineLabel(base64Image: string) {
@@ -38,11 +39,15 @@ export async function analyzeWineLabel(base64Image: string) {
     model: "gemini-3-flash-preview",
     contents: { parts: [
       { inlineData: { mimeType: "image/jpeg", data: base64Image.split(",")[1] } },
-      { text: "Identifica questo vino dall'etichetta. Estrai i dati per creare una scheda tecnica professionale completa, includendo recensione dell'annata e dettagli sul terroir. Ignora l'annata specifica della foto se non è chiara, concentrati sul vino." }
+      { text: "Identifica questo vino dall'etichetta. Estrai i dati per creare una scheda tecnica professionale completa, includendo recensione dell'annata e dettagli sul terroir. Ignora l'annata specifica della foto se non è chiara, concentrati sul vino. Se l'immagine non mostra chiaramente un'etichetta di vino reale e leggibile (es. persone, animali, oggetti non pertinenti, o testo illeggibile per sfocatura/angolazione), imposta recognized a false e lascia vuoti tutti gli altri campi. Non inventare dati se non sei sicuro di poterli leggere realmente." }
     ]},
-    config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: WINE_SCHEMA_PROPERTIES, required: ["name", "producer", "color"] } }
+    config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: WINE_SCHEMA_PROPERTIES, required: ["recognized"] } }
   });
-  return response.text ? JSON.parse(response.text) : null;
+  const parsed = response.text ? JSON.parse(response.text) : null;
+  if (parsed && parsed.recognized === false) {
+    throw new Error("Non riesco a riconoscere un'etichetta di vino in questa foto. Riprova con un'inquadratura frontale, ben illuminata e a fuoco.");
+  }
+  return parsed;
 }
 
 export async function generateProfessionalWineImage(name: string, producer: string, color: string) {

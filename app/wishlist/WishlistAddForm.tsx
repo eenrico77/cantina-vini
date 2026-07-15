@@ -34,9 +34,9 @@ export default function WishlistAddForm() {
           region: [aiResult.region, aiResult.country].filter(Boolean).join(", ") || prev.region,
         }));
       }
-    } catch (e) {
-      console.error(e);
-      alert("Errore durante l'analisi dell'etichetta.");
+    } catch (err: any) {
+      console.error(err);
+      alert(err?.message || "Errore durante l'analisi dell'etichetta.");
     } finally {
       setLoadingAI(false);
     }

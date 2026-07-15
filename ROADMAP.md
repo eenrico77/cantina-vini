@@ -467,9 +467,14 @@ più sotto per il contesto già raccolto.
       reali del piatto) e percentuale di match, sia nella scheda vino che nella pagina "Cibo e
       vino" dedicata — capofila naturale del punto sopra
 - [ ] Scheda vino: hero fotografico (sfondo vigneto/atmosfera) dietro l'immagine della bottiglia
-- [ ] Caratteristiche gusto: due slider orizzontali (Leggero↔Corposo, Piatto↔Frizzante) al posto
-      dell'attuale rappresentazione, riusando i dati già presenti in `taste_profile`
-- [ ] Tag liberi sul vino (es. "Regalo", "Occasione speciale") per organizzazione leggera
+- [x] **Fatto il 15/07/2026**: profilo gustativo ora mostrato con 5 slider orizzontali
+      (Corpo/Intensità/Tannini/Acidità/Persistenza, con poli descrittivi), alcol a parte come
+      testo. Adattato rispetto al piano originale: "Piatto↔Frizzante" non esiste nei dati
+      restituiti da Gemini (`lib/ai/enrichWine.ts`), scartato per non inventare un dato AI falso.
+- [x] **Fatto il 15/07/2026**: tag liberi sulle bottiglie (non sul vino generico, dato che tag
+      come "Regalo" riguardano l'acquisto specifico) — nuova colonna `bottles.tags text[]`
+      (migrazione `0009_bottle_tags.sql`), campo testo libero nel form (virgola-separato,
+      ripulito lato server), mostrati come chip color sabbia nella scheda vino.
 - [x] **Fatto il 15/07/2026**: campo formato bottiglia (`Bottle.format_ml`) ora collegato:
       select nel form Aggiungi Vino (Piccola/Mezza/Standard/Magnum/Doppio Magnum, default 750),
       salvato in `createWine` con fallback a 750, e mostrato come chip nella scheda vino

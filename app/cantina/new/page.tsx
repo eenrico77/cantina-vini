@@ -100,9 +100,9 @@ export default function NewWinePage() {
           setSelectedImage("real");
         }
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      alert("Errore durante l'analisi dell'etichetta.");
+      alert(e?.message || "Errore durante l'analisi dell'etichetta.");
     } finally {
       setLoadingAI(false);
     }
