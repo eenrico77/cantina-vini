@@ -241,7 +241,7 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
             </div>
           )}
           <p className="text-xs font-bold text-brand-200 uppercase tracking-widest mb-2">{wine.producer}</p>
-          <h1 className="text-3xl font-black text-white leading-tight mb-3">{wine.name}</h1>
+          <h1 className="text-xl font-black text-white leading-tight mb-3">{wine.name}</h1>
           <p className="text-sm font-medium text-white/80">
             {[wine.region, wine.country, wine.color].filter(Boolean).join(" · ")}
           </p>
