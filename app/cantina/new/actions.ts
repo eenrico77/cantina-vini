@@ -47,8 +47,13 @@ export async function createWine(formData: FormData): Promise<void> {
   const decanting_needed = decanting && decanting.trim() !== "" ? !/^\s*(no|non)\b/i.test(decanting) : false;
   const decanting_notes = decanting;
   const storage_notes = (formData.get("storage_notes") as string) || null;
-  const maturation_start = Number(formData.get("maturation_start"));
-  const maturation_end = Number(formData.get("maturation_end"));
+  const maturationStartRaw = formData.get("maturation_start") as string;
+  const maturationEndRaw = formData.get("maturation_end") as string;
+  // Number("") e Number(null) valgono entrambi 0 (un numero "finito"), quindi senza
+  // controllare prima la stringa grezza un'aggiunta manuale (senza dati AI) otteneva
+  // per sbaglio una finestra di maturazione farlocca (annata = picco = declino).
+  const maturation_start = maturationStartRaw ? Number(maturationStartRaw) : NaN;
+  const maturation_end = maturationEndRaw ? Number(maturationEndRaw) : NaN;
   const glassware = (formData.get("glassware") as string) || null;
   
   const purchasePriceRaw = formData.get("purchase_price") as string;
