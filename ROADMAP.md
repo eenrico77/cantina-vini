@@ -441,8 +441,8 @@ più sotto per il contesto già raccolto.
       "quante ne hai tolte?" (oggi si scala sempre 1 alla volta). Da aggiungere: nuova voce nel
       bottom sheet, con un piccolo input quantità se `bottle.quantity > 1`, che decrementa
       `bottles.quantity` senza creare una voce nel Diario (a differenza di "Segna come bevuta").
-- [ ] Curva di maturazione: aggiungere faccine/emoji lungo la curva (giovane/apice/declino) e
-      una legenda sotto con fasce d'età + nome fase, per renderla ancora più leggibile
+- [x] **Fatto il 15/07/2026**: Curva di maturazione con faccine/emoji lungo la curva (🌱/⏳/🍷/📉)
+      e legenda sotto con fasce d'età + nome fase, per renderla ancora più leggibile
 - [ ] Empty state illustrati e più caldi per Diario/Wishlist/Vini quando vuoti, invece di solo
       testo semplice
 - [ ] Nella lista "I miei vini": mostrare inline prezzo d'acquisto vs valore corrente con

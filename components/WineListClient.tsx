@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import WineCard from './Winecard';
+import EmptyState from './EmptyState';
 
 export default function WineListClient({ bottles }) {
   const [filters, setFilters] = useState({
@@ -54,6 +55,18 @@ export default function WineListClient({ bottles }) {
     });
     return Array.from(map.entries()).map(([norm, display]) => ({ norm, display })).sort((a, b) => a.display.localeCompare(b.display));
   }, [bottles]);
+
+  if (bottles.length === 0) {
+    return (
+      <EmptyState
+        emoji="🍷"
+        title="La tua cantina è ancora vuota"
+        subtitle="Aggiungi la tua prima bottiglia, anche solo fotografando l'etichetta: pensiamo noi al resto."
+        ctaLabel="Aggiungi il tuo primo vino"
+        ctaHref="/cantina/new"
+      />
+    );
+  }
 
   return (
     <div className="space-y-6">

@@ -1,9 +1,16 @@
 "use client";
 import { deleteWishlistItem } from "@/app/wishlist/actions";
 import Link from "next/link";
+import EmptyState from "@/components/EmptyState";
 
 export default function WishlistClientList({ items }: { items: any[] }) {
-  if (items.length === 0) return <p className="text-ink-500 text-sm text-center py-4">Nessun vino desiderato per ora.</p>;
+  if (items.length === 0) return (
+    <EmptyState
+      emoji="⭐️"
+      title="Nessun vino desiderato per ora"
+      subtitle="Hai assaggiato un vino interessante al ristorante o in cantina? Aggiungilo qui, anche solo fotografando l'etichetta."
+    />
+  );
 
   return (
     <div className="space-y-3">

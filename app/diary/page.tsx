@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import NotAuthenticated from "@/components/NotAuthenticated";
+import EmptyState from "@/components/EmptyState";
 
 export default async function DiaryPage() {
   const supabase = createClient();
@@ -20,7 +21,13 @@ export default async function DiaryPage() {
       <h1 className="text-3xl font-extrabold text-ink-700">Diario Bevute</h1>
       
       {!entries || entries.length === 0 ? (
-        <p className="text-ink-500 text-center py-10">Non hai ancora segnato nessuna bottiglia come bevuta. 🍷</p>
+        <EmptyState
+          emoji="📖"
+          title="Il tuo diario è ancora vuoto"
+          subtitle="Ogni volta che segni una bottiglia come bevuta dalla scheda del vino, la trovi qui con voto e note."
+          ctaLabel="Vai alla tua cantina"
+          ctaHref="/wines"
+        />
       ) : (
         <div className="space-y-4">
           {entries.map(entry => (
