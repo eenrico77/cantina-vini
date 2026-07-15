@@ -100,7 +100,9 @@ export default function NewWinePage() {
           setRemovingBg(true);
           try {
             const imgly = await import('@imgly/background-removal');
-            const imageBlob = await imgly.removeBackground(file);
+            const imageBlob = await imgly.removeBackground(file, {
+              publicPath: 'https://staticimgly.com/@imgly/background-removal-data/1.7.0/dist/'
+            });
             const processedImageBase64 = await new Promise<string>((resolve) => {
               const reader = new FileReader();
               reader.onloadend = () => resolve(reader.result as string);
