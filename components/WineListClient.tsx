@@ -27,7 +27,7 @@ export default function WineListClient({ bottles }) {
       if (filters.year && bottle.year.toString() !== filters.year) return false;
 
       // Filter by region
-      if (filters.region && wine.region !== filters.region) return false;
+      if (filters.region && (wine.region ? wine.region.trim().toLowerCase().replace(/-/g, " ") : "") !== filters.region) return false;
 
       // Filter by stock
       if (filters.inStockOnly && (bottle.quantity || 0) <= 0) return false;
@@ -39,7 +39,21 @@ export default function WineListClient({ bottles }) {
   // Extract unique values for filter dropdowns
   const uniqueTypes = Array.from(new Set(bottles.map((b: any) => b.wine?.color).filter(Boolean))) as string[];
   const uniqueYears = Array.from(new Set(bottles.map((b: any) => b.year).filter(Boolean))).sort((a: any, b: any) => b - a) as string[];
-  const uniqueRegions = Array.from(new Set(bottles.map((b: any) => b.wine?.region).filter(Boolean))).sort() as string[];
+  
+  const uniqueRegions = useMemo(() => {
+    const map = new Map<string, string>();
+    bottles.forEach((b: any) => {
+      const r = b.wine?.region;
+      if (r) {
+        const norm = r.trim().toLowerCase().replace(/-/g, " ");
+        if (!map.has(norm)) {
+          const display = norm.split(' ').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+          map.set(norm, display);
+        }
+      }
+    });
+    return Array.from(map.entries()).map(([norm, display]) => ({ norm, display })).sort((a, b) => a.display.localeCompare(b.display));
+  }, [bottles]);
 
   return (
     <div className="space-y-6">
@@ -60,7 +74,7 @@ export default function WineListClient({ bottles }) {
             value={filters.aging}
             onChange={(e) => setFilters({ ...filters, aging: e.target.value })}
           >
-            <option value="">Maturazione</option>
+            <option value="">Matur.</option>
             <option value="too_young">Giovane</option>
             <option value="almost_ready">Quasi pronto</option>
             <option value="ready">Pronto ora</option>
@@ -82,7 +96,7 @@ export default function WineListClient({ bottles }) {
             onChange={(e) => setFilters({ ...filters, region: e.target.value })}
           >
             <option value="">Regione</option>
-            {uniqueRegions.map(r => <option key={r} value={r}>{r}</option>)}
+            {uniqueRegions.map(r => <option key={r.norm} value={r.norm}>{r.display}</option>)}
           </select>
         </div>
         <div className="flex items-center gap-2 pt-2 border-t">

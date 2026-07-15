@@ -211,6 +211,7 @@ Ordine deciso: prima la curva di maturazione (priorità esplicita di Enrico), po
 - [x] Fix decantazione automatica e campi testo auto-espandibili.
 - [x] Fase 7: campi testo come paragrafo con modifica esplicita, layout full-width, Azioni sheet compatto.
 - [x] Fase 7: campi AI sola lettura, note personali, bicchiere con nome breve, maturazione semplificata, redesign Azioni sheet.
+- [x] Fix regioni duplicate nel filtro cantina + etichetta Maturazione troncata.
 
 - [x] **Tradurre tutte le etichette rimaste in inglese** trovate testando il 13/07/2026:
       "Storage & Service", "TEMP.", "DECANTING", "Maturation Start/End (offset)" nel form

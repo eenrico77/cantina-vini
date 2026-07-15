@@ -31,8 +31,10 @@ export async function createWine(formData: FormData): Promise<void> {
   const name = formData.get("name") as string;
   const producer = formData.get("producer") as string;
   const color = formData.get("color") as string;
-  const region = (formData.get("region") as string) || null;
-  const country = (formData.get("country") as string) || null;
+  const regionRaw = (formData.get("region") as string) || null;
+  const countryRaw = (formData.get("country") as string) || null;
+  const region = regionRaw ? regionRaw.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ') : null;
+  const country = countryRaw ? countryRaw.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ') : null;
   const yearRaw = formData.get("year") as string;
   const year: number | null = yearRaw ? Number(yearRaw) : null;
   const quantity = Number(formData.get("quantity") || 1);
