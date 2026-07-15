@@ -470,11 +470,10 @@ più sotto per il contesto già raccolto.
 - [ ] Caratteristiche gusto: due slider orizzontali (Leggero↔Corposo, Piatto↔Frizzante) al posto
       dell'attuale rappresentazione, riusando i dati già presenti in `taste_profile`
 - [ ] Tag liberi sul vino (es. "Regalo", "Occasione speciale") per organizzazione leggera
-- [ ] **Nuovo (15/07/2026)**: campo formato bottiglia (`Bottle.format_ml`, già presente nel
-      modello dati/`types.ts` e in `supabase/migrations/0001_consolidation.sql`, ma MAI esposto
-      in UI) — oggi non impostabile nel form Aggiungi Vino né visibile nella scheda vino,
-      nonostante Oeni lo mostri come chip prominente ("Standard 75cl"). Da collegare: select nel
-      form (es. Mezza 375ml / Standard 750ml / Magnum 1.5L) e visualizzazione nella scheda.
+- [x] **Fatto il 15/07/2026**: campo formato bottiglia (`Bottle.format_ml`) ora collegato:
+      select nel form Aggiungi Vino (Piccola/Mezza/Standard/Magnum/Doppio Magnum, default 750),
+      salvato in `createWine` con fallback a 750, e mostrato come chip nella scheda vino
+      (`BottleCard` in `WineDetailClient.tsx`).
 
 ### Priorità 3 — idee valide ma da valutare più avanti
 - [ ] Gestione multi-annata/formato sotto un'unica scheda prodotto (oggi ogni bottiglia è

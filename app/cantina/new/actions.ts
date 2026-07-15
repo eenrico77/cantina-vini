@@ -41,6 +41,8 @@ export async function createWine(formData: FormData): Promise<void> {
   const format_mlRaw = formData.get("format_ml") as string;
   const format_ml_parsed = format_mlRaw ? Number(format_mlRaw) : 750;
   const format_ml = Number.isFinite(format_ml_parsed) ? format_ml_parsed : 750;
+  const tagsRaw = formData.get("tags") as string;
+  const tags = tagsRaw ? tagsRaw.split(",").map(t => t.trim()).filter(Boolean) : null;
   
   // AI fields
   const grapes = (formData.get("grapes") as string) || null;
@@ -150,7 +152,8 @@ export async function createWine(formData: FormData): Promise<void> {
       peak_start: peakStart,
       peak_end: peakEnd,
       aging_status: agingStatus,
-      format_ml
+      format_ml,
+      tags
     })
     .select("id")
     .single();

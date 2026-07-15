@@ -41,6 +41,7 @@ export function mapBottleFromDB(row: any): Bottle {
     aging_status: row?.aging_status ?? null,
     notes: row?.notes ?? null,
     rating: row?.rating ?? null,
+    tags: row?.tags ?? null,
 
     wine,
   };

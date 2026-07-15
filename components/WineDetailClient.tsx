@@ -113,6 +113,16 @@ function BottleCard({ bottle, wine, currentYear }: { bottle: any; wine: any; cur
         </div>
       )}
 
+      {bottle.tags && bottle.tags.length > 0 && (
+        <div className="flex flex-wrap justify-center gap-2 mb-4 mt-2">
+          {bottle.tags.map((t: string) => (
+            <span key={t} className="bg-sand-100 text-ink-600 font-medium text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-md">
+              {t}
+            </span>
+          ))}
+        </div>
+      )}
+
       {hasCurve ? (
         <div className="mb-4">
           <MaturationCurve
@@ -337,13 +347,39 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
                     )}
 
                     {tasteProfile && (
-                      <div>
-                        <span className="font-semibold text-ink-500 block mb-1 uppercase text-[10px] tracking-wider">Profilo gustativo</span>
-                        <ul className="list-disc pl-5 space-y-1 text-ink-700/90">
-                          {Object.entries(tasteProfile).map(([key, val]) => (
-                            <li key={key}>{TASTE_LABELS[key] || key}: {val}{key === "alcohol" ? "%" : "/5"}</li>
-                          ))}
-                        </ul>
+                      <div className="mt-6">
+                        <span className="font-semibold text-ink-500 block mb-4 uppercase text-[10px] tracking-wider">Profilo gustativo</span>
+                        
+                        {tasteProfile.alcohol && (
+                          <div className="text-sm font-bold text-ink-700 mb-4 bg-sand-50 py-2 px-3 rounded-lg border border-sand-100 inline-block">
+                            Alcol: {tasteProfile.alcohol}%
+                          </div>
+                        )}
+
+                        <div className="space-y-5">
+                          {[
+                            { key: 'body', left: 'Leggero', right: 'Corposo' },
+                            { key: 'intensity', left: 'Delicato', right: 'Intenso' },
+                            { key: 'tannins', left: 'Morbido', right: 'Deciso' },
+                            { key: 'acidity', left: 'Rotondo', right: 'Fresco' },
+                            { key: 'persistence', left: 'Breve', right: 'Lunga' }
+                          ].map(slider => {
+                            const val = tasteProfile[slider.key];
+                            if (val == null) return null;
+                            const perc = (Number(val) / 5) * 100;
+                            return (
+                              <div key={slider.key}>
+                                <div className="flex justify-between text-xs font-semibold text-ink-600 mb-1.5">
+                                  <span>{slider.left}</span>
+                                  <span>{slider.right}</span>
+                                </div>
+                                <div className="h-2.5 w-full bg-sand-100 rounded-full overflow-hidden">
+                                  <div className="h-full bg-brand-500 rounded-full" style={{ width: `${perc}%` }}></div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
                       </div>
                     )}
                   </div>

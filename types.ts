@@ -37,5 +37,6 @@ export interface Bottle {
   aging_status?: AgingStatus | null;
   notes?: string | null;
   rating?: number | null;
+  tags?: string[] | null;
   wine?: Wine | null;
 }
