@@ -422,11 +422,25 @@ prendere spunti grafici/funzionali. Backlog prioritizzato di conseguenza, dal pi
 impattante/economico da realizzare. Coerente con le decisioni "Cosa NON fare" sopra: niente 3D,
 niente social/gamification, niente refactor del modello dati.
 
+### Fase 7 — CHIUSA il 15/07/2026, confermata da Enrico dopo l'ultimo giro di test
+(filtri cantina, regioni deduplicate, form Aggiungi Vino, bottone Azioni). Prossimo passo:
+Fase 8 (identità visiva/branding), quando Enrico deciderà di avviarla — vedi sezione dedicata
+più sotto per il contesto già raccolto.
+
 ### Priorità 1 — alto impatto, sforzo contenuto
-- [ ] Bottone unico "Azioni" nella scheda vino (`WineDetailClient.tsx`): bottom sheet con le
+- [x] Bottone unico "Azioni" nella scheda vino (`WineDetailClient.tsx`): bottom sheet con le
       azioni disponibili (Segna come bevuta, Modifica valore, Aggiungi nota, ecc.) invece di
       pulsanti sparsi per la pagina — spunto segnalato direttamente da Enrico su uno screenshot
       annotato a mano ("TASTO AZIONI")
+- [ ] **Nuovo (15/07/2026, controllo funzionale su Oeni)**: rimozione bottiglia dalla cantina
+      senza passare da "Segna come bevuta". Oggi in `BottleActionsSheet.tsx` esiste solo
+      "🍷 Segna come bevuta" (`DrinkBottleModal.tsx` → `drinkBottleAction`), che scala sempre e
+      solo 1 unità e presume che la bottiglia sia stata bevuta. Manca un'azione tipo "🗑️ Rimuovi
+      bottiglia" per i casi in cui non è stata bevuta (rotta, regalata, errore di inserimento) —
+      e in generale, quando la quantità di un'annata è > 1, nessuna delle due azioni chiede
+      "quante ne hai tolte?" (oggi si scala sempre 1 alla volta). Da aggiungere: nuova voce nel
+      bottom sheet, con un piccolo input quantità se `bottle.quantity > 1`, che decrementa
+      `bottles.quantity` senza creare una voce nel Diario (a differenza di "Segna come bevuta").
 - [ ] Curva di maturazione: aggiungere faccine/emoji lungo la curva (giovane/apice/declino) e
       una legenda sotto con fasce d'età + nome fase, per renderla ancora più leggibile
 - [ ] Empty state illustrati e più caldi per Diario/Wishlist/Vini quando vuoti, invece di solo
@@ -436,13 +450,27 @@ niente social/gamification, niente refactor del modello dati.
       aggregate
 
 ### Priorità 2 — impatto medio, richiede più lavoro
+- [ ] **Nuovo (15/07/2026, da screenshot Oeni "Cibo & vino")**: nella scheda vino, aggiungere
+      una sezione di abbinamento più ricca di quella attuale (box statico per colore) — con
+      categorie/piatti illustrati con foto (es. "Formaggio blu", "Agnello", "Cibi piccanti"),
+      che quando selezionati mostrino sia vini consigliati in generale da comprare (per invogliare
+      l'acquisto, come su Oeni) sia — cosa più utile per noi — quali vini GIÀ in cantina si
+      abbinano bene a quel piatto/categoria. È un'evoluzione della logica "Cosa mangi stasera?"
+      già esistente in home (`FoodPairingForm.tsx` → `getPairingAction`, oggi input libero testo)
+      ma con un punto d'ingresso a griglia fotografica per categoria invece che solo testo libero,
+      e con l'aggiunta dei vini "da comprare" oltre a quelli in cantina.
 - [ ] Sezione abbinamenti cibo-vino: sostituire i chip testuali con card fotografiche (foto
       reali del piatto) e percentuale di match, sia nella scheda vino che nella pagina "Cibo e
-      vino" dedicata
+      vino" dedicata — capofila naturale del punto sopra
 - [ ] Scheda vino: hero fotografico (sfondo vigneto/atmosfera) dietro l'immagine della bottiglia
 - [ ] Caratteristiche gusto: due slider orizzontali (Leggero↔Corposo, Piatto↔Frizzante) al posto
       dell'attuale rappresentazione, riusando i dati già presenti in `taste_profile`
 - [ ] Tag liberi sul vino (es. "Regalo", "Occasione speciale") per organizzazione leggera
+- [ ] **Nuovo (15/07/2026)**: campo formato bottiglia (`Bottle.format_ml`, già presente nel
+      modello dati/`types.ts` e in `supabase/migrations/0001_consolidation.sql`, ma MAI esposto
+      in UI) — oggi non impostabile nel form Aggiungi Vino né visibile nella scheda vino,
+      nonostante Oeni lo mostri come chip prominente ("Standard 75cl"). Da collegare: select nel
+      form (es. Mezza 375ml / Standard 750ml / Magnum 1.5L) e visualizzazione nella scheda.
 
 ### Priorità 3 — idee valide ma da valutare più avanti
 - [ ] Gestione multi-annata/formato sotto un'unica scheda prodotto (oggi ogni bottiglia è

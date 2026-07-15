@@ -83,3 +83,40 @@ export async function updateBottleValueAction(formData: FormData) {
   revalidatePath(`/cantina/${wineId}`);
   revalidatePath('/stats');
 }
+
+export async function removeBottleAction(formData: FormData) {
+  const bottleId = formData.get("bottleId") as string;
+  const wineId = formData.get("wineId") as string;
+  const amountRaw = formData.get("amount") as string;
+  const amount = amountRaw ? Number(amountRaw) : 1;
+
+  if (!bottleId || !wineId) throw new Error("Mancano dati della bottiglia");
+  if (!Number.isFinite(amount) || amount <= 0) throw new Error("Quantità non valida");
+
+  const supabase = createClient();
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth?.user) throw new Error("Non autenticato");
+
+  const { data: currentBottle, error: fetchErr } = await supabase
+    .from("bottles")
+    .select("quantity")
+    .eq("id", bottleId)
+    .eq("user_id", auth.user.id)
+    .single();
+
+  if (fetchErr || !currentBottle) throw new Error("Bottiglia non trovata");
+
+  const newQuantity = Math.max(0, currentBottle.quantity - amount);
+
+  const { error: updateErr } = await supabase
+    .from("bottles")
+    .update({ quantity: newQuantity })
+    .eq("id", bottleId)
+    .eq("user_id", auth.user.id);
+
+  if (updateErr) throw new Error(updateErr.message);
+
+  // Nessuna voce nel Diario: a differenza di "Segna come bevuta", qui la bottiglia non è stata bevuta.
+  revalidatePath(`/cantina/${wineId}`);
+  revalidatePath('/stats');
+}

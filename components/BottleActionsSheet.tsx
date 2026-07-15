@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import DrinkBottleModal from "./DrinkBottleModal";
+import RemoveBottleModal from "./RemoveBottleModal";
 
 export default function BottleActionsSheet({ 
   bottle, 
@@ -14,6 +15,7 @@ export default function BottleActionsSheet({
 }) {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [drinkModalOpen, setDrinkModalOpen] = useState(false);
+  const [removeModalOpen, setRemoveModalOpen] = useState(false);
 
   return (
     <>
@@ -52,6 +54,16 @@ export default function BottleActionsSheet({
                 </div>
                 <span className="text-ink-300">❯</span>
               </button>
+
+              <button 
+                onClick={() => { setSheetOpen(false); setRemoveModalOpen(true); }}
+                className="flex items-center justify-between py-3 hover:bg-sand-50 transition-colors text-left"
+              >
+                <div className="flex items-center gap-3 font-medium text-red-500 text-sm">
+                  <span className="text-base">🗑️</span> Rimuovi bottiglia
+                </div>
+                <span className="text-ink-300">❯</span>
+              </button>
             </div>
           </div>
         </div>
@@ -64,6 +76,16 @@ export default function BottleActionsSheet({
           wine={wine} 
           isOpen={drinkModalOpen} 
           onClose={() => setDrinkModalOpen(false)} 
+        />
+      )}
+
+      {/* Modal Rimuovi Bottiglia */}
+      {removeModalOpen && (
+        <RemoveBottleModal 
+          bottle={bottle} 
+          wine={wine} 
+          isOpen={removeModalOpen} 
+          onClose={() => setRemoveModalOpen(false)} 
         />
       )}
     </>
