@@ -560,6 +560,11 @@ quella strada — il problema si risolve senza database, solo pulendo l'immagine
   bundling lato browser che ha causato il problema), o un servizio esterno a pagamento se/quando
   l'app diventa un prodotto commerciale vero (Enrico ha detto che a quel punto pagherebbe
   volentieri un servizio AI dedicato).
+- [x] **Fatto il 15/07/2026**: foto hero sostituita con il file scelto da Enrico
+      (`public/hero-vigneto.png`, caricato manualmente nel progetto — niente più indovinelli su
+      Unsplash), e cornice bottiglia semplificata a un solo livello (`object-cover`, bordo
+      `white/30`, `shadow-xl`) dopo il problema del doppio riquadro (targa + sfondo bianco della
+      foto stessa sovrapposti).
 
 ## Fase 8 — Identità visiva e branding (segnalata da Enrico il 15/07/2026, da avviare dopo
 la Fase 7)

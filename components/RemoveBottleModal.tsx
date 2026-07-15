@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { removeBottleAction } from "@/app/cantina/[id]/actions";
 
 export default function RemoveBottleModal({
@@ -16,6 +17,7 @@ export default function RemoveBottleModal({
 }) {
   const [loading, setLoading] = useState(false);
   const [amount, setAmount] = useState(1);
+  const router = useRouter();
 
   if (bottle.quantity <= 0) return null;
 
@@ -34,7 +36,7 @@ export default function RemoveBottleModal({
 
     try {
       await removeBottleAction(formData);
-      handleClose();
+      router.push("/");
     } catch (err) {
       console.error(err);
       alert("Errore durante la rimozione.");
