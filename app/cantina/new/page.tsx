@@ -396,7 +396,7 @@ export default function NewWinePage() {
           </details>
         </div>
 
-        <button type="submit" className="w-full bg-brand-500 text-white px-6 py-4 rounded-xl font-bold hover:bg-brand-600 transition-colors shadow-sm">
+        <button type="submit" className="w-full bg-ink-700 text-white px-6 py-4 rounded-xl font-bold hover:bg-ink-500 transition-colors shadow-sm">
           Conferma e Salva Vino
         </button>
       </form>

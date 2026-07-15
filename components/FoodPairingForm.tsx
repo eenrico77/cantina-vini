@@ -43,7 +43,7 @@ export default function FoodPairingForm() {
             className="border border-sand-200 rounded-lg px-3 py-2 flex-1 text-sm outline-none focus:border-black"
             required
           />
-          <button type="submit" disabled={loading} className="bg-brand-500 text-white px-4 py-2 rounded-lg text-sm font-semibold disabled:opacity-50">
+          <button type="submit" disabled={loading} className="bg-ink-700 text-white px-4 py-2 rounded-lg text-sm font-semibold disabled:opacity-50">
             {loading ? "Cerco..." : "Abbina"}
           </button>
         </form>

@@ -60,7 +60,7 @@ export default function DrinkBottleModal({
           </div>
           <div className="flex gap-3 justify-end mt-6 pt-4 border-t border-sand-100">
             <button type="button" onClick={handleClose} className="px-5 py-2.5 text-ink-500 font-bold hover:bg-sand-100 rounded-xl transition-colors">Annulla</button>
-            <button type="submit" disabled={loading} className="px-6 py-2.5 bg-brand-500 hover:bg-brand-600 text-white rounded-xl font-bold disabled:opacity-50 transition-colors shadow-md">
+            <button type="submit" disabled={loading} className="px-6 py-2.5 bg-ink-700 hover:bg-ink-500 text-white rounded-xl font-bold disabled:opacity-50 transition-colors shadow-md">
               {loading ? "Salvo..." : "Conferma"}
             </button>
           </div>

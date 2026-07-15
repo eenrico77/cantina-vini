@@ -23,7 +23,7 @@ export default function EmptyState({
       {ctaLabel && ctaHref && (
         <Link
           href={ctaHref}
-          className="bg-brand-500 hover:bg-brand-600 text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow-md transition-colors"
+          className="bg-ink-700 hover:bg-ink-500 text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow-md transition-colors"
         >
           {ctaLabel}
         </Link>

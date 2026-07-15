@@ -74,7 +74,7 @@ export default async function WinesPage() {
         </div>
         <Link
           href="/cantina/new"
-          className="bg-brand-500 text-white text-sm px-5 py-2.5 rounded-full font-medium shadow-md hover:bg-brand-600 transition-colors"
+          className="bg-ink-700 text-white text-sm px-5 py-2.5 rounded-full font-medium shadow-md hover:bg-ink-500 transition-colors"
         >
           + Aggiungi Vino
         </Link>

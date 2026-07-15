@@ -67,7 +67,7 @@ export default function AccountForm() {
       <button 
         type="submit" 
         disabled={loading}
-        className="px-5 py-2.5 bg-brand-500 hover:bg-brand-600 text-white rounded-xl font-bold transition-colors disabled:opacity-50"
+        className="px-5 py-2.5 bg-ink-700 hover:bg-ink-500 text-white rounded-xl font-bold transition-colors disabled:opacity-50"
       >
         {loading ? "Salvataggio..." : "Salva Password"}
       </button>

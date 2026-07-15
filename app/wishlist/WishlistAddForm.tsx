@@ -92,7 +92,7 @@ export default function WishlistAddForm() {
           <input name="region" value={formData.region} onChange={handleChange} placeholder="Regione/Paese" className="border p-2 rounded-lg text-sm outline-none focus:border-brand-500" />
         </div>
         <textarea name="notes" value={formData.notes} onChange={handleChange} placeholder="Note (chi me l'ha consigliato, prezzo indicativo...)" className="border p-2 rounded-lg text-sm outline-none focus:border-brand-500 w-full" />
-        <button type="submit" disabled={loadingAI} className="w-full bg-brand-500 text-white font-medium py-2 rounded-lg text-sm hover:bg-brand-600 transition-colors disabled:opacity-50">
+        <button type="submit" disabled={loadingAI} className="w-full bg-ink-700 text-white font-medium py-2 rounded-lg text-sm hover:bg-ink-500 transition-colors disabled:opacity-50">
           Aggiungi alla lista
         </button>
       </form>
