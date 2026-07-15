@@ -6,6 +6,9 @@ content: [
 ],
   theme: {
     extend: {
+      fontFamily: {
+        serif: ['var(--font-fraunces)', 'serif'],
+      },
       colors: {
         brand: {
           50:  "#faf5ef",

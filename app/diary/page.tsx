@@ -18,7 +18,7 @@ export default async function DiaryPage() {
 
   return (
     <div className="p-4 md:p-8 max-w-2xl mx-auto space-y-6 mb-20">
-      <h1 className="text-3xl font-extrabold text-ink-700">Diario Bevute</h1>
+      <h1 className="font-serif text-3xl font-extrabold text-ink-700">Diario Bevute</h1>
       
       {!entries || entries.length === 0 ? (
         <EmptyState

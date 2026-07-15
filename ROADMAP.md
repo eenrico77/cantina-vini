@@ -560,11 +560,24 @@ quella strada — il problema si risolve senza database, solo pulendo l'immagine
   bundling lato browser che ha causato il problema), o un servizio esterno a pagamento se/quando
   l'app diventa un prodotto commerciale vero (Enrico ha detto che a quel punto pagherebbe
   volentieri un servizio AI dedicato).
+- [ ] **Da sistemare (segnalato da Enrico il 15/07/2026)**: la card della bottiglia nella hero
+      è troppo alta e esce dallo schermo in alcuni casi (bottiglia/foto che sporge oltre il
+      bordo superiore) — da rivedere le dimensioni/posizionamento della card `w-32 h-48` nella
+      hero di `WineDetailClient.tsx`.
 - [x] **Fatto il 15/07/2026**: foto hero sostituita con il file scelto da Enrico
       (`public/hero-vigneto.png`, caricato manualmente nel progetto — niente più indovinelli su
       Unsplash), e cornice bottiglia semplificata a un solo livello (`object-cover`, bordo
       `white/30`, `shadow-xl`) dopo il problema del doppio riquadro (targa + sfondo bianco della
       foto stessa sovrapposti).
+
+## Fase 8 — Identità visiva e branding — AVVIATA il 15/07/2026
+
+**Decisione presa**: dopo confronto su 3 direzioni (Enoteca calda, Notte in cantina, Bottega
+minimal — mockup mostrati con font Google reali e palette), Enrico ha scelto **Enoteca calda**:
+evoluzione della palette ambra/terracotta già esistente, con l'aggiunta di un font serif elegante
+(Fraunces) per i nomi dei vini e i titoli, mantenendo tutto il resto (sand/ink/status) invariato.
+Prossimo passo: definire l'implementazione concreta (import del font, dove applicarlo, eventuale
+aggiornamento di icone/dettagli minori) e passare le istruzioni ad Antigravity.
 
 ## Fase 8 — Identità visiva e branding (segnalata da Enrico il 15/07/2026, da avviare dopo
 la Fase 7)

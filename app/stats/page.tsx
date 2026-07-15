@@ -50,7 +50,7 @@ export default async function StatsPage() {
 
   return (
     <div className="p-4 md:p-8 max-w-2xl mx-auto space-y-6 mb-20">
-      <h1 className="text-3xl font-extrabold text-ink-700">Statistiche</h1>
+      <h1 className="font-serif text-3xl font-extrabold text-ink-700">Statistiche</h1>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-white p-5 rounded-xl shadow-sm border border-sand-200">

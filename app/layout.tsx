@@ -1,6 +1,6 @@
 // app/layout.tsx
 import "../globals.css";
-import { Inter } from "next/font/google";
+import { Inter, Fraunces } from "next/font/google";
 import BottomNav from "../components/BottomNav"; // <-- IMPORTAZIONE AGGIUNTA
 import Header from "../components/Header";
 import ConditionalHeaderWrapper from "../components/ConditionalHeaderWrapper";
@@ -8,6 +8,8 @@ import ConditionalHeaderWrapper from "../components/ConditionalHeaderWrapper";
 const inter = Inter({
   subsets: ["latin"],
 });
+
+const fraunces = Fraunces({ subsets: ["latin"], weight: ["600"], variable: "--font-fraunces" });
 
 export const metadata = {
   title: "Cantina Vini",
@@ -22,7 +24,7 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) { // <-- TIPO AGGIUNTO
   return (
     <html lang="it">
-      <body className={`${inter.className} bg-sand-50`}>
+      <body className={`${inter.className} ${fraunces.variable} bg-sand-50`}>
         
         {/*
           <main> Centrata (max-w-[500px]) e con padding in basso (pb-24)

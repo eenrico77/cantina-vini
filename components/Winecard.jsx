@@ -48,7 +48,7 @@ export default function WineCard({ bottle }) {
 
         {/* Dettagli */}
         <div className="flex-1 min-w-0">
-          <h2 className="text-lg font-semibold text-ink-700 truncate group-hover:text-brand-600 transition-colors">
+          <h2 className="font-serif text-lg font-semibold text-ink-700 truncate group-hover:text-brand-600 transition-colors">
             {wine.name}
           </h2>
           <p className="text-sm text-ink-500 truncate mt-0.5">
