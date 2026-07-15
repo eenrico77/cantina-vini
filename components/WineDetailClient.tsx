@@ -6,7 +6,7 @@ import Link from "next/link";
 import MaturationCurve from "@/components/MaturationCurve";
 import { getAgingLabel } from "@/lib/domain/maturation";
 import type { AgingStatus } from "@/types";
-import { GlassIcon, getGlassLabel } from "@/components/GlassIcon";
+import GlassIcon, { getGlassLabel } from "@/components/GlassIcon";
 import BottleActionsSheet from "@/components/BottleActionsSheet";
 import { updateBottleValueAction } from "@/app/cantina/[id]/actions";
 
