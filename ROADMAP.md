@@ -432,7 +432,7 @@ più sotto per il contesto già raccolto.
       azioni disponibili (Segna come bevuta, Modifica valore, Aggiungi nota, ecc.) invece di
       pulsanti sparsi per la pagina — spunto segnalato direttamente da Enrico su uno screenshot
       annotato a mano ("TASTO AZIONI")
-- [ ] **Nuovo (15/07/2026, controllo funzionale su Oeni)**: rimozione bottiglia dalla cantina
+- [x] **Fatto il 15/07/2026 (controllo funzionale su Oeni)**: rimozione bottiglia dalla cantina
       senza passare da "Segna come bevuta". Oggi in `BottleActionsSheet.tsx` esiste solo
       "🍷 Segna come bevuta" (`DrinkBottleModal.tsx` → `drinkBottleAction`), che scala sempre e
       solo 1 unità e presume che la bottiglia sia stata bevuta. Manca un'azione tipo "🗑️ Rimuovi

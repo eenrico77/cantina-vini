@@ -40,6 +40,14 @@ export default function MaturationCurve({ start, end, current }: Props) {
 
   const currentY = getCurveY(currentPerc);
 
+  // Faccine lungo la curva: una per fase, posizionate sui punti già usati per gradiente/finestra
+  const phaseMarkers = [
+    { perc: startPerc / 2, emoji: "🌱" },
+    { perc: startPerc, emoji: "⏳" },
+    { perc: 50, emoji: "🍷" },
+    { perc: endPerc, emoji: "📉" },
+  ];
+
   return (
     <div className="bg-white rounded-2xl shadow-soft p-5 border border-sand-200 mt-4">
       <div className="flex justify-between items-end mb-4">
@@ -109,6 +117,21 @@ export default function MaturationCurve({ start, end, current }: Props) {
           <div className="flex-1 w-px border-l border-dashed border-sand-300"></div>
         </div>
 
+        {/* Faccine di fase lungo la curva */}
+        {phaseMarkers.map((m, i) => (
+          <div
+            key={i}
+            className="absolute text-sm leading-none pointer-events-none"
+            style={{
+              left: `${m.perc}%`,
+              top: `${getCurveY(m.perc)}%`,
+              transform: 'translate(-50%, -140%)'
+            }}
+          >
+            {m.emoji}
+          </div>
+        ))}
+
         {/* Marker Oggi animato */}
         <div 
           className="absolute flex flex-col items-center transition-all duration-1000 ease-out z-10"
@@ -122,6 +145,26 @@ export default function MaturationCurve({ start, end, current }: Props) {
             OGGI: {current}
           </div>
           <div className="w-4 h-4 bg-white border-[3px] border-ink-700 rounded-full shadow-md"></div>
+        </div>
+      </div>
+
+      {/* Legenda fasi di maturazione */}
+      <div className="grid grid-cols-2 gap-x-3 gap-y-2 mt-6 pt-4 border-t border-sand-100">
+        <div className="flex items-center gap-2 text-xs text-ink-500">
+          <span className="text-sm">🌱</span>
+          <span><span className="font-bold text-ink-700">Giovane</span> — ideale da bere dal {start}</span>
+        </div>
+        <div className="flex items-center gap-2 text-xs text-ink-500">
+          <span className="text-sm">⏳</span>
+          <span><span className="font-bold text-ink-700">Quasi pronto</span> — al meglio dal {start}</span>
+        </div>
+        <div className="flex items-center gap-2 text-xs text-ink-500">
+          <span className="text-sm">🍷</span>
+          <span><span className="font-bold text-ink-700">Pronto ora</span> — finestra ideale fino al {end}</span>
+        </div>
+        <div className="flex items-center gap-2 text-xs text-ink-500">
+          <span className="text-sm">📉</span>
+          <span><span className="font-bold text-ink-700">In declino</span> — finestra ideale terminata nel {end}</span>
         </div>
       </div>
     </div>
