@@ -487,6 +487,25 @@ più sotto per il contesto già raccolto.
 - [ ] Barra "Qualità annata" con icona meteo, derivata automaticamente dal testo
       `vintage_review` già generato dall'AI
 
+### Nuovi spunti da Oeni (segnalati da Enrico il 15/07/2026, da smistare in priorità)
+- [ ] **Selettore annata a pillole orizzontali**: nella scheda vino di Oeni, invece di una lista
+      verticale di tutte le annate possedute (come facciamo oggi in "Le tue Annate"), si sceglie
+      UNA annata alla volta con pillole scorrevoli in alto ("Senza annata", 2026, 2025, 2024...) e
+      sotto si vedono solo i dati di quella selezionata. Cambierebbe la struttura della tab
+      Annate — da valutare se e quanto vogliamo davvero passare da "vedo tutto in sequenza" a
+      "scelgo e vedo una alla volta".
+- [ ] **Card vino in lista con foto "a sbalzo" + fascia prezzo**: nella lista vini di Oeni, la
+      foto della bottiglia sporge leggermente da un blocco colorato dietro di essa, con
+      annata+quantità come badge sovrapposto in alto a sinistra sulla foto, e sotto una fascia
+      grigia chiara divisa in due colonne (Prezzo d'acquisto | Valore). Evoluzione grafica di
+      quanto già fatto in Priorità 1 (prezzo/valore inline in `Winecard.jsx`), qui più il layout
+      che il dato in sé (che abbiamo già).
+- [ ] **Schermata di conferma dopo il salvataggio vino**: oggi `createWine` fa `redirect`
+      diretto a `/cantina/[id]` senza nessuna schermata intermedia. Oeni mostra "Complimenti! La
+      tua cantina è aggiornata" con spunta verde (e Enrico suggerisce anche una mini
+      animazione) prima di arrivare alla scheda. Aggiungerebbe un passaggio in più al flusso,
+      da bilanciare con la velocità d'uso.
+
 ### Esplicitamente escluso (coerente con "Cosa NON fare")
 - Cantina 3D, gamification a punti/sfide, funzioni social/amici — viste su Oeni ma fuori scope
   per un'app di uso personale
@@ -500,6 +519,19 @@ più sotto per il contesto già raccolto.
   sessione dedicata: dividere in due chiamate (dati essenziali veloci + arricchimento testuale
   più lento in background), o ridurre lo schema richiesto. Non affrontato ora per non
   mischiarlo con i fix di stile in corso.
+
+## Bug trovato e corretto durante la Fase 7 (15/07/2026): foto non riconosciute
+
+Controllando come procedere con l'hero fotografico della scheda vino, Enrico ha chiesto cosa
+succede caricando una foto non pertinente (es. un gatto, o una foto storta/sfocata dell'etichetta).
+Verifica del codice: **nessuna gestione esisteva** — lo schema Gemini in
+`lib/ai/enrichWine.ts` (`analyzeWineLabel`) rendeva `name`/`producer`/`color` obbligatori,
+quindi il modello non aveva modo di dire "non riconosciuto" e rischiava di inventare dati
+plausibili invece di segnalare l'errore. Corretto: nuovo campo `recognized` (unico obbligatorio),
+prompt aggiornato per non inventare dati se l'immagine non mostra chiaramente un'etichetta,
+errore esplicito lanciato e mostrato all'utente (`e.message`) sia in Aggiungi Vino che in
+Wishlist, al posto del generico "Errore durante l'analisi dell'etichetta" senza motivo.
+Nessuna correzione automatica dell'orientamento della foto (non richiesta, non implementata).
 
 ## Fase 8 — Identità visiva e branding (segnalata da Enrico il 15/07/2026, da avviare dopo
 la Fase 7)

@@ -211,26 +211,37 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
   return (
     <div className="pb-24 -mt-6"> {/* -mt-6 to offset standard layout padding for full bleed hero */}
       {/* Hero Section */}
-      <div className="bg-white border-b border-sand-200 px-6 py-10 flex flex-col items-center text-center shadow-sm">
-        {wine.image_url ? (
-          <div className="relative w-32 h-48 mb-6">
-            <Image 
-              src={wine.image_url} 
-              alt={wine.name} 
-              fill 
-              className="object-cover rounded-2xl shadow-lg border border-sand-100"
-            />
-          </div>
-        ) : (
-          <div className="w-32 h-48 bg-sand-50 rounded-2xl mb-6 flex items-center justify-center text-5xl shadow-sm border border-sand-200">
-            🍷
-          </div>
-        )}
-        <p className="text-xs font-bold text-brand-600 uppercase tracking-widest mb-2">{wine.producer}</p>
-        <h1 className="text-3xl font-black text-ink-700 leading-tight mb-3">{wine.name}</h1>
-        <p className="text-sm font-medium text-ink-500">
-          {[wine.region, wine.country, wine.color].filter(Boolean).join(" · ")}
-        </p>
+      <div 
+        className="relative px-6 py-10 flex flex-col items-center text-center shadow-sm overflow-hidden"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?q=80&w=2000&auto=format&fit=crop')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/75"></div>
+        
+        <div className="relative z-10 flex flex-col items-center w-full">
+          {wine.image_url ? (
+            <div className="relative w-32 h-48 mb-6">
+              <Image 
+                src={wine.image_url} 
+                alt={wine.name} 
+                fill 
+                className="object-cover rounded-2xl shadow-lg border border-white/10"
+              />
+            </div>
+          ) : (
+            <div className="w-32 h-48 bg-white/10 backdrop-blur-sm rounded-2xl mb-6 flex items-center justify-center text-5xl shadow-sm border border-white/20">
+              🍷
+            </div>
+          )}
+          <p className="text-xs font-bold text-brand-200 uppercase tracking-widest mb-2">{wine.producer}</p>
+          <h1 className="text-3xl font-black text-white leading-tight mb-3">{wine.name}</h1>
+          <p className="text-sm font-medium text-white/80">
+            {[wine.region, wine.country, wine.color].filter(Boolean).join(" · ")}
+          </p>
+        </div>
       </div>
 
       <div className="px-4 md:px-8 max-w-2xl mx-auto mt-8 space-y-6">
