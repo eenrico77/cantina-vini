@@ -9,6 +9,7 @@ const COLORS = ["Rosso", "Bianco", "Rosato", "Bollicine", "Dolce"];
 
 export default function NewWinePage() {
   const [loadingAI, setLoadingAI] = useState(false);
+  const [removingBg, setRemovingBg] = useState(false);
   const [showYearPopup, setShowYearPopup] = useState(false);
   const [formDataToSubmit, setFormDataToSubmit] = useState<FormData | null>(null);
 
@@ -96,8 +97,24 @@ export default function NewWinePage() {
           taste_profile: aiResult.taste_profile ? JSON.stringify(aiResult.taste_profile) : prev.taste_profile,
         }));
         if ((aiResult as any).originalImage) {
-          setRealImage((aiResult as any).originalImage);
-          setSelectedImage("real");
+          setRemovingBg(true);
+          try {
+            const imgly = await import('@imgly/background-removal');
+            const imageBlob = await imgly.removeBackground(file);
+            const processedImageBase64 = await new Promise<string>((resolve) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result as string);
+              reader.readAsDataURL(imageBlob);
+            });
+            setRealImage(processedImageBase64);
+            setSelectedImage("real");
+          } catch (bgErr) {
+            console.warn("Errore durante la rimozione dello sfondo:", bgErr);
+            setRealImage((aiResult as any).originalImage);
+            setSelectedImage("real");
+          } finally {
+            setRemovingBg(false);
+          }
         }
       }
     } catch (e: any) {
@@ -165,7 +182,7 @@ export default function NewWinePage() {
           onChange={handleImageUpload}
           className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
         />
-        {loadingAI && <p className="text-sm text-brand-600 mt-2 font-medium">Analisi in corso, attendi qualche secondo...</p>}
+        {(loadingAI || removingBg) && <p className="text-sm text-brand-600 mt-2 font-medium">{removingBg ? "Rimozione sfondo in corso..." : "Analisi in corso, attendi qualche secondo..."}</p>}
         
         {/* Scelta Immagine */}
         <div className="mt-4 pt-4 border-t border-sand-200">

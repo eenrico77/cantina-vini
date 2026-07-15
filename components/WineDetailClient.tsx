@@ -230,10 +230,6 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
                   alt={wine.name} 
                   fill 
                   className="object-contain"
-                  style={{
-                    WebkitMaskImage: 'radial-gradient(ellipse 70% 75% at center, black 55%, transparent 85%)',
-                    maskImage: 'radial-gradient(ellipse 70% 75% at center, black 55%, transparent 85%)'
-                  }}
                 />
               </div>
               {/* Floor shadow */}
