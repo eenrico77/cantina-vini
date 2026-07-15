@@ -222,7 +222,7 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
           backgroundPosition: 'center',
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/75"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/60"></div>
         
         <Link href="/wines" className="absolute top-4 left-4 z-20 w-10 h-10 flex items-center justify-center bg-white/15 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-white/25 transition-colors shadow-sm">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 pr-0.5">
