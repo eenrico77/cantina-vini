@@ -6,6 +6,7 @@ import Link from "next/link";
 import MaturationCurve from "@/components/MaturationCurve";
 import { getAgingLabel } from "@/lib/domain/maturation";
 import type { AgingStatus } from "@/types";
+import { GlassIcon, getGlassLabel } from "@/components/GlassIcon";
 import BottleActionsSheet from "@/components/BottleActionsSheet";
 import { updateBottleValueAction } from "@/app/cantina/[id]/actions";
 
@@ -154,7 +155,8 @@ function BottleCard({ bottle, wine, currentYear }: { bottle: any; wine: any; cur
           )}
           {wine.glassware && (
             <div className="flex-1 bg-sand-100 border border-sand-100 text-ink-700 text-xs font-semibold px-3 py-2 rounded-xl flex items-center justify-center gap-1.5 shadow-sm">
-              <span className="text-xs opacity-70">🍷</span> {wine.glassware}
+              <GlassIcon text={wine.glassware} className="w-4 h-4 text-brand-600" />
+              {getGlassLabel(wine.glassware)}
             </div>
           )}
         </div>
