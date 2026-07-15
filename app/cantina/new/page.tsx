@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createWine, analyzeLabelAction, generateCatalogImageAction } from "./actions";
-import GlassIcon from "@/components/GlassIcon";
+import GlassIcon, { getGlassLabel } from "@/components/GlassIcon";
 import EditableTextField from "@/components/EditableTextField";
 
 const COLORS = ["Rosso", "Bianco", "Rosato", "Bollicine", "Dolce"];
@@ -16,7 +16,7 @@ export default function NewWinePage() {
     name: "", producer: "", color: "", region: "", country: "", year: "", quantity: "1",
     grapes: "", description: "", origin_notes: "", vintage_review: "",
     maturation_start: "", maturation_end: "", ideal_temp: "", decanting: "", glassware: "",
-    organoleptic: "", taste_profile: "", purchase_price: ""
+    organoleptic: "", taste_profile: "", purchase_price: "", storage_notes: ""
   });
   const [wishlistId, setWishlistId] = useState("");
   const [realImage, setRealImage] = useState<string | null>(null);
@@ -219,6 +219,17 @@ export default function NewWinePage() {
         <input type="hidden" name="taste_profile" value={formData.taste_profile} />
         <input type="hidden" name="wishlistId" value={wishlistId} />
         <input type="hidden" name="final_image" value={selectedImage === "real" ? (realImage || "") : selectedImage === "catalog" ? (catalogImage || "") : ""} />
+        
+        {/* Campi nascosti AI readonly */}
+        <input type="hidden" name="grapes" value={formData.grapes} />
+        <input type="hidden" name="description" value={formData.description} />
+        <input type="hidden" name="origin_notes" value={formData.origin_notes} />
+        <input type="hidden" name="vintage_review" value={formData.vintage_review} />
+        <input type="hidden" name="ideal_temp" value={formData.ideal_temp} />
+        <input type="hidden" name="decanting" value={formData.decanting} />
+        <input type="hidden" name="glassware" value={formData.glassware} />
+        <input type="hidden" name="maturation_start" value={formData.maturation_start} />
+        <input type="hidden" name="maturation_end" value={formData.maturation_end} />
 
         {/* Card: Il Vino */}
         <div className="bg-white p-5 rounded-xl shadow-sm border border-sand-200">
@@ -289,93 +300,81 @@ export default function NewWinePage() {
             <div className="mt-6 space-y-6">
               
               <div className="space-y-4">
-                <div>
-                  <label className="block text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-2">Uvaggio</label>
-                  <input name="grapes" value={formData.grapes} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" />
-                </div>
+                {formData.grapes && (
+                  <div>
+                    <label className="block text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-1">Uvaggio</label>
+                    <p className="text-sm text-ink-700 leading-relaxed whitespace-pre-wrap">{formData.grapes}</p>
+                  </div>
+                )}
                 
-                <div className="border-t border-sand-100 pt-4">
-                  <EditableTextField 
-                    label="Descrizione AI" 
-                    name="description" 
-                    value={formData.description} 
-                    onChange={handleChange} 
-                    placeholder="Aggiungi una descrizione..." 
-                  />
-                </div>
+                {formData.description && (
+                  <div className="border-t border-sand-100 pt-4">
+                    <label className="block text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-1">Descrizione AI</label>
+                    <p className="text-sm text-ink-700 leading-relaxed whitespace-pre-wrap">{formData.description}</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="border-t border-sand-100 pt-4">
+                <EditableTextField 
+                  label="Note personali" 
+                  name="storage_notes" 
+                  value={formData.storage_notes} 
+                  onChange={handleChange} 
+                  placeholder="Le tue note personali su questo vino..." 
+                />
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-sand-100 pt-4">
-                <div>
-                  <label className="block text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-2">Temp. Ideale</label>
-                  <input name="ideal_temp" value={formData.ideal_temp} onChange={handleChange} className="w-full border border-sand-200 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-brand-500" />
-                </div>
-                <div>
-                  <label className="block text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-2">Bicchiere</label>
-                  <div className="relative flex items-center">
-                    <div className="absolute left-3">
-                      <GlassIcon text={formData.glassware} className="w-4 h-4 text-brand-600 opacity-70" />
-                    </div>
-                    <input 
-                      name="glassware" 
-                      value={formData.glassware} 
-                      onChange={handleChange} 
-                      className="w-full border-transparent bg-transparent pl-9 p-2.5 rounded-lg outline-none hover:bg-sand-50 focus:bg-sand-50 focus:border-sand-200 border transition-colors text-ink-700 text-sm" 
-                    />
+                {formData.ideal_temp && (
+                  <div>
+                    <label className="block text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-1">Temp. Ideale</label>
+                    <p className="text-sm text-ink-700 leading-relaxed whitespace-pre-wrap">{formData.ideal_temp}</p>
                   </div>
-                </div>
+                )}
+                {formData.glassware && (
+                  <div>
+                    <label className="block text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-2">Bicchiere</label>
+                    <div className="flex items-center gap-3">
+                      <GlassIcon text={formData.glassware} className="w-8 h-8 text-brand-600" />
+                      <span className="text-sm font-bold text-ink-700">{getGlassLabel(formData.glassware)}</span>
+                    </div>
+                  </div>
+                )}
               </div>
               
-              <div className="border-t border-sand-100 pt-4">
-                <EditableTextField 
-                  label="Decantazione" 
-                  name="decanting" 
-                  value={formData.decanting} 
-                  onChange={handleChange} 
-                  placeholder="es. 30 minuti prima..." 
-                />
-              </div>
-
-              <div className="space-y-2 border-t border-sand-100 pt-4">
-                <label className="block text-xs font-semibold text-ink-500 uppercase mb-2">Finestra di maturazione</label>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-[10px] font-bold text-ink-400 uppercase">
-                      {formData.year ? `Pronto dal (anno)` : `Da (+anni dalla vendemmia)`}
-                    </label>
-                    <div className="flex items-center gap-2">
-                      {formData.year && formData.maturation_start && <span className="text-sm font-bold text-ink-700">{Number(formData.year) + Number(formData.maturation_start)}</span>}
-                      <input name="maturation_start" type="number" value={formData.maturation_start} onChange={handleChange} placeholder="es. 1" className="mt-1 w-20 border border-sand-200 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-brand-500" />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-bold text-ink-400 uppercase">
-                      {formData.year ? `Fino al (anno)` : `Fino a (+anni dalla vendemmia)`}
-                    </label>
-                    <div className="flex items-center gap-2">
-                      {formData.year && formData.maturation_end && <span className="text-sm font-bold text-ink-700">{Number(formData.year) + Number(formData.maturation_end)}</span>}
-                      <input name="maturation_end" type="number" value={formData.maturation_end} onChange={handleChange} placeholder="es. 5" className="mt-1 w-20 border border-sand-200 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-brand-500" />
-                    </div>
-                  </div>
+              {formData.decanting && (
+                <div className="border-t border-sand-100 pt-4">
+                  <label className="block text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-1">Decantazione</label>
+                  <p className="text-sm text-ink-700 leading-relaxed whitespace-pre-wrap">{formData.decanting}</p>
                 </div>
-              </div>
+              )}
 
-              <div className="border-t border-sand-100 pt-4 space-y-6">
-                <EditableTextField 
-                  label="Note Terroir" 
-                  name="origin_notes" 
-                  value={formData.origin_notes} 
-                  onChange={handleChange} 
-                  placeholder="Aggiungi note terroir..." 
-                />
-                <EditableTextField 
-                  label="Recensione Annata" 
-                  name="vintage_review" 
-                  value={formData.vintage_review} 
-                  onChange={handleChange} 
-                  placeholder="Aggiungi una recensione..." 
-                />
-              </div>
+              {(formData.maturation_start !== "" || formData.maturation_end !== "") && (
+                <div className="border-t border-sand-100 pt-4">
+                  <label className="block text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-1">Finestra di maturazione</label>
+                  <p className="text-sm text-ink-700 leading-relaxed">
+                    {formData.year ? `Pronto dal ${Number(formData.year) + Number(formData.maturation_start)} al ${Number(formData.year) + Number(formData.maturation_end)}` : `Pronto tra ${formData.maturation_start}-${formData.maturation_end} anni dalla vendemmia`}
+                  </p>
+                </div>
+              )}
+
+              {(formData.origin_notes || formData.vintage_review) && (
+                <div className="border-t border-sand-100 pt-4 space-y-4">
+                  {formData.origin_notes && (
+                    <div>
+                      <label className="block text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-1">Note Terroir</label>
+                      <p className="text-sm text-ink-700 leading-relaxed whitespace-pre-wrap">{formData.origin_notes}</p>
+                    </div>
+                  )}
+                  {formData.vintage_review && (
+                    <div>
+                      <label className="block text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-1">Recensione Annata</label>
+                      <p className="text-sm text-ink-700 leading-relaxed whitespace-pre-wrap">{formData.vintage_review}</p>
+                    </div>
+                  )}
+                </div>
+              )}
               
             </div>
           </details>

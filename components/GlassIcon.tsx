@@ -1,5 +1,14 @@
 import React from 'react';
 
+export function getGlassLabel(text: string): string {
+  const t = (text || "").toLowerCase();
+  if (t.includes('tulip')) return "Tulipano";
+  if (t.includes('flute') || t.includes('flûte')) return "Flûte";
+  if (t.includes('bordolese') || t.includes('bordeaux')) return "Bordolese";
+  if (t.includes('borgognone') || t.includes('burgundy')) return "Borgognone";
+  return "Calice standard";
+}
+
 export default function GlassIcon({ text, className = "w-5 h-5" }: { text: string; className?: string }) {
   const t = (text || "").toLowerCase();
   

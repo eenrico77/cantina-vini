@@ -27,30 +27,30 @@ export default function BottleActionsSheet({
       {/* Bottom Sheet Overlay */}
       {sheetOpen && (
         <div className="fixed inset-0 z-50 flex flex-col justify-end">
-          <div className="absolute inset-0 bg-ink-700/60 backdrop-blur-sm" onClick={() => setSheetOpen(false)}></div>
+          <div className="absolute inset-0 bg-ink-700/40" onClick={() => setSheetOpen(false)}></div>
           <div className="bg-white w-full rounded-t-3xl p-4 pb-6 relative z-10 shadow-2xl">
             <div className="w-12 h-1.5 bg-sand-200 rounded-full mx-auto mb-4"></div>
             <h3 className="text-lg font-bold text-ink-700 mb-3 px-1">Azioni Annata {bottle.year}</h3>
             
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col">
               <button 
                 onClick={() => { setSheetOpen(false); onEditValue(); }}
-                className="flex items-center justify-between p-3 bg-sand-50 hover:bg-sand-100 rounded-2xl transition-colors text-left"
+                className="flex items-center justify-between py-3 border-b border-sand-100 hover:bg-sand-50 transition-colors text-left"
               >
-                <div className="flex items-center gap-3 font-bold text-ink-700 text-sm">
-                  <span className="text-lg">✏️</span> Modifica valore attuale
+                <div className="flex items-center gap-3 font-medium text-ink-700 text-sm">
+                  <span className="text-base">✏️</span> Modifica valore attuale
                 </div>
-                <span className="text-ink-400">❯</span>
+                <span className="text-ink-300">❯</span>
               </button>
 
               <button 
                 onClick={() => { setSheetOpen(false); setDrinkModalOpen(true); }}
-                className="flex items-center justify-between p-3 bg-sand-50 hover:bg-sand-100 rounded-2xl transition-colors text-left"
+                className="flex items-center justify-between py-3 border-b border-sand-100 hover:bg-sand-50 transition-colors text-left"
               >
-                <div className="flex items-center gap-3 font-bold text-brand-600 text-sm">
-                  <span className="text-lg">🍷</span> Segna come bevuta
+                <div className="flex items-center gap-3 font-medium text-brand-600 text-sm">
+                  <span className="text-base">🍷</span> Segna come bevuta
                 </div>
-                <span className="text-ink-400">❯</span>
+                <span className="text-ink-300">❯</span>
               </button>
             </div>
           </div>

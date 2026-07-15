@@ -210,6 +210,7 @@ Ordine deciso: prima la curva di maturazione (priorità esplicita di Enrico), po
 - [x] 6 rifiniture form Aggiungi Vino (annata select, testo formattato, decantazione, bicchiere, maturazione leggibile, rimozione foto).
 - [x] Fix decantazione automatica e campi testo auto-espandibili.
 - [x] Fase 7: campi testo come paragrafo con modifica esplicita, layout full-width, Azioni sheet compatto.
+- [x] Fase 7: campi AI sola lettura, note personali, bicchiere con nome breve, maturazione semplificata, redesign Azioni sheet.
 
 - [x] **Tradurre tutte le etichette rimaste in inglese** trovate testando il 13/07/2026:
       "Storage & Service", "TEMP.", "DECANTING", "Maturation Start/End (offset)" nel form
@@ -462,3 +463,23 @@ niente social/gamification, niente refactor del modello dati.
   sessione dedicata: dividere in due chiamate (dati essenziali veloci + arricchimento testuale
   più lento in background), o ridurre lo schema richiesto. Non affrontato ora per non
   mischiarlo con i fix di stile in corso.
+
+## Fase 8 — Identità visiva e branding (segnalata da Enrico il 15/07/2026, da avviare dopo
+la Fase 7)
+
+Enrico ha detto esplicitamente (più di una volta): l'app deve differenziarsi visivamente ed
+essere "molto attrattiva" perché nei suoi piani potrebbe voler essere rivenduta/proposta ad
+altri, non resta solo un progetto personale. Questo cambia la posta in gioco rispetto ai fix
+di UI fatti finora in Fase 7 (che erano correzioni puntuali a schermate esistenti): qui si
+parla di un vero e proprio passaggio di identità — palette colori, tipografia, set di icone
+coerente, tono grafico generale — pensato apposta per differenziare il prodotto, non solo
+per renderlo "pulito".
+
+**Chiarito con Enrico il 15/07/2026**: ambizione reale = prodotto potenzialmente rivendibile,
+non solo uso personale — l'identità visiva va quindi pensata per differenziare davvero, non
+solo per pulizia. Enrico ha confermato esplicitamente di voler prima concludere tutta la Fase
+7 (strutturale/bug) e affrontare la grafica solo dopo, in una sessione dedicata. Quando si
+parte: proporre 2-3 direzioni visive alternative (palette + font + un paio di schermate
+reinterpretate) prima di scrivere codice, stesso approccio già usato con successo per la curva
+di maturazione — non presumere che si parta dalla palette attuale (brand/sand/ino) o da zero,
+va deciso insieme in quel momento.
