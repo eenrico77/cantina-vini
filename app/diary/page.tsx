@@ -31,7 +31,7 @@ export default async function DiaryPage() {
       ) : (
         <div className="space-y-4">
           {entries.map(entry => (
-            <div key={entry.id} className="bg-white p-4 rounded-xl shadow-sm border border-sand-200">
+            <div key={entry.id} className="bg-sand-100 p-4 rounded-xl shadow-sm border border-sand-200">
               <div className="flex justify-between items-start mb-2">
                 <div>
                   <h3 className="font-bold text-lg">{entry.wine_name}</h3>

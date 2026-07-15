@@ -30,7 +30,7 @@ export default function BottleActionsSheet({
       {sheetOpen && (
         <div className="fixed inset-0 z-50 flex flex-col justify-end">
           <div className="absolute inset-0 bg-ink-700/40" onClick={() => setSheetOpen(false)}></div>
-          <div className="bg-white w-full rounded-t-3xl p-4 pb-6 relative z-10 shadow-2xl">
+          <div className="bg-sand-100 w-full rounded-t-3xl p-4 pb-6 relative z-10 shadow-2xl">
             <div className="w-12 h-1.5 bg-sand-200 rounded-full mx-auto mb-4"></div>
             <h3 className="text-lg font-bold text-ink-700 mb-3 px-1">Azioni Annata {bottle.year}</h3>
             

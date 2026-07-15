@@ -94,7 +94,7 @@ function BottleCard({ bottle, wine, currentYear }: { bottle: any; wine: any; cur
   const peak = hasCurve ? Math.floor((bottle.peak_start + bottle.peak_end) / 2) : null;
 
   return (
-    <div className="bg-white border border-sand-200 rounded-3xl p-5 shadow-soft relative overflow-hidden">
+    <div className="bg-sand-100 border border-sand-200 rounded-3xl p-5 shadow-soft relative overflow-hidden">
       <div className="grid grid-cols-2 gap-3 mb-4">
         <div className="bg-sand-50 rounded-2xl p-3 text-center border border-sand-100">
           <div className="text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-1">Annata</div>
@@ -148,12 +148,12 @@ function BottleCard({ bottle, wine, currentYear }: { bottle: any; wine: any; cur
       <div className="bg-sand-50 rounded-2xl p-4 mb-4 border border-sand-100 space-y-3">
         <div className="flex gap-2">
           {wine.ideal_temp && (
-            <div className="flex-1 bg-white border border-sand-100 text-ink-700 text-xs font-semibold px-3 py-2 rounded-xl flex items-center justify-center gap-1.5 shadow-sm">
+            <div className="flex-1 bg-sand-100 border border-sand-100 text-ink-700 text-xs font-semibold px-3 py-2 rounded-xl flex items-center justify-center gap-1.5 shadow-sm">
               <span className="text-xs opacity-70">🌡️</span> {wine.ideal_temp}
             </div>
           )}
           {wine.glassware && (
-            <div className="flex-1 bg-white border border-sand-100 text-ink-700 text-xs font-semibold px-3 py-2 rounded-xl flex items-center justify-center gap-1.5 shadow-sm">
+            <div className="flex-1 bg-sand-100 border border-sand-100 text-ink-700 text-xs font-semibold px-3 py-2 rounded-xl flex items-center justify-center gap-1.5 shadow-sm">
               <span className="text-xs opacity-70">🍷</span> {wine.glassware}
             </div>
           )}
@@ -163,7 +163,7 @@ function BottleCard({ bottle, wine, currentYear }: { bottle: any; wine: any; cur
             <div className="text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-1.5 px-1">Abbinamenti</div>
             <div className="flex flex-wrap gap-1">
               {getStaticPairings(wine.color).map((p: string) => (
-                <span key={p} className="bg-white border border-sand-200 text-ink-600 text-[10px] font-semibold px-2 py-1.5 rounded-lg shadow-sm">
+                <span key={p} className="bg-sand-100 border border-sand-200 text-ink-600 text-[10px] font-semibold px-2 py-1.5 rounded-lg shadow-sm">
                   {p}
                 </span>
               ))}
@@ -302,7 +302,7 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
                 </div>
               ) : (
                 diaryEntries.map((entry: any) => (
-                  <div key={entry.id} className="bg-white border border-sand-200 rounded-2xl p-4 shadow-sm">
+                  <div key={entry.id} className="bg-sand-100 border border-sand-200 rounded-2xl p-4 shadow-sm">
                     <div className="flex justify-between items-start mb-2">
                       <div className="font-bold text-ink-700 text-lg">Annata {entry.year}</div>
                       <div className="text-right">
@@ -329,11 +329,11 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
             <div className="space-y-6">
               {/* Dati Info Base */}
               <div className="grid grid-cols-2 gap-3">
-                <div className="bg-white border border-sand-200 rounded-2xl p-4 shadow-sm text-center">
+                <div className="bg-sand-100 border border-sand-200 rounded-2xl p-4 shadow-sm text-center">
                   <div className="text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-1">Temperatura</div>
                   <div className="text-lg font-bold text-ink-700">{wine.ideal_temp || "—"}</div>
                 </div>
-                <div className="bg-white border border-sand-200 rounded-2xl p-4 shadow-sm text-center">
+                <div className="bg-sand-100 border border-sand-200 rounded-2xl p-4 shadow-sm text-center">
                   <div className="text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-1">Decantazione</div>
                   <div className="text-lg font-bold text-ink-700">{wine.decanting_needed ? "Sì" : "No"}</div>
                   {wine.decanting_notes && <div className="text-xs text-ink-500 mt-1">{wine.decanting_notes}</div>}
@@ -349,7 +349,7 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
 
               {/* Dati AI */}
               {(wine.grapes || wine.description || wine.origin_notes || wine.vintage_review || organoleptic || tasteProfile) && (
-                <div className="bg-white border border-sand-200 rounded-2xl p-6 shadow-sm">
+                <div className="bg-sand-100 border border-sand-200 rounded-2xl p-6 shadow-sm">
                   <h3 className="font-bold text-ink-700 mb-4 border-b border-sand-100 pb-2">Note del sommelier (AI)</h3>
                   <div className="space-y-4 text-sm text-ink-700">
                     {wine.grapes && <div><span className="font-semibold text-ink-500 mr-2 uppercase text-[10px] tracking-wider">Uvaggio</span><br/>{wine.grapes}</div>}

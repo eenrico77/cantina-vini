@@ -49,7 +49,7 @@ export default function RemoveBottleModal({
 
   return (
     <div className="fixed inset-0 bg-ink-700/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-      <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-sand-100">
+      <div className="bg-sand-100 rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-sand-100">
         <h3 className="text-xl font-bold mb-2 text-ink-700 text-center">Rimuovi bottiglia</h3>
         <p className="text-sm text-ink-500 text-center mb-4">
           Per bottiglie rotte, regalate o inserite per errore — non verrà segnata come bevuta nel Diario.

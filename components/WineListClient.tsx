@@ -70,7 +70,7 @@ export default function WineListClient({ bottles }) {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-sand-200/70 space-y-4">
+      <div className="bg-sand-100 p-4 rounded-xl shadow-sm border border-sand-200/70 space-y-4">
         <h3 className="text-sm font-semibold text-ink-500 uppercase tracking-wider">Filtra Cantina</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
           <select

@@ -49,7 +49,7 @@ export default function MaturationCurve({ start, end, current }: Props) {
   ];
 
   return (
-    <div className="bg-white rounded-2xl shadow-soft p-5 border border-sand-200 mt-4">
+    <div className="bg-sand-100 rounded-2xl shadow-soft p-5 border border-sand-200 mt-4">
       <div className="flex justify-between items-end mb-4">
         <h3 className="text-sm font-semibold text-ink-700 uppercase tracking-wider">Curva di Maturazione</h3>
       </div>
@@ -144,7 +144,7 @@ export default function MaturationCurve({ start, end, current }: Props) {
           <div className="bg-ink-700 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm whitespace-nowrap mb-1">
             OGGI: {current}
           </div>
-          <div className="w-4 h-4 bg-white border-[3px] border-ink-700 rounded-full shadow-md"></div>
+          <div className="w-4 h-4 bg-sand-100 border-[3px] border-ink-700 rounded-full shadow-md"></div>
         </div>
       </div>
 

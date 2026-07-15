@@ -33,7 +33,7 @@ export default function FoodPairingForm() {
   return (
     <section className="space-y-3">
       <h2 className="text-base font-semibold">Cosa mangi stasera? 🍽️</h2>
-      <div className="bg-white rounded-2xl shadow-md p-4">
+      <div className="bg-sand-100 rounded-2xl shadow-md p-4">
         <form onSubmit={handleSubmit} className="flex gap-2">
           <input 
             type="text" 

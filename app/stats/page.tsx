@@ -53,15 +53,15 @@ export default async function StatsPage() {
       <h1 className="font-serif text-3xl font-extrabold text-ink-700 inline-block border-b-2 border-brand-600 pb-1">Statistiche</h1>
 
       <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white p-5 rounded-xl shadow-sm border border-sand-200">
+        <div className="bg-sand-100 p-5 rounded-xl shadow-sm border border-sand-200">
           <p className="text-xs text-ink-500 font-semibold mb-1 uppercase tracking-wider">In Cantina</p>
           <p className="text-3xl font-black">{totalBottles}</p>
         </div>
-        <div className="bg-white p-5 rounded-xl shadow-sm border border-sand-200">
+        <div className="bg-sand-100 p-5 rounded-xl shadow-sm border border-sand-200">
           <p className="text-xs text-ink-500 font-semibold mb-1 uppercase tracking-wider">Valore Stimato</p>
           <p className="text-3xl font-black">{totalValue.toFixed(0)}€</p>
         </div>
-        <div className="bg-white p-5 rounded-xl shadow-sm border border-sand-200 col-span-2">
+        <div className="bg-sand-100 p-5 rounded-xl shadow-sm border border-sand-200 col-span-2">
           <p className="text-xs text-ink-500 font-semibold mb-1 uppercase tracking-wider text-center">Bottiglie Bevute</p>
           <p className="text-3xl font-black text-center">{drunkCount || 0}</p>
         </div>
@@ -69,7 +69,7 @@ export default async function StatsPage() {
 
       <div className="space-y-4">
         <h2 className="text-lg font-bold">Per Tipologia</h2>
-        <div className="bg-white p-4 rounded-xl shadow-sm border border-sand-200 space-y-2">
+        <div className="bg-sand-100 p-4 rounded-xl shadow-sm border border-sand-200 space-y-2">
           {Object.entries(byColor).map(([color, qty]) => (
             <div key={color} className="flex justify-between items-center">
               <span className="text-sm font-medium">{color}</span>
@@ -82,7 +82,7 @@ export default async function StatsPage() {
 
       <div className="space-y-4">
         <h2 className="text-lg font-bold">Per Maturazione</h2>
-        <div className="bg-white p-4 rounded-xl shadow-sm border border-sand-200 space-y-2">
+        <div className="bg-sand-100 p-4 rounded-xl shadow-sm border border-sand-200 space-y-2">
           {Object.entries(byAging).map(([status, qty]) => (
             <div key={status} className="flex justify-between items-center">
               <span className="text-sm font-medium">{AGING_LABELS[status] || status}</span>

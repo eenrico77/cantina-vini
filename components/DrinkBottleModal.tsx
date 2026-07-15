@@ -47,7 +47,7 @@ export default function DrinkBottleModal({
 
   return (
     <div className="fixed inset-0 bg-ink-700/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-      <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-sand-100">
+      <div className="bg-sand-100 rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-sand-100">
         <h3 className="text-xl font-bold mb-4 text-ink-700 text-center">Com'era questo vino?</h3>
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>

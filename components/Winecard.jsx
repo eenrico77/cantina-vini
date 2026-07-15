@@ -33,7 +33,7 @@ export default function WineCard({ bottle }) {
 
   return (
     <Link href={`/cantina/${wine.id}`} className="block group">
-      <div className="flex items-center space-x-4 p-4 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:scale-[1.01] border border-sand-200/70">
+      <div className="flex items-center space-x-4 p-4 bg-sand-100 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:scale-[1.01] border border-sand-200/70">
 
         {/* Immagine */}
         <div className="relative w-20 h-28 flex-shrink-0">

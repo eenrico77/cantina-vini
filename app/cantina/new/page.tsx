@@ -209,7 +209,7 @@ export default function NewWinePage() {
                 <button 
                   type="button" 
                   disabled={true}
-                  className="text-xs bg-white border border-brand-200 text-brand-600 font-bold px-3 py-2 rounded-lg transition-colors opacity-50 cursor-not-allowed flex items-center gap-2"
+                  className="text-xs bg-sand-100 border border-brand-200 text-brand-600 font-bold px-3 py-2 rounded-lg transition-colors opacity-50 cursor-not-allowed flex items-center gap-2"
                 >
                   ✨ Foto da catalogo (non disponibile)
                 </button>
@@ -239,7 +239,7 @@ export default function NewWinePage() {
         <input type="hidden" name="maturation_end" value={formData.maturation_end} />
 
         {/* Card: Il Vino */}
-        <div className="bg-white p-5 rounded-xl shadow-sm border border-sand-200">
+        <div className="bg-sand-100 p-5 rounded-xl shadow-sm border border-sand-200">
           <h2 className="text-sm font-bold text-brand-600 uppercase tracking-wider mb-4">Il vino</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -254,12 +254,12 @@ export default function NewWinePage() {
         </div>
 
         {/* Card: Dettagli */}
-        <div className="bg-white p-5 rounded-xl shadow-sm border border-sand-200">
+        <div className="bg-sand-100 p-5 rounded-xl shadow-sm border border-sand-200">
           <h2 className="text-sm font-bold text-brand-600 uppercase tracking-wider mb-4">Dettagli</h2>
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2 md:col-span-1">
               <label className="block text-xs font-semibold text-ink-500 uppercase">Tipologia *</label>
-              <select name="color" value={formData.color} onChange={handleChange} required className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none bg-white">
+              <select name="color" value={formData.color} onChange={handleChange} required className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none bg-sand-100">
                 <option value="" disabled>Seleziona tipologia</option>
                 {COLORS.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
@@ -270,7 +270,7 @@ export default function NewWinePage() {
             </div>
             <div>
               <label className="block text-xs font-semibold text-ink-500 uppercase">Annata *</label>
-              <select name="year" value={formData.year} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none bg-white">
+              <select name="year" value={formData.year} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none bg-sand-100">
                 <option value="">Seleziona annata</option>
                 {years.map(y => <option key={y} value={y}>{y}</option>)}
               </select>
@@ -281,7 +281,7 @@ export default function NewWinePage() {
             </div>
             <div className="col-span-2">
               <label className="block text-xs font-semibold text-ink-500 uppercase">Formato</label>
-              <select name="format_ml" value={formData.format_ml} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none bg-white">
+              <select name="format_ml" value={formData.format_ml} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none bg-sand-100">
                 <option value="187">Piccola (18,7cl)</option>
                 <option value="375">Mezza (37,5cl)</option>
                 <option value="750">Standard (75cl)</option>
@@ -302,7 +302,7 @@ export default function NewWinePage() {
         </div>
 
         {/* Card: Provenienza */}
-        <div className="bg-white p-5 rounded-xl shadow-sm border border-sand-200">
+        <div className="bg-sand-100 p-5 rounded-xl shadow-sm border border-sand-200">
           <h2 className="text-sm font-bold text-brand-600 uppercase tracking-wider mb-4">Provenienza</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -317,7 +317,7 @@ export default function NewWinePage() {
         </div>
 
         {/* Card: Dettagli Extra (AI) */}
-        <div className="bg-white p-5 rounded-xl shadow-sm border border-sand-200">
+        <div className="bg-sand-100 p-5 rounded-xl shadow-sm border border-sand-200">
           <details className="group">
             <summary className="cursor-pointer font-bold text-brand-600 uppercase tracking-wider list-none flex items-center justify-between text-sm">
               Mostra dettagli extra (AI)
@@ -403,7 +403,7 @@ export default function NewWinePage() {
 
       {showYearPopup && (
         <div className="fixed inset-0 bg-ink-700/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-sand-100">
+          <div className="bg-sand-100 rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-sand-100">
             <h3 className="text-xl font-bold mb-4 text-ink-700 text-center">Annata mancante</h3>
             <p className="text-sm text-ink-500 mb-6 text-center">
               Senza l'annata non possiamo calcolare la finestra di maturazione e capire quando aprire la bottiglia.

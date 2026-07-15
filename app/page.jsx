@@ -48,11 +48,11 @@ export default async function HomePage() {
       </header>
 
       <section className="grid grid-cols-2 gap-4">
-        <div className="bg-white rounded-2xl shadow-md px-4 py-5">
+        <div className="bg-sand-100 rounded-2xl shadow-md px-4 py-5">
           <p className="text-xs text-slate-500 mb-1">Numero di bottiglie</p>
           <p className="text-3xl font-semibold">{totalBottles ?? 0}</p>
         </div>
-        <div className="bg-white rounded-2xl shadow-md px-4 py-5">
+        <div className="bg-sand-100 rounded-2xl shadow-md px-4 py-5">
           <p className="text-xs text-slate-500 mb-1">Valore (ultime 5)</p>
           <p className="text-3xl font-semibold">{totalValue.toFixed(0)}€</p>
         </div>
@@ -61,11 +61,11 @@ export default async function HomePage() {
       <section className="space-y-3">
         <h2 className="text-base font-semibold">Azioni rapide</h2>
         <div className="grid grid-cols-2 gap-3">
-          <Link href="/cantina/new" className="bg-white rounded-2xl shadow-md px-3 py-4 text-xs text-center block">
+          <Link href="/cantina/new" className="bg-sand-100 rounded-2xl shadow-md px-3 py-4 text-xs text-center block">
             <span className="block text-amber-700 font-semibold mb-1">＋</span>
             <span className="text-slate-700">Aggiungi bottiglia</span>
           </Link>
-          <Link href="/wines" className="bg-white rounded-2xl shadow-md px-3 py-4 text-xs text-center block">
+          <Link href="/wines" className="bg-sand-100 rounded-2xl shadow-md px-3 py-4 text-xs text-center block">
             <span className="block text-amber-700 font-semibold mb-1">🍷</span>
             <span className="text-slate-700">Vedi tutta la cantina</span>
           </Link>
@@ -79,7 +79,7 @@ export default async function HomePage() {
 
         <div className="grid grid-cols-1 gap-4">
           {bottles.map((b) => (
-            <article key={b.id} className="bg-white rounded-2xl shadow-md p-4">
+            <article key={b.id} className="bg-sand-100 rounded-2xl shadow-md p-4">
               <h3 className="text-lg font-semibold">{b.wine?.name}</h3>
               <p className="text-ink-500 text-sm">{b.wine?.producer} — {b.year}</p>
               <div className="flex justify-between mt-3 text-ink-500 text-sm">

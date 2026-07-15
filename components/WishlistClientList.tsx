@@ -15,7 +15,7 @@ export default function WishlistClientList({ items }: { items: any[] }) {
   return (
     <div className="space-y-3">
       {items.map(item => (
-        <div key={item.id} className="bg-white p-4 rounded-xl shadow-sm border border-sand-200 flex justify-between items-start">
+        <div key={item.id} className="bg-sand-100 p-4 rounded-xl shadow-sm border border-sand-200 flex justify-between items-start">
           <div>
             <h3 className="font-bold text-lg">{item.name}</h3>
             <p className="text-sm text-ink-500">{item.producer} {item.year ? `— ${item.year}` : ''}</p>

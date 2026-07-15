@@ -66,7 +66,7 @@ export default function WishlistAddForm() {
   };
 
   return (
-    <div className="bg-white p-5 rounded-xl shadow-sm border border-sand-200">
+    <div className="bg-sand-100 p-5 rounded-xl shadow-sm border border-sand-200">
       <h2 className="font-bold mb-4">Aggiungi vino desiderato</h2>
       
       <div className="bg-sand-50 p-4 rounded-xl border border-dashed border-sand-200 mb-4">
