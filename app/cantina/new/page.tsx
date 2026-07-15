@@ -300,8 +300,13 @@ export default function NewWinePage() {
               </select>
             </div>
             <div className="col-span-2">
-              <label className="block text-xs font-semibold text-ink-500 uppercase">Tag</label>
-              <input name="tags" value={formData.tags} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" placeholder="Regalo, Occasione speciale (separati da virgola)" />
+              <EditableTextField 
+                label="Note personali" 
+                name="storage_notes" 
+                value={formData.storage_notes} 
+                onChange={handleChange} 
+                placeholder="Le tue note personali su questo vino..." 
+              />
             </div>
           </div>
         </div>
@@ -346,16 +351,6 @@ export default function NewWinePage() {
                 )}
               </div>
 
-              <div className="border-t border-sand-100 pt-4">
-                <EditableTextField 
-                  label="Note personali" 
-                  name="storage_notes" 
-                  value={formData.storage_notes} 
-                  onChange={handleChange} 
-                  placeholder="Le tue note personali su questo vino..." 
-                />
-              </div>
-              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-sand-100 pt-4">
                 {formData.ideal_temp && (
                   <div>

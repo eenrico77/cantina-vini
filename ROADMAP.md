@@ -535,6 +535,29 @@ errore esplicito lanciato e mostrato all'utente (`e.message`) sia in Aggiungi Vi
 Wishlist, al posto del generico "Errore durante l'analisi dell'etichetta" senza motivo.
 Nessuna correzione automatica dell'orientamento della foto (non richiesta, non implementata).
 
+## Rimozione sfondo foto vino (15/07/2026)
+
+Motivata dal confronto con Oeni: la bottiglia nella hero fotografica sembrava un adesivo bianco
+sopra la foto di sfondo, perché le nostre foto (reali o generate) hanno lo sfondo pieno cotto nei
+pixel, mentre Oeni pesca da un catalogo centralizzato con immagini già pulite (confermato via
+ricerca: nessun database italiano gratuito/completo con foto esiste, quindi non serve inseguire
+quella strada — il problema si risolve senza database, solo pulendo l'immagine che già abbiamo).
+
+- [x] **Fatto il 15/07/2026**: integrato `@imgly/background-removal` (rimozione sfondo
+      client-side via WASM/ONNX, gratuita, nessuna API key, nessun costo per immagine — a
+      differenza di remove.bg che nel piano gratuito dà solo 50 immagini/mese a bassa
+      risoluzione). Nota: licenza AGPL — da rivalutare se in futuro l'app diventa un prodotto
+      commerciale vero (Enrico ha detto che a quel punto pagherebbe volentieri un servizio AI
+      dedicato senza problemi).
+- [x] Rimosso il precedente trucco CSS (maschera radiale) nella hero — non necessario e
+      potenzialmente dannoso ora che la trasparenza è reale.
+- [x] Fix build Vercel: `next.config.js` con `transpilePackages` per i pacchetti imgly/onnxruntime-web,
+      alias `onnxruntime-node: false` lato client, regola webpack per i moduli `.mjs`.
+- **Nota**: i vini salvati PRIMA di questa modifica mantengono la foto con sfondo pieno originale
+  (nessun riprocessamento retroattivo) — tornano a un riquadro semplice nella hero, senza più
+  l'alone bianco sfocato del tentativo precedente. Solo i vini aggiunti da ora in poi hanno il
+  ritaglio pulito vero.
+
 ## Fase 8 — Identità visiva e branding (segnalata da Enrico il 15/07/2026, da avviare dopo
 la Fase 7)
 
