@@ -447,9 +447,11 @@ più sotto per il contesto già raccolto.
       (nuovo `components/EmptyState.tsx`, con CTA verso l'azione utile in ciascun caso);
       distinto anche il caso "cantina vuota" da "nessun risultato con i filtri attivi" in
       `WineListClient.tsx`, prima confusi nello stesso messaggio
-- [ ] Nella lista "I miei vini": mostrare inline prezzo d'acquisto vs valore corrente con
-      percentuale (come già discusso su valore reale della cantina), non solo nelle statistiche
-      aggregate
+- [x] **Fatto il 15/07/2026**: nella lista "I miei vini" ora si vede inline prezzo d'acquisto
+      vs valore corrente con percentuale (`components/Winecard.jsx`), colorata con i token
+      status-ready/status-decline; nessuna riga se mancano entrambi i dati.
+
+### Priorità 1 — CHIUSA il 15/07/2026, tutti i punti completati e verificati via codice.
 
 ### Priorità 2 — impatto medio, richiede più lavoro
 - [ ] **Nuovo (15/07/2026, da screenshot Oeni "Cibo & vino")**: nella scheda vino, aggiungere

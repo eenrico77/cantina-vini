@@ -76,6 +76,17 @@ function EditableValue({ bottle, wineId, isEditing, setIsEditing }: { bottle: an
   );
 }
 
+function getFormatLabel(ml: number) {
+  switch (ml) {
+    case 187: return "Piccola (18,7cl)";
+    case 375: return "Mezza (37,5cl)";
+    case 750: return "Standard (75cl)";
+    case 1500: return "Magnum (1,5L)";
+    case 3000: return "Doppio Magnum (3L)";
+    default: return `${ml / 1000}L`;
+  }
+}
+
 function BottleCard({ bottle, wine, currentYear }: { bottle: any; wine: any; currentYear: number }) {
   const [isEditingValue, setIsEditingValue] = useState(false);
   const hasCurve = typeof bottle.peak_start === "number" && typeof bottle.peak_end === "number";
@@ -93,6 +104,14 @@ function BottleCard({ bottle, wine, currentYear }: { bottle: any; wine: any; cur
           <div className="text-2xl font-black text-ink-700">{bottle.quantity}</div>
         </div>
       </div>
+
+      {bottle.format_ml && (
+        <div className="flex justify-center mb-4">
+          <span className="bg-brand-50 text-brand-600 font-bold text-xs px-3 py-1 rounded-full">
+            {getFormatLabel(bottle.format_ml)}
+          </span>
+        </div>
+      )}
 
       {hasCurve ? (
         <div className="mb-4">

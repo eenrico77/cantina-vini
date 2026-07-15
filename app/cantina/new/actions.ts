@@ -38,6 +38,9 @@ export async function createWine(formData: FormData): Promise<void> {
   const yearRaw = formData.get("year") as string;
   const year: number | null = yearRaw ? Number(yearRaw) : null;
   const quantity = Number(formData.get("quantity") || 1);
+  const format_mlRaw = formData.get("format_ml") as string;
+  const format_ml_parsed = format_mlRaw ? Number(format_mlRaw) : 750;
+  const format_ml = Number.isFinite(format_ml_parsed) ? format_ml_parsed : 750;
   
   // AI fields
   const grapes = (formData.get("grapes") as string) || null;
@@ -146,7 +149,8 @@ export async function createWine(formData: FormData): Promise<void> {
       purchase_price,
       peak_start: peakStart,
       peak_end: peakEnd,
-      aging_status: agingStatus
+      aging_status: agingStatus,
+      format_ml
     })
     .select("id")
     .single();

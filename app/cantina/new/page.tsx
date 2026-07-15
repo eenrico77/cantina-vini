@@ -16,7 +16,7 @@ export default function NewWinePage() {
     name: "", producer: "", color: "", region: "", country: "", year: "", quantity: "1",
     grapes: "", description: "", origin_notes: "", vintage_review: "",
     maturation_start: "", maturation_end: "", ideal_temp: "", decanting: "", glassware: "",
-    organoleptic: "", taste_profile: "", purchase_price: "", storage_notes: ""
+    organoleptic: "", taste_profile: "", purchase_price: "", storage_notes: "", format_ml: "750"
   });
   const [wishlistId, setWishlistId] = useState("");
   const [realImage, setRealImage] = useState<string | null>(null);
@@ -271,6 +271,16 @@ export default function NewWinePage() {
             <div>
               <label className="block text-xs font-semibold text-ink-500 uppercase">Quantità *</label>
               <input name="quantity" type="number" min={1} value={formData.quantity} onChange={handleChange} required className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none" />
+            </div>
+            <div className="col-span-2">
+              <label className="block text-xs font-semibold text-ink-500 uppercase">Formato</label>
+              <select name="format_ml" value={formData.format_ml} onChange={handleChange} className="mt-1 w-full border border-sand-200 p-2.5 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none bg-white">
+                <option value="187">Piccola (18,7cl)</option>
+                <option value="375">Mezza (37,5cl)</option>
+                <option value="750">Standard (75cl)</option>
+                <option value="1500">Magnum (1,5L)</option>
+                <option value="3000">Doppio Magnum (3L)</option>
+              </select>
             </div>
           </div>
         </div>
