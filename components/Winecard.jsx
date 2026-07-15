@@ -24,6 +24,13 @@ export default function WineCard({ bottle }) {
   const imgSrc = wine.image_url || FALLBACK_IMAGE;
   const agingLabel = bottle.aging_status ? AGING_LABELS[bottle.aging_status] : null;
 
+  const hasPrice = bottle.purchase_price != null;
+  const hasValue = bottle.current_value != null;
+  const showDelta = hasPrice && hasValue && Number(bottle.purchase_price) > 0;
+  const deltaPerc = showDelta
+    ? Math.round(((Number(bottle.current_value) - Number(bottle.purchase_price)) / Number(bottle.purchase_price)) * 100)
+    : null;
+
   return (
     <Link href={`/cantina/${wine.id}`} className="block group">
       <div className="flex items-center space-x-4 p-4 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:scale-[1.01] border border-sand-200/70">
@@ -50,6 +57,23 @@ export default function WineCard({ bottle }) {
           <p className="text-xs text-ink-500/70 mt-0.5">
             {bottle.quantity} {bottle.quantity === 1 ? 'bottiglia' : 'bottiglie'}
           </p>
+
+          {(hasPrice || hasValue) && (
+            <div className="mt-1 flex items-center gap-1.5 text-xs flex-wrap">
+              {hasPrice && (
+                <span className="text-ink-500/70">€{Number(bottle.purchase_price).toFixed(2)}</span>
+              )}
+              {hasPrice && hasValue && <span className="text-ink-300">→</span>}
+              {hasValue && (
+                <span className="font-semibold text-ink-700">€{Number(bottle.current_value).toFixed(2)}</span>
+              )}
+              {showDelta && (
+                <span className={`font-bold ${deltaPerc >= 0 ? 'text-status-ready' : 'text-status-decline'}`}>
+                  ({deltaPerc >= 0 ? '+' : ''}{deltaPerc}%)
+                </span>
+              )}
+            </div>
+          )}
 
           <div className="mt-2 flex items-center gap-2 flex-wrap">
             {wine.color && <WineTypeBadge type={wine.color} />}

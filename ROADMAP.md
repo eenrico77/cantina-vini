@@ -443,8 +443,10 @@ più sotto per il contesto già raccolto.
       `bottles.quantity` senza creare una voce nel Diario (a differenza di "Segna come bevuta").
 - [x] **Fatto il 15/07/2026**: Curva di maturazione con faccine/emoji lungo la curva (🌱/⏳/🍷/📉)
       e legenda sotto con fasce d'età + nome fase, per renderla ancora più leggibile
-- [ ] Empty state illustrati e più caldi per Diario/Wishlist/Vini quando vuoti, invece di solo
-      testo semplice
+- [x] **Fatto il 15/07/2026**: Empty state illustrati e più caldi per Diario/Wishlist/Vini
+      (nuovo `components/EmptyState.tsx`, con CTA verso l'azione utile in ciascun caso);
+      distinto anche il caso "cantina vuota" da "nessun risultato con i filtri attivi" in
+      `WineListClient.tsx`, prima confusi nello stesso messaggio
 - [ ] Nella lista "I miei vini": mostrare inline prezzo d'acquisto vs valore corrente con
       percentuale (come già discusso su valore reale della cantina), non solo nelle statistiche
       aggregate
