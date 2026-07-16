@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import NotAuthenticated from "@/components/NotAuthenticated";
 import AccountForm from "./AccountForm";
+import { signOutAction } from "@/app/actions";
 
 export default async function AccountPage() {
   const supabase = createClient();
@@ -19,6 +20,17 @@ export default async function AccountPage() {
         <p className="text-sm text-ink-500">Imposta o cambia la password per accedere al tuo account senza usare il magic link.</p>
         
         <AccountForm />
+      </div>
+
+      <div className="bg-sand-100 p-6 rounded-xl shadow-sm border border-sand-200">
+        <form action={signOutAction}>
+          <button
+            type="submit"
+            className="w-full px-5 py-2.5 bg-ink-700 hover:bg-ink-500 text-white rounded-xl font-bold transition-colors"
+          >
+            Esci
+          </button>
+        </form>
       </div>
     </div>
   );

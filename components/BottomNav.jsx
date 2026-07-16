@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { Home, Wine, BarChart3, BookOpen, Star } from "lucide-react";
+import { Home, Wine, BarChart3, BookOpen, Star, User } from "lucide-react";
 
 const items = [
   { href: "/", label: "Oggi", icon: <Home size={22} strokeWidth={2} /> },
@@ -12,6 +12,7 @@ const items = [
   { href: "/stats", label: "Statistiche", icon: <BarChart3 size={22} strokeWidth={2} /> },
   { href: "/diary", label: "Diario", icon: <BookOpen size={22} strokeWidth={2} /> },
   { href: "/wishlist", label: "Wishlist", icon: <Star size={22} strokeWidth={2} /> },
+  { href: "/account", label: "Account", icon: <User size={22} strokeWidth={2} /> },
 ];
 
 export default function BottomNav() {

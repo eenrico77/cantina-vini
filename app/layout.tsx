@@ -2,8 +2,6 @@
 import "../globals.css";
 import { Inter, Fraunces } from "next/font/google";
 import BottomNav from "../components/BottomNav"; // <-- IMPORTAZIONE AGGIUNTA
-import Header from "../components/Header";
-import ConditionalHeaderWrapper from "../components/ConditionalHeaderWrapper";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -31,9 +29,6 @@ export default function RootLayout({ children }: RootLayoutProps) { // <-- TIPO 
           per fare spazio alla BottomNav fissa.
         */}
         <main className="min-h-screen bg-page max-w-[500px] mx-auto pb-24 relative"> 
-          <ConditionalHeaderWrapper>
-          <Header />
-        </ConditionalHeaderWrapper>
           {children}
         </main>
         
