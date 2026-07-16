@@ -215,7 +215,7 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
     <div className="pb-24 -mt-6"> {/* -mt-6 to offset standard layout padding for full bleed hero */}
       {/* Hero Section */}
       <div 
-        className="relative px-6 py-10 flex flex-col items-center text-center shadow-sm overflow-hidden"
+        className="relative px-6 py-10 flex flex-col items-center text-center overflow-hidden"
         style={{
           backgroundImage: `url('/hero-vigneto.png?v=2')`,
           backgroundSize: 'cover',
