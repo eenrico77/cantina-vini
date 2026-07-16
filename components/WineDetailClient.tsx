@@ -224,7 +224,7 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
       >
         <div 
           className="absolute inset-0"
-          style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.55) 55%, #f4efe4 100%)' }}
+          style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.75) 50%, rgba(0,0,0,0.75) 75%, #f4efe4 100%)' }}
         ></div>
         
         <Link href="/wines" className="absolute top-4 left-4 z-20 w-10 h-10 flex items-center justify-center bg-white/15 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-white/25 transition-colors shadow-sm">

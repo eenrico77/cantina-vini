@@ -24,13 +24,13 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) { // <-- TIPO AGGIUNTO
   return (
     <html lang="it">
-      <body className={`${inter.className} ${fraunces.variable} bg-sand-50`}>
+      <body className={`${inter.className} ${fraunces.variable} bg-page`}>
         
         {/*
           <main> Centrata (max-w-[500px]) e con padding in basso (pb-24)
           per fare spazio alla BottomNav fissa.
         */}
-        <main className="min-h-screen bg-sand-50 max-w-[500px] mx-auto pb-24 relative"> 
+        <main className="min-h-screen bg-page max-w-[500px] mx-auto pb-24 relative"> 
           <ConditionalHeaderWrapper>
           <Header />
         </ConditionalHeaderWrapper>
