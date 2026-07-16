@@ -405,7 +405,7 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
                           ].map(slider => {
                             const val = tasteProfile[slider.key];
                             if (val == null) return null;
-                            const perc = (Number(val) / 5) * 100;
+                            const perc = (Number(val) / 10) * 100;
                             return (
                               <div key={slider.key}>
                                 <div className="flex justify-between text-xs font-semibold text-ink-600 mb-1.5">

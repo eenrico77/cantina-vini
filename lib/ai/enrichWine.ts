@@ -24,8 +24,12 @@ const WINE_SCHEMA_PROPERTIES: Record<string, Schema> = {
   taste_profile: {
     type: Type.OBJECT,
     properties: {
-      body: { type: Type.INTEGER }, intensity: { type: Type.INTEGER }, tannins: { type: Type.INTEGER },
-      acidity: { type: Type.INTEGER }, persistence: { type: Type.INTEGER }, alcohol: { type: Type.NUMBER }
+      body: { type: Type.INTEGER, description: "Corpo del vino, intero da 1 (leggero) a 10 (corposo)" },
+      intensity: { type: Type.INTEGER, description: "Intensità aromatica, intero da 1 (delicato) a 10 (intenso)" },
+      tannins: { type: Type.INTEGER, description: "Tannicità, intero da 1 (morbido) a 10 (deciso)" },
+      acidity: { type: Type.INTEGER, description: "Acidità, intero da 1 (rotondo) a 10 (fresco)" },
+      persistence: { type: Type.INTEGER, description: "Persistenza gustativa, intero da 1 (breve) a 10 (lunga)" },
+      alcohol: { type: Type.NUMBER }
     },
     required: ["body", "intensity", "tannins", "acidity", "persistence", "alcohol"]
   },
