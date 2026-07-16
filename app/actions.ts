@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { getFoodPairingRecommendation } from "@/lib/ai/enrichWine";
+import { getFoodPairingRecommendation, getFoodPairingFull } from "@/lib/ai/enrichWine";
 import { redirect } from "next/navigation";
 
 export async function signOutAction() {
@@ -57,6 +57,40 @@ export async function getPairingAction(food: string) {
   return {
     classic: enrichOption(recommendation.classic),
     daring: enrichOption(recommendation.daring)
+  };
+}
+
+export async function getFoodPairingFullAction(food: string) {
+  if (!food) throw new Error("Seleziona un piatto");
+
+  const supabase = createClient();
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth?.user) throw new Error("Non autenticato");
+
+  const { data: bottles, error } = await supabase
+    .from("bottles")
+    .select(`id, year, quantity, wine:wines ( id, name, producer, color )`)
+    .eq("user_id", auth.user.id)
+    .gt("quantity", 0);
+
+  if (error) throw new Error("Errore nel recupero della cantina");
+
+  const recommendation = await getFoodPairingFull(food, bottles ?? []);
+  if (!recommendation) throw new Error("Errore durante la generazione dell'abbinamento (AI non ha risposto)");
+
+  const getWine = (w: any) => Array.isArray(w) ? w[0] : w;
+  const enrichOption = (opt: any) => {
+    if (!opt?.bottleId) return null;
+    const bottle = (bottles ?? []).find(b => b.id.toString() === opt.bottleId?.toString());
+    if (!bottle) return null;
+    const w = getWine(bottle.wine);
+    return { bottleId: opt.bottleId, explanation: opt.explanation, wineName: w?.name, producer: w?.producer, year: bottle.year, wineId: w?.id };
+  };
+
+  return {
+    classic: enrichOption(recommendation.classic),
+    daring: enrichOption(recommendation.daring),
+    toDiscover: recommendation.toDiscover ?? []
   };
 }
 

@@ -80,3 +80,26 @@ export async function getFoodPairingRecommendation(food: string, inventory: any[
   });
   return response.text ? JSON.parse(response.text) : null;
 }
+
+export async function getFoodPairingFull(food: string, inventory: any[]) {
+  if (!process.env.GEMINI_API_KEY) return null;
+  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+  const wineList = inventory.map(b => ({ id: b.id, wineName: b.wine?.name, producer: b.wine?.producer, year: b.year, color: b.wine?.color }));
+  const response = await ai.models.generateContent({
+    model: "gemini-3-flash-preview",
+    contents: `Agisci come un sommelier personale. L'utente vuole mangiare: "${food}".
+    In cantina ha questi vini: ${JSON.stringify(wineList)}.
+    Fai due cose:
+    1. Se c'è un abbinamento sensato, scegli le 2 migliori opzioni SOLO dalla lista fornita (non inventare vini che non sono in lista). Se non c'è nulla di adatto in cantina, lascia bottleId vuoto.
+    2. Suggerisci anche 2 tipologie di vino generiche (non legate alla cantina) che si abbinerebbero bene: descrivi lo stile/vitigno/regione indicativa da cercare in enoteca, NON un prodotto specifico da comprare online.`,
+    config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: {
+      classic: { type: Type.OBJECT, properties: { bottleId: { type: Type.STRING }, explanation: { type: Type.STRING } } },
+      daring: { type: Type.OBJECT, properties: { bottleId: { type: Type.STRING }, explanation: { type: Type.STRING } } },
+      toDiscover: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: {
+        style: { type: Type.STRING, description: "es. 'Sauvignon Blanc della Nuova Zelanda'" },
+        explanation: { type: Type.STRING }
+      }, required: ["style", "explanation"] } }
+    }, required: ["toDiscover"] } }
+  });
+  return response.text ? JSON.parse(response.text) : null;
+}

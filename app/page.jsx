@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import NotAuthenticated from "@/components/NotAuthenticated";
 import { mapBottleFromDB } from "@/lib/adapters/bottleAdapter";
-import FoodPairingForm from "@/components/FoodPairingForm";
+
 
 export default async function HomePage() {
   const supabase = createClient();
@@ -72,7 +72,9 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <FoodPairingForm />
+        <Link href="/abbinamento" className="block bg-ink-700 hover:bg-ink-500 text-white rounded-2xl shadow-md px-5 py-4 text-center font-bold transition-colors">
+          🍽️ Abbina il tuo vino al cibo
+        </Link>
 
       <section>
         <h2 className="text-base font-semibold mb-3">Aggiunte recenti</h2>
