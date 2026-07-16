@@ -224,7 +224,7 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
       >
         <div 
           className="absolute inset-0"
-          style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.75) 50%, rgba(0,0,0,0.75) 75%, #f4efe4 100%)' }}
+          style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.75) 50%, rgba(0,0,0,0.85) 85%, #f4efe4 100%)' }}
         ></div>
         
         <Link href="/wines" className="absolute top-4 left-4 z-20 w-10 h-10 flex items-center justify-center bg-white/15 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-white/25 transition-colors shadow-sm">
@@ -252,9 +252,9 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
               🍷
             </div>
           )}
-          <p className="text-xs font-bold text-brand-200 uppercase tracking-widest mb-2">{wine.producer}</p>
-          <h1 className="font-serif text-xl font-black text-white leading-tight mb-3">{wine.name}</h1>
-          <p className="text-sm font-medium text-white/80">
+          <p className="text-xs font-bold text-brand-200 uppercase tracking-widest mb-2 drop-shadow-md">{wine.producer}</p>
+          <h1 className="font-serif text-xl font-black text-white leading-tight mb-3 drop-shadow-lg">{wine.name}</h1>
+          <p className="text-sm font-medium text-white/90 drop-shadow-md">
             {[wine.region, wine.country, wine.color].filter(Boolean).join(" · ")}
           </p>
         </div>
