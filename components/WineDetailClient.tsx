@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Thermometer } from "lucide-react";
 import MaturationCurve from "@/components/MaturationCurve";
 import { getAgingLabel } from "@/lib/domain/maturation";
 import type { AgingStatus } from "@/types";
@@ -149,14 +150,25 @@ function BottleCard({ bottle, wine, currentYear }: { bottle: any; wine: any; cur
       <div className="bg-sand-50 rounded-2xl p-4 mb-4 border border-sand-100 space-y-3">
         <div className="flex gap-2">
           {wine.ideal_temp && (
-            <div className="flex-1 bg-sand-100 border border-sand-100 text-ink-700 text-xs font-semibold px-3 py-2 rounded-xl flex items-center justify-center gap-1.5 shadow-sm">
-              <span className="text-xs opacity-70">🌡️</span> {wine.ideal_temp}
+            <div className="flex-1 bg-sand-100 border border-sand-100 rounded-xl px-3 py-2.5 flex items-center gap-2.5 shadow-sm">
+              <div className="w-9 h-9 rounded-full bg-brand-100 flex items-center justify-center shrink-0">
+                <Thermometer size={18} strokeWidth={2} className="text-brand-600" />
+              </div>
+              <div className="text-left">
+                <div className="text-sm font-bold text-ink-700 leading-tight">{wine.ideal_temp}</div>
+                <div className="text-[10px] text-ink-500 uppercase tracking-wide">Temperatura</div>
+              </div>
             </div>
           )}
           {wine.glassware && (
-            <div className="flex-1 bg-sand-100 border border-sand-100 text-ink-700 text-xs font-semibold px-3 py-2 rounded-xl flex items-center justify-center gap-1.5 shadow-sm">
-              <GlassIcon text={wine.glassware} className="w-4 h-4 text-brand-600" />
-              {getGlassLabel(wine.glassware)}
+            <div className="flex-1 bg-sand-100 border border-sand-100 rounded-xl px-3 py-2.5 flex items-center gap-2.5 shadow-sm">
+              <div className="w-9 h-9 rounded-full bg-brand-100 flex items-center justify-center shrink-0">
+                <GlassIcon text={wine.glassware} className="w-[18px] h-[18px] text-brand-600" />
+              </div>
+              <div className="text-left">
+                <div className="text-sm font-bold text-ink-700 leading-tight">{getGlassLabel(wine.glassware)}</div>
+                <div className="text-[10px] text-ink-500 uppercase tracking-wide">Bicchiere</div>
+              </div>
             </div>
           )}
         </div>
