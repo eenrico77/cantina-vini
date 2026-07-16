@@ -395,27 +395,31 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
                           </div>
                         )}
 
-                        <div className="space-y-4">
+                        <div className="space-y-5">
                           {[
-                            { key: 'body', left: 'Leggero', right: 'Corposo' },
-                            { key: 'intensity', left: 'Delicato', right: 'Intenso' },
-                            { key: 'tannins', left: 'Morbido', right: 'Deciso' },
-                            { key: 'acidity', left: 'Rotondo', right: 'Fresco' },
-                            { key: 'persistence', left: 'Breve', right: 'Lunga' }
+                            { key: 'body', title: 'Corpo', left: 'Leggero', right: 'Corposo' },
+                            { key: 'intensity', title: 'Intensità', left: 'Delicato', right: 'Intenso' },
+                            { key: 'tannins', title: 'Tannini', left: 'Morbido', right: 'Tannico', onlyRed: true },
+                            { key: 'acidity', title: 'Acidità', left: 'Morbida', right: 'Fresca' },
+                            { key: 'persistence', title: 'Persistenza', left: 'Corta', right: 'Lunga' }
                           ].map(slider => {
                             const val = tasteProfile[slider.key];
                             if (val == null) return null;
+                            if (slider.onlyRed && wine.color?.toLowerCase() !== 'rosso') return null;
                             const perc = (Number(val) / 10) * 100;
                             return (
-                              <div key={slider.key} className="flex items-center gap-2">
-                                <span className="text-[11px] font-medium text-ink-500 w-14 shrink-0">{slider.left}</span>
-                                <div className="flex-1 h-1.5 rounded-full bg-sand-200 overflow-hidden">
-                                  <div className="h-full bg-brand-500 rounded-full" style={{ width: `${perc}%` }}></div>
+                              <div key={slider.key}>
+                                <div className="text-[11px] font-bold text-ink-700 uppercase tracking-wide mb-1.5">{slider.title}</div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-[11px] font-medium text-ink-500 w-14 shrink-0">{slider.left}</span>
+                                  <div className="flex-1 h-1.5 rounded-full bg-sand-200 overflow-hidden">
+                                    <div className="h-full bg-brand-500 rounded-full" style={{ width: `${perc}%` }}></div>
+                                  </div>
+                                  <span className="text-[11px] font-medium text-ink-500 w-14 shrink-0 text-right">{slider.right}</span>
+                                  <span className="text-[11px] font-semibold text-brand-600 bg-brand-100 rounded px-1.5 py-0.5 shrink-0 min-w-[28px] text-center">
+                                    {Number(val).toFixed(1)}
+                                  </span>
                                 </div>
-                                <span className="text-[11px] font-medium text-ink-500 w-14 shrink-0 text-right">{slider.right}</span>
-                                <span className="text-[11px] font-semibold text-brand-600 bg-brand-100 rounded px-1.5 py-0.5 shrink-0 min-w-[28px] text-center">
-                                  {Number(val).toFixed(1)}
-                                </span>
                               </div>
                             );
                           })}
