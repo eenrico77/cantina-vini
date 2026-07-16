@@ -122,7 +122,7 @@ export default function AbbinamentoPage() {
               <h2 className="text-lg font-bold mb-4">Da scoprire (in enoteca)</h2>
               <div className="space-y-4">
                 {result.toDiscover.map((disc: any, i: number) => (
-                  <div key={i} className="p-4 bg-white border border-sand-200 rounded-xl shadow-sm">
+                  <div key={i} className="p-4 bg-sand-100 border border-sand-200 rounded-xl shadow-sm">
                     <div className="font-bold text-ink-700 mb-1">{disc.style}</div>
                     <p className="text-sm text-ink-600">{disc.explanation}</p>
                   </div>
