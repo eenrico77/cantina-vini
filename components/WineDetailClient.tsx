@@ -217,7 +217,7 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
       <div 
         className="relative px-6 py-10 flex flex-col items-center text-center shadow-sm overflow-hidden"
         style={{
-          backgroundImage: `url('/hero-vigneto.png')`,
+          backgroundImage: `url('/hero-vigneto.png?v=2')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center 25%',
         }}
