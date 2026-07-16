@@ -222,8 +222,10 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
           backgroundPosition: 'center 25%',
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/60"></div>
-        <div className="absolute bottom-0 inset-x-0 h-12 bg-gradient-to-b from-transparent to-sand-50 z-[5]"></div>
+        <div 
+          className="absolute inset-0"
+          style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.55) 55%, #f4efe4 100%)' }}
+        ></div>
         
         <Link href="/wines" className="absolute top-4 left-4 z-20 w-10 h-10 flex items-center justify-center bg-white/15 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-white/25 transition-colors shadow-sm">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 pr-0.5">
