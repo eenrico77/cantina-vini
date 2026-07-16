@@ -284,16 +284,16 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
               Le tue Annate
             </button>
             <button 
-              className={`flex-1 py-3 text-sm font-bold border-b-2 transition-colors ${activeTab === "storico" ? "border-brand-500 text-brand-600" : "border-transparent text-ink-500 hover:text-ink-700"}`}
-              onClick={() => setActiveTab("storico")}
-            >
-              Storico Bevute
-            </button>
-            <button 
               className={`flex-1 py-3 text-sm font-bold border-b-2 transition-colors ${activeTab === "info" ? "border-brand-500 text-brand-600" : "border-transparent text-ink-500 hover:text-ink-700"}`}
               onClick={() => setActiveTab("info")}
             >
               Info Vino
+            </button>
+            <button 
+              className={`flex-1 py-3 text-sm font-bold border-b-2 transition-colors ${activeTab === "storico" ? "border-brand-500 text-brand-600" : "border-transparent text-ink-500 hover:text-ink-700"}`}
+              onClick={() => setActiveTab("storico")}
+            >
+              Storico Bevute
             </button>
           </div>
 
