@@ -33,6 +33,16 @@ const WINE_SCHEMA_PROPERTIES: Record<string, Schema> = {
     },
     required: ["body", "intensity", "tannins", "acidity", "persistence", "alcohol"]
   },
+  flavor_notes: {
+    type: Type.ARRAY,
+    items: { type: Type.STRING },
+    description: "Scegli 2 o 3 categorie di sapore SOLO da questa lista chiusa (scrivi esattamente la chiave, senza inventarne altre): mela-pera, agrumi, frutta-rossa, frutta-tropicale, fiori, spezie-legno, miele-frutta-secca, minerale-lievito"
+  },
+  food_pairings: {
+    type: Type.ARRAY,
+    items: { type: Type.STRING },
+    description: "3-5 abbinamenti gastronomici specifici e realistici per QUESTO vino, basati sul suo reale profilo gustativo (corpo, tannini, acidità, aromi) e non genericamente sul solo colore. Es. 'Tagliata di manzo al rosmarino', non solo 'Carne rossa'."
+  },
   recognized: { type: Type.BOOLEAN, description: "true solo se l'immagine mostra chiaramente e per intero un'etichetta di vino leggibile, false altrimenti" }
 };
 
@@ -68,37 +78,28 @@ export async function generateProfessionalWineImage(name: string, producer: stri
   return null;
 }
 
-export async function getFoodPairingRecommendation(food: string, inventory: any[]) {
-  if (!process.env.GEMINI_API_KEY) return null;
-  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-  const wineList = inventory.map(b => ({ id: b.id, wineName: b.wine?.name, producer: b.wine?.producer, year: b.year, color: b.wine?.color }));
-  const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
-    contents: `Agisci come un sommelier personale. L'utente vuole mangiare: "${food}".
-    In cantina ha SOLO questi vini: ${JSON.stringify(wineList)}.
-    Scegli le 2 migliori opzioni dalla lista fornita (non suggerire vini esterni). Spiega perché.`,
-    config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: {
-      classic: { type: Type.OBJECT, properties: { bottleId: { type: Type.STRING }, explanation: { type: Type.STRING } }, required: ["bottleId", "explanation"] },
-      daring: { type: Type.OBJECT, properties: { bottleId: { type: Type.STRING }, explanation: { type: Type.STRING } }, required: ["bottleId", "explanation"] }
-    }, required: ["classic", "daring"] } }
-  });
-  return response.text ? JSON.parse(response.text) : null;
-}
-
 export async function getFoodPairingFull(food: string, inventory: any[]) {
   if (!process.env.GEMINI_API_KEY) return null;
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-  const wineList = inventory.map(b => ({ id: b.id, wineName: b.wine?.name, producer: b.wine?.producer, year: b.year, color: b.wine?.color }));
+  const wineList = inventory.map(b => ({
+    id: b.id,
+    wineName: b.wine?.name,
+    producer: b.wine?.producer,
+    year: b.year,
+    color: b.wine?.color,
+    tasteProfile: b.wine?.taste_profile,
+    flavorNotes: b.wine?.flavor_notes,
+  }));
   const response = await ai.models.generateContent({
     model: "gemini-3-flash-preview",
     contents: `Agisci come un sommelier personale. L'utente vuole mangiare: "${food}".
-    In cantina ha questi vini: ${JSON.stringify(wineList)}.
+    In cantina ha questi vini: ${JSON.stringify(wineList)}. Ogni vino include, quando disponibile, tasteProfile (corpo, intensità, tannini, acidità, persistenza, alcol da 1 a 10) e flavorNotes: usa questi dati reali per un abbinamento preciso, non basarti solo su nome/colore.
     Fai due cose:
-    1. Se c'è un abbinamento sensato, scegli le 2 migliori opzioni SOLO dalla lista fornita (non inventare vini che non sono in lista). Se non c'è nulla di adatto in cantina, lascia bottleId vuoto.
+    1. Se c'è un abbinamento sensato, scegli le 2 migliori opzioni SOLO dalla lista fornita (non inventare vini che non sono in lista). Per ciascuna stima anche un matchScore da 0 a 100 basato sull'aderenza reale del profilo gustativo al piatto. Se non c'è nulla di adatto in cantina, lascia bottleId vuoto.
     2. Suggerisci anche 2 tipologie di vino generiche (non legate alla cantina) che si abbinerebbero bene: descrivi lo stile/vitigno/regione indicativa da cercare in enoteca, NON un prodotto specifico da comprare online.`,
     config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: {
-      classic: { type: Type.OBJECT, properties: { bottleId: { type: Type.STRING }, explanation: { type: Type.STRING } } },
-      daring: { type: Type.OBJECT, properties: { bottleId: { type: Type.STRING }, explanation: { type: Type.STRING } } },
+      classic: { type: Type.OBJECT, properties: { bottleId: { type: Type.STRING }, explanation: { type: Type.STRING }, matchScore: { type: Type.INTEGER } } },
+      daring: { type: Type.OBJECT, properties: { bottleId: { type: Type.STRING }, explanation: { type: Type.STRING }, matchScore: { type: Type.INTEGER } } },
       toDiscover: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: {
         style: { type: Type.STRING, description: "es. 'Sauvignon Blanc della Nuova Zelanda'" },
         explanation: { type: Type.STRING }
@@ -106,4 +107,19 @@ export async function getFoodPairingFull(food: string, inventory: any[]) {
     }, required: ["toDiscover"] } }
   });
   return response.text ? JSON.parse(response.text) : null;
+}
+
+export async function generateWineFoodPairings(wine: { name: string; color: string; taste_profile?: any; flavor_notes?: string[]; organoleptic?: any }) {
+  if (!process.env.GEMINI_API_KEY) return null;
+  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+  const response = await ai.models.generateContent({
+    model: "gemini-3-flash-preview",
+    contents: `Agisci come un sommelier personale. Questo è il vino: ${JSON.stringify(wine)}.
+    Suggerisci 3-5 abbinamenti gastronomici specifici e realistici basati sul suo reale profilo gustativo (corpo, tannini, acidità, aromi), non genericamente sul solo colore. Es. "Tagliata di manzo al rosmarino", non solo "Carne rossa".`,
+    config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: {
+      food_pairings: { type: Type.ARRAY, items: { type: Type.STRING } }
+    }, required: ["food_pairings"] } }
+  });
+  const parsed = response.text ? JSON.parse(response.text) : null;
+  return parsed?.food_pairings ?? null;
 }

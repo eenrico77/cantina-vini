@@ -2,18 +2,18 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Beef, Drumstick, Fish, Soup, Pizza, Sandwich, Salad, Cake } from "lucide-react";
+import Image from "next/image";
 import { getFoodPairingFullAction } from "@/app/actions";
 
 const FOOD_OPTIONS = [
-  { id: "carne_rossa", label: "Carne rossa", icon: Beef },
-  { id: "pollame", label: "Pollame", icon: Drumstick },
-  { id: "pesce", label: "Pesce", icon: Fish },
-  { id: "pasta_risotti", label: "Pasta e risotti", icon: Soup },
-  { id: "pizza", label: "Pizza", icon: Pizza },
-  { id: "formaggi_salumi", label: "Formaggi e salumi", icon: Sandwich },
-  { id: "verdure", label: "Verdure", icon: Salad },
-  { id: "dolci", label: "Dolci", icon: Cake },
+  { id: "carne_rossa", label: "Carne rossa", img: "/foods/carne-rossa.jpg" },
+  { id: "pollame", label: "Pollame", img: "/foods/pollame.jpg" },
+  { id: "pesce", label: "Pesce", img: "/foods/pesce.jpg" },
+  { id: "pasta_risotti", label: "Pasta e risotti", img: "/foods/pasta-risotti.jpg" },
+  { id: "pizza", label: "Pizza", img: "/foods/pizza.jpg" },
+  { id: "formaggi_salumi", label: "Formaggi e salumi", img: "/foods/formaggi-salumi.jpg" },
+  { id: "verdure", label: "Verdure", img: "/foods/verdure.jpg" },
+  { id: "dolci", label: "Dolci", img: "/foods/dolci.jpg" },
 ];
 
 export default function AbbinamentoPage() {
@@ -21,6 +21,7 @@ export default function AbbinamentoPage() {
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState("");
   const [selectedFood, setSelectedFood] = useState("");
+  const [customFood, setCustomFood] = useState("");
 
   const handleSelectFood = async (label: string) => {
     setSelectedFood(label);
@@ -38,6 +39,12 @@ export default function AbbinamentoPage() {
     }
   };
 
+  const handleCustomSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!customFood.trim()) return;
+    handleSelectFood(customFood.trim());
+  };
+
   return (
     <div className="p-4 md:p-8 max-w-2xl mx-auto space-y-6">
       {!result && !loading && (
@@ -50,15 +57,33 @@ export default function AbbinamentoPage() {
               <button
                 key={opt.id}
                 onClick={() => handleSelectFood(opt.label)}
-                className="bg-sand-100 rounded-2xl p-4 flex flex-col items-center gap-3 shadow-sm border border-sand-200 hover:border-brand-300 transition-colors"
+                className="rounded-2xl overflow-hidden shadow-sm border border-sand-200 hover:border-brand-300 transition-colors text-left"
               >
-                <div className="w-14 h-14 rounded-full bg-brand-100 flex items-center justify-center shrink-0">
-                  <opt.icon className="w-7 h-7 text-brand-600" strokeWidth={1.5} />
+                <div className="relative w-full h-28">
+                  <Image src={opt.img} alt={opt.label} fill className="object-cover" sizes="(max-width: 768px) 50vw, 300px" />
                 </div>
-                <span className="font-semibold text-ink-700">{opt.label}</span>
+                <div className="bg-sand-50 px-3 py-2.5">
+                  <span className="font-semibold text-ink-700 text-sm">{opt.label}</span>
+                </div>
               </button>
             ))}
           </div>
+
+          <form onSubmit={handleCustomSubmit} className="mt-6 bg-sand-100 rounded-2xl p-4 shadow-sm border border-sand-200">
+            <label className="block text-sm font-semibold text-ink-700 mb-2">...oppure descrivi il tuo piatto</label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={customFood}
+                onChange={(e) => setCustomFood(e.target.value)}
+                placeholder="es. Risotto ai funghi, Sushi..."
+                className="border border-sand-200 rounded-lg px-3 py-2 flex-1 text-sm outline-none focus:border-brand-500 bg-white"
+              />
+              <button type="submit" className="bg-ink-700 hover:bg-ink-500 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
+                Abbina
+              </button>
+            </div>
+          </form>
         </>
       )}
 
@@ -86,7 +111,12 @@ export default function AbbinamentoPage() {
             <h2 className="text-lg font-bold mb-4">Dalla tua cantina</h2>
             <div className="space-y-4">
               <div className="p-4 bg-sand-50 border border-sand-200 rounded-xl">
-                <div className="text-xs font-bold text-ink-500 uppercase mb-2">Abbinamento Classico</div>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-xs font-bold text-ink-500 uppercase">Abbinamento Classico</div>
+                  {typeof result.classic?.matchScore === "number" && (
+                    <span className="text-[11px] font-bold text-brand-700 bg-brand-100 rounded-full px-2 py-0.5">{result.classic.matchScore}% affinità</span>
+                  )}
+                </div>
                 {result.classic?.wineId ? (
                   <>
                     <Link href={`/cantina/${result.classic.wineId}`} className="font-semibold text-blue-600 hover:underline block text-lg">
@@ -101,7 +131,12 @@ export default function AbbinamentoPage() {
               </div>
 
               <div className="p-4 bg-amber-50 border border-amber-100 rounded-xl">
-                <div className="text-xs font-bold text-amber-700 uppercase mb-2">Abbinamento Audace</div>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-xs font-bold text-amber-700 uppercase">Abbinamento Audace</div>
+                  {typeof result.daring?.matchScore === "number" && (
+                    <span className="text-[11px] font-bold text-amber-800 bg-amber-100 rounded-full px-2 py-0.5">{result.daring.matchScore}% affinità</span>
+                  )}
+                </div>
                 {result.daring?.wineId ? (
                   <>
                     <Link href={`/cantina/${result.daring.wineId}`} className="font-semibold text-amber-800 hover:underline block text-lg">

@@ -70,6 +70,10 @@ export async function createWine(formData: FormData): Promise<void> {
   const tasteProfileRaw = formData.get("taste_profile") as string;
   const organoleptic = organolepticRaw ? JSON.parse(organolepticRaw) : null;
   const taste_profile = tasteProfileRaw ? JSON.parse(tasteProfileRaw) : null;
+  const flavorNotesRaw = formData.get("flavor_notes") as string;
+  const flavor_notes = flavorNotesRaw ? JSON.parse(flavorNotesRaw) : null;
+  const foodPairingsRaw = formData.get("food_pairings") as string;
+  const food_pairings = foodPairingsRaw ? JSON.parse(foodPairingsRaw) : null;
   const wishlistId = formData.get("wishlistId") as string;
   const finalImageBase64 = formData.get("final_image") as string;
 
@@ -115,6 +119,8 @@ export async function createWine(formData: FormData): Promise<void> {
         glassware,
         organoleptic,
         taste_profile,
+        flavor_notes,
+        food_pairings,
         ai_generated: true,
       })
       .select("id, image_url")

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Thermometer } from "lucide-react";
@@ -9,17 +9,17 @@ import { getAgingLabel } from "@/lib/domain/maturation";
 import type { AgingStatus } from "@/types";
 import GlassIcon, { getGlassLabel } from "@/components/GlassIcon";
 import BottleActionsSheet from "@/components/BottleActionsSheet";
-import { updateBottleValueAction } from "@/app/cantina/[id]/actions";
+import { updateBottleValueAction, generateFoodPairingsForWineAction } from "@/app/cantina/[id]/actions";
 
-const getStaticPairings = (color: string) => {
-  switch (color) {
-    case "Rosso": return ["Arrosti", "Brasati", "Selvaggina", "Formaggi stagionati", "Grigliate rosse"];
-    case "Bianco": return ["Pesce", "Crostacei", "Risotti", "Formaggi freschi", "Antipasti di mare"];
-    case "Bollicine": return ["Aperitivo", "Crudo di mare", "Fritti", "Sushi", "Antipasti leggeri"];
-    case "Rosato": return ["Salumi", "Pesce grigliato", "Cucina estiva", "Insalate", "Pizza"];
-    case "Dolce": return ["Dessert", "Formaggi erborinati", "Frutta secca", "Crostate", "Cioccolato"];
-    default: return [];
-  }
+const FLAVOR_MAP: Record<string, { label: string; sub: string; img: string }> = {
+  "mela-pera": { label: "Mela, Pera", sub: "Note fruttate fresche", img: "/flavors/mela-pera.jpg" },
+  "agrumi": { label: "Agrumi, Pompelmo", sub: "Note fruttate agrumate", img: "/flavors/agrumi.jpg" },
+  "frutta-rossa": { label: "Ciliegia, Lampone", sub: "Frutta rossa", img: "/flavors/frutta-rossa.jpg" },
+  "frutta-tropicale": { label: "Ananas, Mango", sub: "Frutta tropicale", img: "/flavors/frutta-tropicale.jpg" },
+  "fiori": { label: "Fiori bianchi, Rosa", sub: "Note floreali", img: "/flavors/fiori.jpg" },
+  "spezie-legno": { label: "Pepe, Vaniglia", sub: "Speziato e legno", img: "/flavors/spezie-legno.jpg" },
+  "miele-frutta-secca": { label: "Miele, Mandorla", sub: "Dolce e frutta secca", img: "/flavors/miele-frutta-secca.jpg" },
+  "minerale-lievito": { label: "Minerali, Lievito", sub: "Note terziarie", img: "/flavors/minerale-lievito.jpg" },
 };
 
 function EditableValue({ bottle, wineId, isEditing, setIsEditing }: { bottle: any; wineId: string; isEditing: boolean; setIsEditing: (v: boolean) => void }) {
@@ -172,18 +172,6 @@ function BottleCard({ bottle, wine, currentYear }: { bottle: any; wine: any; cur
             </div>
           )}
         </div>
-        {wine.color && (
-          <div>
-            <div className="text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-1.5 px-1">Abbinamenti</div>
-            <div className="flex flex-wrap gap-1">
-              {getStaticPairings(wine.color).map((p: string) => (
-                <span key={p} className="bg-sand-100 border border-sand-200 text-ink-600 text-[10px] font-semibold px-2 py-1.5 rounded-lg shadow-sm">
-                  {p}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
       <EditableValue bottle={bottle} wineId={wine.id} isEditing={isEditingValue} setIsEditing={setIsEditingValue} />
@@ -210,7 +198,14 @@ function BottleCard({ bottle, wine, currentYear }: { bottle: any; wine: any; cur
 
 export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
   const [activeTab, setActiveTab] = useState("annate");
+  const [scrollY, setScrollY] = useState(0);
   const currentYear = new Date().getFullYear();
+  
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   
   const TASTE_LABELS: Record<string, string> = {
     body: "Corpo",
@@ -222,6 +217,21 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
   };
   const tasteProfile = wine.taste_profile as Record<string, number> | null;
   const organoleptic = wine.organoleptic as any | null;
+  const [foodPairings, setFoodPairings] = useState<string[] | null>(wine.food_pairings ?? null);
+  const [pairingsPending, startPairingsTransition] = useTransition();
+  const [pairingsError, setPairingsError] = useState("");
+
+  const handleGeneratePairings = () => {
+    setPairingsError("");
+    startPairingsTransition(async () => {
+      try {
+        const result = await generateFoodPairingsForWineAction(wine.id);
+        setFoodPairings(result);
+      } catch (err: any) {
+        setPairingsError(err.message || "Errore imprevisto");
+      }
+    });
+  };
 
   return (
     <div className="pb-24 -mt-6"> {/* -mt-6 to offset standard layout padding for full bleed hero */}
@@ -247,7 +257,7 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
         
         <div className="relative z-10 flex flex-col items-center w-full">
           {wine.image_url ? (
-            <div className="relative flex flex-col items-center">
+            <div className="relative flex flex-col items-center" style={{ transform: `translateY(${Math.min(scrollY * 0.15, 40)}px)` }}>
               <div className="relative w-32 h-48 mb-6 rounded-2xl overflow-hidden shadow-xl border border-white/30 z-10">
                 <Image 
                   src={wine.image_url} 
@@ -426,23 +436,59 @@ export default function WineDetailClient({ wine, bottles, diaryEntries }: any) {
                         </div>
                       </div>
                     )}
+                    
+                    {wine.flavor_notes && wine.flavor_notes.length > 0 && (
+                      <div className="mt-6">
+                        <span className="font-semibold text-ink-500 block mb-3 uppercase text-[10px] tracking-wider">Che sapore ha questo vino?</span>
+                        <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1">
+                          {wine.flavor_notes.filter((key: string) => FLAVOR_MAP[key]).map((key: string) => {
+                            const f = FLAVOR_MAP[key];
+                            return (
+                              <div key={key} className="shrink-0 w-32 rounded-2xl overflow-hidden border border-sand-200 shadow-sm">
+                                <div className="relative w-full h-24">
+                                  <Image src={f.img} alt={f.label} fill className="object-cover" />
+                                </div>
+                                <div className="p-2 bg-sand-50">
+                                  <p className="text-xs font-bold text-ink-700 leading-tight">{f.label}</p>
+                                  <p className="text-[10px] text-ink-500">{f.sub}</p>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
                   </div>
                 </div>
               )}
 
-              {/* Abbinamenti Statici */}
-              {wine.color && (
-                <div className="bg-sand-50 border border-sand-200 rounded-2xl p-5 shadow-sm text-center">
-                  <div className="text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-2">Abbinamenti Consigliati</div>
-                  <p className="text-sm font-medium text-ink-700">
-                    {wine.color === "Rosso" && "Carni rosse, brasati, formaggi stagionati"}
-                    {wine.color === "Bianco" && "Pesce, crostacei, formaggi freschi"}
-                    {wine.color === "Bollicine" && "Aperitivo, fritti, sushi"}
-                    {wine.color === "Rosato" && "Salumi, cucina estiva, pesce grigliato"}
-                    {wine.color === "Dolce" && "Dessert, formaggi erborinati"}
-                  </p>
-                </div>
-              )}
+              {/* Abbinamenti Consigliati (AI, basati sul profilo gustativo reale del vino) */}
+              <div className="bg-sand-50 border border-sand-200 rounded-2xl p-5 shadow-sm">
+                <div className="text-[10px] font-bold text-ink-500 uppercase tracking-wider mb-2 text-center">Abbinamenti Consigliati</div>
+                {foodPairings && foodPairings.length > 0 ? (
+                  <div className="flex flex-wrap gap-1.5 justify-center">
+                    {foodPairings.map((p) => (
+                      <span key={p} className="bg-sand-100 border border-sand-200 text-ink-600 text-xs font-semibold px-2.5 py-1.5 rounded-lg shadow-sm">
+                        {p}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center">
+                    <p className="text-sm text-ink-500 mb-3">Nessun abbinamento generato per questo vino.</p>
+                    <button
+                      type="button"
+                      onClick={handleGeneratePairings}
+                      disabled={pairingsPending}
+                      className="text-xs bg-brand-100 text-brand-700 font-bold px-3 py-2 rounded-lg transition-colors hover:bg-brand-200 disabled:opacity-50"
+                    >
+                      {pairingsPending ? "Genero..." : "✨ Genera abbinamenti"}
+                    </button>
+                    {pairingsError && <p className="text-xs text-red-500 mt-2">{pairingsError}</p>}
+                  </div>
+                )}
+              </div>
             </div>
           )}
 

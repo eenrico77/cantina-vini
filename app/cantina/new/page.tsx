@@ -16,7 +16,7 @@ export default function NewWinePage() {
     name: "", producer: "", color: "", region: "", country: "", year: "", quantity: "1",
     grapes: "", description: "", origin_notes: "", vintage_review: "",
     maturation_start: "", maturation_end: "", ideal_temp: "", decanting: "", glassware: "",
-    organoleptic: "", taste_profile: "", purchase_price: "", storage_notes: "", format_ml: "750", tags: ""
+    organoleptic: "", taste_profile: "", flavor_notes: "", food_pairings: "", purchase_price: "", storage_notes: "", format_ml: "750", tags: ""
   });
   const [wishlistId, setWishlistId] = useState("");
   const [realImage, setRealImage] = useState<string | null>(null);
@@ -94,6 +94,8 @@ export default function NewWinePage() {
           glassware: aiResult.glassware || prev.glassware,
           organoleptic: aiResult.organoleptic ? JSON.stringify(aiResult.organoleptic) : prev.organoleptic,
           taste_profile: aiResult.taste_profile ? JSON.stringify(aiResult.taste_profile) : prev.taste_profile,
+          flavor_notes: aiResult.flavor_notes ? JSON.stringify(aiResult.flavor_notes) : prev.flavor_notes,
+          food_pairings: aiResult.food_pairings ? JSON.stringify(aiResult.food_pairings) : prev.food_pairings,
         }));
         if ((aiResult as any).originalImage) {
           setRealImage((aiResult as any).originalImage);
@@ -224,6 +226,8 @@ export default function NewWinePage() {
         {/* Campi nascosti per i dati JSON e wishlist */}
         <input type="hidden" name="organoleptic" value={formData.organoleptic} />
         <input type="hidden" name="taste_profile" value={formData.taste_profile} />
+        <input type="hidden" name="flavor_notes" value={formData.flavor_notes} />
+        <input type="hidden" name="food_pairings" value={formData.food_pairings} />
         <input type="hidden" name="wishlistId" value={wishlistId} />
         <input type="hidden" name="final_image" value={selectedImage === "real" ? (realImage || "") : selectedImage === "catalog" ? (catalogImage || "") : ""} />
         

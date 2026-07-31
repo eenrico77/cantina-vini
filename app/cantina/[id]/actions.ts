@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { generateWineFoodPairings } from "@/lib/ai/enrichWine";
 
 export async function drinkBottleAction(formData: FormData) {
   const bottleId = formData.get("bottleId") as string;
@@ -119,4 +120,35 @@ export async function removeBottleAction(formData: FormData) {
   // Nessuna voce nel Diario: a differenza di "Segna come bevuta", qui la bottiglia non è stata bevuta.
   revalidatePath(`/cantina/${wineId}`);
   revalidatePath('/stats');
+}
+
+export async function generateFoodPairingsForWineAction(wineId: string) {
+  if (!wineId) throw new Error("Manca l'id del vino");
+
+  const supabase = createClient();
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth?.user) throw new Error("Non autenticato");
+
+  const { data: wine, error: fetchErr } = await supabase
+    .from("wines")
+    .select("name, color, taste_profile, flavor_notes, organoleptic")
+    .eq("id", wineId)
+    .eq("user_id", auth.user.id)
+    .single();
+
+  if (fetchErr || !wine) throw new Error("Vino non trovato");
+
+  const food_pairings = await generateWineFoodPairings(wine);
+  if (!food_pairings) throw new Error("L'AI non ha restituito abbinamenti");
+
+  const { error: updateErr } = await supabase
+    .from("wines")
+    .update({ food_pairings })
+    .eq("id", wineId)
+    .eq("user_id", auth.user.id);
+
+  if (updateErr) throw new Error(updateErr.message);
+
+  revalidatePath(`/cantina/${wineId}`);
+  return food_pairings;
 }
